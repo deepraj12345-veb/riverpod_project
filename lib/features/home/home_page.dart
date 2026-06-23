@@ -19,7 +19,6 @@ class HomePage extends ConsumerStatefulWidget {
 
 class _HomePageState extends ConsumerState<HomePage> {
   final _searchCtrl = TextEditingController();
-  bool _showSearch = false;
 
   @override
   void dispose() {
@@ -116,7 +115,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                       ],
                     ),
 
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 10),
 
                     // ─── Search bar with live product suggestions ──────────────────
                     SuggestionField(
@@ -131,7 +130,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                           ref.read(searchQueryProvider.notifier).state = v,
                     ),
 
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 12),
 
                     // ─── Category Chips ──────────────────────────────────────
                     SizedBox(
@@ -139,7 +138,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                       child: ListView.separated(
                         scrollDirection: Axis.horizontal,
                         itemCount: FakeData.categories.length,
-                        separatorBuilder: (_, __) => const SizedBox(width: 8),
+                        separatorBuilder: (_, _) => const SizedBox(width: 8),
                         itemBuilder: (ctx, i) {
                           final cat = FakeData.categories[i];
                           final isSelected = cat == selectedCategory;
@@ -161,7 +160,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                                 border: Border.all(
                                   color: isSelected
                                       ? AppTheme.textDark
-                                      : const Color(0xFFE0E0E0),
+                                      : AppTheme.textGrey.withValues(alpha: 0.3),
                                 ),
                               ),
                               child: Text(
@@ -182,7 +181,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                       ),
                     ),
 
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 16),
 
                     // ─── Section Header ──────────────────────────────────────
                     Row(

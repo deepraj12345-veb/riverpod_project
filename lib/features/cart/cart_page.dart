@@ -61,7 +61,7 @@ class _CartPageState extends ConsumerState<CartPage> {
               '${cartItems.length} ${cartItems.length == 1 ? 'item' : 'items'}',
               style: const TextStyle(
                 fontSize: 12,
-                color: Colors.black,
+                color: AppTheme.textGrey,
               ),
             ),
           ],
@@ -87,7 +87,7 @@ class _CartPageState extends ConsumerState<CartPage> {
                     physics: const NeverScrollableScrollPhysics(),
                     padding: const EdgeInsets.all(16),
                     itemCount: cartItems.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 14),
+                    separatorBuilder: (_, _) => const SizedBox(height: 14),
                     itemBuilder: (ctx, i) {
                       final item = cartItems[i];
                       final cardColor = AppTheme.cardColors[
@@ -240,7 +240,7 @@ class _CartPageState extends ConsumerState<CartPage> {
 
                 // ─── Order Summary + Checkout ─────────────────────────────────
                 Container(
-                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
+                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: const BorderRadius.vertical(
@@ -319,9 +319,9 @@ class _CartPageState extends ConsumerState<CartPage> {
                                 }
                               },
                               child: Container(
-                                height: 52,
+                                height: 44,
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 14),
+                                    horizontal: 16, vertical: 10),
                                 decoration: BoxDecoration(
                                   color: AppTheme.primaryGreen,
                                   borderRadius: BorderRadius.circular(14),
@@ -391,7 +391,7 @@ class _CartPageState extends ConsumerState<CartPage> {
                         value: totalAmount + (totalAmount * 0.08) - discount,
                         isBold: true,
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 16),
                       // Checkout button
                       GestureDetector(
                         onTap: () {
@@ -449,7 +449,7 @@ class _CartPageState extends ConsumerState<CartPage> {
                         },
                         child: Container(
                           width: double.infinity,
-                          height: 54,
+                          height: 48,
                           decoration: BoxDecoration(
                             color: AppTheme.accentRed,
                             borderRadius: BorderRadius.circular(16),

@@ -92,10 +92,10 @@ class _OtpPageState extends ConsumerState<OtpPage>
   @override
   Widget build(BuildContext context) {
     final defaultPinTheme = PinTheme(
-      width: 56,
-      height: 60,
+      width: 50,
+      height: 50,
       textStyle: const TextStyle(
-        fontSize: 22,
+        fontSize: 20,
         fontWeight: FontWeight.w600,
         color: AppTheme.textPrimary,
       ),
@@ -121,11 +121,7 @@ class _OtpPageState extends ConsumerState<OtpPage>
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xFF0D0D1A), Color(0xFF1A1A2E), Color(0xFF0D0D1A)],
-          ),
+          color: AppTheme.darkBg,
         ),
         child: SafeArea(
           child: FadeTransition(
@@ -134,7 +130,7 @@ class _OtpPageState extends ConsumerState<OtpPage>
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Column(
                 children: [
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 20),
                   Row(
                     children: [
                       GestureDetector(
@@ -155,11 +151,11 @@ class _OtpPageState extends ConsumerState<OtpPage>
                       ),
                     ],
                   ),
-                  const SizedBox(height: 36),
+                  const SizedBox(height: 20),
                   // OTP illustration
                   Container(
-                    width: 90,
-                    height: 90,
+                    width: 70,
+                    height: 70,
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
                         colors: [Color(0xFF6C63FF), Color(0xFFFF6584)],
@@ -167,7 +163,7 @@ class _OtpPageState extends ConsumerState<OtpPage>
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: AppTheme.primaryColor.withOpacity(0.3),
+                          color: AppTheme.primaryColor.withValues(alpha: 0.3),
                           blurRadius: 24,
                           spreadRadius: 4,
                         ),
@@ -179,16 +175,16 @@ class _OtpPageState extends ConsumerState<OtpPage>
                       size: 42,
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 16),
                   const Text(
                     'Verify Your Phone 📱',
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 20,
                       fontWeight: FontWeight.w700,
                       color: AppTheme.textPrimary,
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 8),
                   Text(
                     'We sent a 6-digit code to\n${widget.phone.isEmpty ? '+1 *** *** 5678' : widget.phone}',
                     textAlign: TextAlign.center,
@@ -198,7 +194,7 @@ class _OtpPageState extends ConsumerState<OtpPage>
                       height: 1.6,
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 8),
                   // Hint box
                   Container(
                     padding: const EdgeInsets.symmetric(
@@ -206,10 +202,10 @@ class _OtpPageState extends ConsumerState<OtpPage>
                       vertical: 10,
                     ),
                     decoration: BoxDecoration(
-                      color: AppTheme.primaryColor.withOpacity(0.1),
+                      color: AppTheme.primaryColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: AppTheme.primaryColor.withOpacity(0.3),
+                        color: AppTheme.primaryColor.withValues(alpha: 0.3),
                       ),
                     ),
                     child: const Text(
@@ -221,7 +217,7 @@ class _OtpPageState extends ConsumerState<OtpPage>
                       ),
                     ),
                   ),
-                  const SizedBox(height: 36),
+                  const SizedBox(height: 20),
                   // OTP Input
                   AnimatedBuilder(
                     animation: _shakeAnim,
@@ -248,7 +244,7 @@ class _OtpPageState extends ConsumerState<OtpPage>
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 8),
                   if (_hasError)
                     const Text(
                       '❌ Invalid OTP. Please try again.',
@@ -258,13 +254,13 @@ class _OtpPageState extends ConsumerState<OtpPage>
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                  const SizedBox(height: 28),
+                  const SizedBox(height: 20),
                   GradientButton(
                     text: _isVerifying ? 'Verifying...' : 'Verify & Continue',
                     isLoading: _isVerifying,
                     onPressed: _verifyOtp,
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -299,7 +295,7 @@ class _OtpPageState extends ConsumerState<OtpPage>
                             ),
                     ],
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 20),
                 ],
               ),
             ),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:riverpod_project/core/theme/app_theme.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:riverpod_project/core/theme/app_theme.dart';
 
 class SplashPage extends ConsumerStatefulWidget {
   const SplashPage({super.key});
@@ -32,9 +32,9 @@ class _SplashPageState extends ConsumerState<SplashPage> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color(0xFF4ADE80), // Light green
-              Color(0xFF16A34A), // Primary green
-              Color(0xFF15803D), // Deep green
+              AppTheme.lightGreen,
+              AppTheme.primaryGreen,
+              AppTheme.deepGreen,
             ],
           ),
         ),
@@ -44,13 +44,13 @@ class _SplashPageState extends ConsumerState<SplashPage> {
             children: [
               // Icon - mimicking the two leaves
               Container(
-                width: 100,
-                height: 100,
+                width: 80,
+                height: 80,
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
                     colors: [
-                      Color(0xFF4ADE80),
-                      Color(0xFF16A34A),
+                      AppTheme.lightGreen,
+                      AppTheme.primaryGreen,
                     ],
                   ),
                   borderRadius: BorderRadius.circular(24),
@@ -87,7 +87,7 @@ class _SplashPageState extends ConsumerState<SplashPage> {
               RichText(
                 text: TextSpan(
                   style: const TextStyle(
-                    fontSize: 36,
+                    fontSize: 30,
                     fontWeight: FontWeight.w900,
                     letterSpacing: 1.5,
                   ),
@@ -98,9 +98,7 @@ class _SplashPageState extends ConsumerState<SplashPage> {
                     ),
                     TextSpan(
                       text: 'MART',
-                      style: TextStyle(
-                          color: const Color(
-                              0xFF14532D)), // Dark green like in image
+                      style: TextStyle(color: AppTheme.deepGreen),
                     ),
                   ],
                 ),

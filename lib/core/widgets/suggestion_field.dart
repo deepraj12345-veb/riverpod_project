@@ -220,7 +220,7 @@ class _SuggestionFieldState extends State<SuggestionField>
                   shrinkWrap: true,
                   physics: const ClampingScrollPhysics(),
                   itemCount: _filtered.length,
-                  separatorBuilder: (_, __) => Divider(
+                  separatorBuilder: (_, _) => Divider(
                     height: 1,
                     color: _focusBorder.withValues(alpha: 0.1),
                   ),

@@ -14,11 +14,9 @@ class ProductDetailPage extends ConsumerStatefulWidget {
 }
 
 class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
-  int _selectedSize = 1; // default L
   int _selectedColor = 0;
   int _quantity = 1;
 
-  final _sizes = ['XL', 'L', 'M', 'S'];
   final _colorOptions = [
     const Color(0xFF22C55E), // Green
     const Color(0xFFE88C2A), // Orange
@@ -134,7 +132,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
                           // Main image container
                           AnimatedContainer(
                             duration: const Duration(milliseconds: 400),
-                            height: 300,
+                            height: 240,
                             width: double.infinity,
                             decoration: BoxDecoration(
                               color: _currentCardColor,
@@ -187,8 +185,9 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
                                           : null,
                                       boxShadow: [
                                         BoxShadow(
-                                          color: _colorOptions[i]
-                                              .withValues(alpha: 0.4),
+                                          color: _colorOptions[i].withValues(
+                                            alpha: 0.4,
+                                          ),
                                           blurRadius: 6,
                                           offset: const Offset(0, 2),
                                         ),
@@ -217,8 +216,9 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
                                   decoration: BoxDecoration(
                                     color: i == 1
                                         ? AppTheme.textDark
-                                        : AppTheme.textGrey
-                                            .withValues(alpha: 0.4),
+                                        : AppTheme.textGrey.withValues(
+                                            alpha: 0.4,
+                                          ),
                                     borderRadius: BorderRadius.circular(3),
                                   ),
                                 );
@@ -229,7 +229,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
                       ),
                     ),
 
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 16),
 
                     // ── Product Info ──
                     Padding(
@@ -292,9 +292,9 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
                                   fit: BoxFit.scaleDown,
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    '\$${product.price.toStringAsFixed(2)}',
+                                    'Rs.${product.price.toStringAsFixed(2)}',
                                     style: const TextStyle(
-                                      fontSize: 30,
+                                      fontSize: 26,
                                       fontWeight: FontWeight.w700,
                                       color: AppTheme.priceOrange,
                                     ),
@@ -306,8 +306,6 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
 
                           const SizedBox(height: 14),
 
-
-
                           // Rating row
                           Row(
                             children: [
@@ -316,8 +314,8 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
                                   i < product.rating.floor()
                                       ? Icons.star_rounded
                                       : i < product.rating
-                                          ? Icons.star_half_rounded
-                                          : Icons.star_outline_rounded,
+                                      ? Icons.star_half_rounded
+                                      : Icons.star_outline_rounded,
                                   color: const Color(0xFFFFBE21),
                                   size: 16,
                                 );
@@ -466,7 +464,11 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
                       backgroundColor: AppTheme.accentRed,
                       duration: const Duration(seconds: 2),
                       behavior: SnackBarBehavior.floating,
-                      margin: const EdgeInsets.only(bottom: 100, left: 16, right: 16),
+                      margin: const EdgeInsets.only(
+                        bottom: 100,
+                        left: 16,
+                        right: 16,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -474,7 +476,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
                   );
                 },
                 child: Container(
-                  height: 54,
+                  height: 48,
                   decoration: BoxDecoration(
                     color: AppTheme.accentRed,
                     borderRadius: BorderRadius.circular(16),

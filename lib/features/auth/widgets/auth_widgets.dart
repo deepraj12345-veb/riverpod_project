@@ -64,7 +64,7 @@ class GradientButton extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         width: double.infinity,
-        height: 54,
+        height: 48,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: isLoading
@@ -126,7 +126,7 @@ class SocialButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
           color: AppTheme.darkSurface,
           borderRadius: BorderRadius.circular(14),

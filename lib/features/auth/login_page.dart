@@ -88,12 +88,12 @@ class _LoginPageState extends ConsumerState<LoginPage>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 20),
 
                     // ── Logo ──────────────────────────────────────────────
                     Container(
-                      width: 90,
-                      height: 90,
+                      width: 70,
+                      height: 70,
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
                           colors: [
@@ -130,13 +130,13 @@ class _LoginPageState extends ConsumerState<LoginPage>
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 12),
 
                     // ── App Name ──────────────────────────────────────────
                     const Text(
                       'VeggieMart',
                       style: TextStyle(
-                        fontSize: 34,
+                        fontSize: 28,
                         fontWeight: FontWeight.w700,
                         color: AppTheme.textDark,
                         letterSpacing: 1.2,
@@ -150,11 +150,11 @@ class _LoginPageState extends ConsumerState<LoginPage>
                         color: AppTheme.textGrey,
                       ),
                     ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 20),
 
                     // ── Form Card ─────────────────────────────────────────
                     Container(
-                      padding: const EdgeInsets.all(24),
+                      padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(24),
@@ -176,12 +176,12 @@ class _LoginPageState extends ConsumerState<LoginPage>
                           const Text(
                             'Welcome Back 👋',
                             style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 18,
                               fontWeight: FontWeight.w700,
                               color: AppTheme.textDark,
                             ),
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 16),
 
                           // ── Email with suggestions ─────────────────────
                           SuggestionField(
@@ -199,7 +199,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                               return null;
                             },
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 12),
 
                           // ── Password (no suggestions — private) ────────
                           AuthTextField(
@@ -226,7 +226,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                               return null;
                             },
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 4),
 
                           Align(
                             alignment: Alignment.centerRight,
@@ -241,7 +241,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                               ),
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: 0),
 
                           GradientButton(
                             text: 'Login',
@@ -251,7 +251,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                         ],
                       ),
                     ),
-                    const SizedBox(height: 28),
+                    const SizedBox(height: 20),
 
                     // ── Social divider ────────────────────────────────────
                     Row(
@@ -278,7 +278,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 16),
 
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -296,7 +296,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                         ),
                       ],
                     ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 24),
 
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -317,7 +317,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                         ),
                       ],
                     ),
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 20),
                   ],
                 ),
               ),

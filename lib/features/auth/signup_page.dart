@@ -103,15 +103,7 @@ class _SignupPageState extends ConsumerState<SignupPage>
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
-            colors: [
-              Color.fromRGBO(250, 250, 251, 1),
-              Color.fromARGB(255, 254, 254, 254),
-              Color.fromARGB(255, 255, 255, 255)
-            ],
-          ),
+          color: AppTheme.bgWhite,
         ),
         child: SafeArea(
           child: FadeTransition(
@@ -120,7 +112,7 @@ class _SignupPageState extends ConsumerState<SignupPage>
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Column(
                 children: [
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 20),
                   // Header
                   Row(
                     children: [
@@ -152,7 +144,7 @@ class _SignupPageState extends ConsumerState<SignupPage>
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w700,
-                                color: Color.fromARGB(255, 10, 11, 11),
+                                color: AppTheme.textDark,
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -161,7 +153,7 @@ class _SignupPageState extends ConsumerState<SignupPage>
                       ),
                     ],
                   ),
-                  const SizedBox(height: 36),
+                  const SizedBox(height: 20),
                   // Progress indicators
                   Row(
                     children: [
@@ -189,10 +181,10 @@ class _SignupPageState extends ConsumerState<SignupPage>
                       _StepDot(active: false, label: '3\nDone'),
                     ],
                   ),
-                  const SizedBox(height: 36),
+                  const SizedBox(height: 20),
                   // Form Card
                   Container(
-                    padding: const EdgeInsets.all(24),
+                    padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(24),
@@ -234,7 +226,7 @@ class _SignupPageState extends ConsumerState<SignupPage>
                               return null;
                             },
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 12),
                           SuggestionField(
                             controller: _phoneCtrl,
                             label: 'Phone Number',
@@ -246,7 +238,7 @@ class _SignupPageState extends ConsumerState<SignupPage>
                                 ? 'Enter valid phone'
                                 : null,
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 12),
                           AuthTextField(
                             controller: _passCtrl,
                             label: 'Password',
@@ -268,7 +260,7 @@ class _SignupPageState extends ConsumerState<SignupPage>
                                 ? 'Min 6 characters'
                                 : null,
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 16),
                           // Terms checkbox
                           GestureDetector(
                             onTap: () =>
@@ -332,7 +324,7 @@ class _SignupPageState extends ConsumerState<SignupPage>
                               ],
                             ),
                           ),
-                          const SizedBox(height: 24),
+                          const SizedBox(height: 20),
                           GradientButton(
                             text: 'Create Account',
                             isLoading: _isLoading,
@@ -342,7 +334,7 @@ class _SignupPageState extends ConsumerState<SignupPage>
                       ),
                     ),
                   ),
-                  const SizedBox(height: 28),
+                  const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -362,7 +354,7 @@ class _SignupPageState extends ConsumerState<SignupPage>
                       ),
                     ],
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 20),
                 ],
               ),
             ),
