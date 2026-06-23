@@ -6,27 +6,25 @@ import 'package:riverpod_project/core/theme/app_theme.dart';
 import 'package:riverpod_project/features/cart/presentation/controllers/cart_controller.dart';
 import 'package:riverpod_project/features/home/presentation/controllers/home_controller.dart';
 
-class ProductDetailPage extends ConsumerStatefulWidget {
+class ProductDetailPage extends ConsumerWidget {
   final String productId;
   const ProductDetailPage({super.key, required this.productId});
 
   @override
-  ConsumerState<ProductDetailPage> createState() => _ProductDetailPageState();
-}
-
-class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
-  int _quantity = 1;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final products = ref.watch(productsProvider);
     final product = products.firstWhere(
-      (p) => p.id == widget.productId,
+      (p) => p.id == productId,
       orElse: () => products.first,
     );
     final discount = product.discountPercent.toInt();
-    final cardColor = AppTheme.cardColors[
-        product.id.hashCode.abs() % AppTheme.cardColors.length];
+    final cardColor =
+        AppTheme.cardColors[product.id.hashCode.abs() % AppTheme.cardColors.length];
+
+    final cartItems = ref.watch(cartProvider);
+    final cartQty = cartItems
+        .where((item) => item.product.id == product.id)
+        .fold(0, (sum, item) => sum + item.quantity);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -40,7 +38,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
                 children: [
                   _CircleBtn(
                     icon: Icons.arrow_back_ios_new_rounded,
-                    onTap: () => context.go('/home'),
+                    onTap: () => context.pop(),
                   ),
                   const Expanded(
                     child: Text(
@@ -54,7 +52,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
                     ),
                   ),
                   _CircleBtn(
-                    icon: Icons.shopping_bag_outlined,
+                    icon: Icons.shopping_cart_outlined,
                     onTap: () => context.go('/cart'),
                   ),
                 ],
@@ -79,28 +77,49 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
                             height: 260,
                             width: double.infinity,
                             decoration: BoxDecoration(
-                              color: cardColor,
+                              color: product.inStock
+                                  ? cardColor
+                                  : const Color(0xFFF3F4F6),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             padding: const EdgeInsets.all(28),
-                            child: CachedNetworkImage(
-                              imageUrl: product.imageUrl,
-                              fit: BoxFit.contain,
-                              placeholder: (ctx, url) => const Center(
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: AppTheme.primaryGreen,
-                                ),
-                              ),
-                              errorWidget: (ctx, url, err) => const Icon(
-                                Icons.image_outlined,
-                                size: 60,
-                                color: AppTheme.textGrey,
-                              ),
-                            ),
+                            child: product.inStock
+                                ? CachedNetworkImage(
+                                    imageUrl: product.imageUrl,
+                                    fit: BoxFit.contain,
+                                    placeholder: (ctx, url) => const Center(
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: AppTheme.primaryGreen,
+                                      ),
+                                    ),
+                                    errorWidget: (ctx, url, err) => const Icon(
+                                      Icons.image_outlined,
+                                      size: 60,
+                                      color: AppTheme.textGrey,
+                                    ),
+                                  )
+                                : ColorFiltered(
+                                    colorFilter: const ColorFilter.matrix([
+                                      0.2126, 0.7152, 0.0722, 0, 0,
+                                      0.2126, 0.7152, 0.0722, 0, 0,
+                                      0.2126, 0.7152, 0.0722, 0, 0,
+                                      0,      0,      0,      1, 0,
+                                    ]),
+                                    child: CachedNetworkImage(
+                                      imageUrl: product.imageUrl,
+                                      fit: BoxFit.contain,
+                                      placeholder: (ctx, url) => const SizedBox(),
+                                      errorWidget: (ctx, url, err) => const Icon(
+                                        Icons.image_outlined,
+                                        size: 60,
+                                        color: AppTheme.textGrey,
+                                      ),
+                                    ),
+                                  ),
                           ),
                           // Discount badge
-                          if (discount > 0)
+                          if (discount > 0 && product.inStock)
                             Positioned(
                               top: 14,
                               left: 14,
@@ -123,6 +142,32 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
                                 ),
                               ),
                             ),
+                          // Out of stock overlay label
+                          if (!product.inStock)
+                            Positioned(
+                              bottom: 0,
+                              left: 0,
+                              right: 0,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                decoration: const BoxDecoration(
+                                  color: Color(0xFF1F2937),
+                                  borderRadius: BorderRadius.vertical(
+                                    bottom: Radius.circular(20),
+                                  ),
+                                ),
+                                alignment: Alignment.center,
+                                child: const Text(
+                                  'OUT OF STOCK',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: 1,
+                                  ),
+                                ),
+                              ),
+                            ),
                           // Favourite
                           Positioned(
                             top: 14,
@@ -139,8 +184,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
                                   shape: BoxShape.circle,
                                   boxShadow: [
                                     BoxShadow(
-                                      color:
-                                          Colors.black.withValues(alpha: 0.1),
+                                      color: Colors.black.withValues(alpha: 0.1),
                                       blurRadius: 8,
                                     ),
                                   ],
@@ -246,7 +290,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
                                 ),
                               ),
                               const Spacer(),
-                              if (discount > 0)
+                              if (discount > 0 && product.inStock)
                                 Container(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 10,
@@ -296,7 +340,6 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
                           ),
 
                           const SizedBox(height: 20),
-
                           const Divider(color: AppTheme.borderColor),
                           const SizedBox(height: 16),
 
@@ -318,61 +361,6 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
                               height: 1.7,
                             ),
                           ),
-
-                          const SizedBox(height: 24),
-
-                          // Quantity selector
-                          Row(
-                            children: [
-                              const Text(
-                                'Quantity',
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppTheme.textDark,
-                                ),
-                              ),
-                              const Spacer(),
-                              Container(
-                                decoration: BoxDecoration(
-                                  border:
-                                      Border.all(color: AppTheme.borderColor),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Row(
-                                  children: [
-                                    _QtyBtn(
-                                      icon: Icons.remove_rounded,
-                                      onTap: () {
-                                        if (_quantity > 1) {
-                                          setState(() => _quantity--);
-                                        }
-                                      },
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 16,
-                                      ),
-                                      child: Text(
-                                        '$_quantity',
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w700,
-                                          color: AppTheme.textDark,
-                                        ),
-                                      ),
-                                    ),
-                                    _QtyBtn(
-                                      icon: Icons.add_rounded,
-                                      onTap: () =>
-                                          setState(() => _quantity++),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-
                           const SizedBox(height: 32),
                         ],
                       ),
@@ -382,14 +370,12 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
               ),
             ),
 
-            // ── Add to cart button ───────────────────────────────
+            // ── Bottom bar with counter ──────────────────────────
             Container(
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
               decoration: BoxDecoration(
                 color: Colors.white,
-                border: const Border(
-                  top: BorderSide(color: AppTheme.borderColor),
-                ),
+                border: const Border(top: BorderSide(color: AppTheme.borderColor)),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.05),
@@ -400,79 +386,122 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
               ),
               child: Row(
                 children: [
+                  // Price info
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Rs ${(product.price * _quantity).toStringAsFixed(0)}',
+                          'Rs ${product.price.toStringAsFixed(0)}',
                           style: const TextStyle(
-                            fontSize: 20,
+                            fontSize: 22,
                             fontWeight: FontWeight.w800,
                             color: AppTheme.textDark,
                           ),
                         ),
                         Text(
-                          'for $_quantity ${_quantity == 1 ? 'item' : 'items'}',
+                          'MRP Rs ${product.originalPrice.toStringAsFixed(0)}',
                           style: const TextStyle(
                             fontSize: 12,
                             color: AppTheme.textGrey,
+                            decoration: TextDecoration.lineThrough,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      if (!product.inStock) return;
-                      for (int i = 0; i < _quantity; i++) {
-                        ref.read(cartProvider.notifier).addToCart(product);
-                      }
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Row(
-                            children: [
-                              const Icon(Icons.check_circle_rounded,
-                                  color: Colors.white, size: 18),
-                              const SizedBox(width: 8),
-                              Flexible(
-                                child: Text(
-                                  '$_quantity × ${product.name} added!',
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
-                          backgroundColor: AppTheme.primaryGreen,
-                          duration: const Duration(seconds: 2),
-                          behavior: SnackBarBehavior.floating,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                      );
-                    },
-                    child: Container(
+
+                  // Counter
+                  if (!product.inStock)
+                    Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 28,
-                        vertical: 14,
+                        horizontal: 20,
+                        vertical: 12,
                       ),
                       decoration: BoxDecoration(
-                        color: product.inStock
-                            ? AppTheme.primaryGreen
-                            : AppTheme.textLight,
-                        borderRadius: BorderRadius.circular(14),
+                        color: const Color(0xFFF3F4F6),
+                        border: Border.all(color: const Color(0xFFD1D5DB)),
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Text(
-                        'Add to Cart',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
+                      child: const Row(
+                        children: [
+                          Icon(Icons.notifications_outlined,
+                              size: 16, color: AppTheme.textGrey),
+                          SizedBox(width: 6),
+                          Text(
+                            'Notify Me',
+                            style: TextStyle(
+                              color: AppTheme.textGrey,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  else if (cartQty == 0)
+                    GestureDetector(
+                      onTap: () => ref
+                          .read(cartProvider.notifier)
+                          .addToCart(product),
+                      child: Container(
+                        width: 52,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: AppTheme.primaryGreen,
+                          borderRadius: BorderRadius.circular(12),
                         ),
+                        child: const Icon(Icons.add,
+                            color: Colors.white, size: 24),
+                      ),
+                    )
+                  else
+                    Container(
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: AppTheme.primaryGreen,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          GestureDetector(
+                            onTap: () => ref
+                                .read(cartProvider.notifier)
+                                .decrementQuantity(product.id),
+                            child: const SizedBox(
+                              width: 48,
+                              height: 48,
+                              child: Icon(Icons.remove,
+                                  size: 18, color: Colors.white),
+                            ),
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 10),
+                            child: Text(
+                              '$cartQty',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w800,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () => ref
+                                .read(cartProvider.notifier)
+                                .incrementQuantity(product.id),
+                            child: const SizedBox(
+                              width: 48,
+                              height: 48,
+                              child: Icon(Icons.add,
+                                  size: 18, color: Colors.white),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
                 ],
               ),
             ),
@@ -500,23 +529,6 @@ class _CircleBtn extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: AppTheme.borderColor),
         ),
-        child: Icon(icon, size: 18, color: AppTheme.textDark),
-      ),
-    );
-  }
-}
-
-class _QtyBtn extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback onTap;
-  const _QtyBtn({required this.icon, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.all(10),
         child: Icon(icon, size: 18, color: AppTheme.textDark),
       ),
     );
