@@ -19,7 +19,6 @@ final authProvider = StateNotifierProvider<AuthNotifier, AuthState>(
 
 // ─── User Provider ──────────────────────────────────────────────────────────────
 
-final userProvider = Provider<UserModel>((ref) => FakeData.currentUser);
 
 // ─── Products Provider ──────────────────────────────────────────────────────────
 
