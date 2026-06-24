@@ -203,11 +203,11 @@ class _SuggestionFieldState extends State<SuggestionField>
                 color: _dropBg,
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(
-                  color: _focusBorder.withValues(alpha: 0.25),
+                  color: _focusBorder.withOpacity(0.25),
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: _focusBorder.withValues(alpha: 0.12),
+                    color: _focusBorder.withOpacity(0.12),
                     blurRadius: 20,
                     offset: const Offset(0, 6),
                   ),
@@ -220,9 +220,9 @@ class _SuggestionFieldState extends State<SuggestionField>
                   shrinkWrap: true,
                   physics: const ClampingScrollPhysics(),
                   itemCount: _filtered.length,
-                  separatorBuilder: (_, _) => Divider(
+                  separatorBuilder: (_, __) => Divider(
                     height: 1,
-                    color: _focusBorder.withValues(alpha: 0.1),
+                    color: _focusBorder.withOpacity(0.1),
                   ),
                   itemBuilder: (context, i) {
                     final item = _filtered[i];
@@ -302,7 +302,7 @@ class _SuggestionTileState extends State<_SuggestionTile> {
               ),
               Icon(
                 Icons.north_west_rounded,
-                color: widget.iconColor.withValues(alpha: 0.5),
+                color: widget.iconColor.withOpacity(0.5),
                 size: 14,
               ),
             ],

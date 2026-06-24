@@ -87,7 +87,7 @@ class _CartPageState extends ConsumerState<CartPage> {
                     physics: const NeverScrollableScrollPhysics(),
                     padding: const EdgeInsets.all(16),
                     itemCount: cartItems.length,
-                    separatorBuilder: (_, _) => const SizedBox(height: 14),
+                    separatorBuilder: (_, __) => const SizedBox(height: 14),
                     itemBuilder: (ctx, i) {
                       final item = cartItems[i];
                       final cardColor = AppTheme.cardColors[
@@ -100,7 +100,7 @@ class _CartPageState extends ConsumerState<CartPage> {
                           alignment: Alignment.centerRight,
                           padding: const EdgeInsets.only(right: 20),
                           decoration: BoxDecoration(
-                            color: AppTheme.accentRed.withValues(alpha: 0.1),
+                            color: AppTheme.accentRed.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: const Icon(
@@ -119,7 +119,7 @@ class _CartPageState extends ConsumerState<CartPage> {
                             borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.05),
+                                color: Colors.black.withOpacity(0.05),
                                 blurRadius: 12,
                                 offset: const Offset(0, 4),
                               ),
@@ -248,7 +248,7 @@ class _CartPageState extends ConsumerState<CartPage> {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.06),
+                        color: Colors.black.withOpacity(0.06),
                         blurRadius: 20,
                         offset: const Offset(0, -4),
                       ),
@@ -456,7 +456,7 @@ class _CartPageState extends ConsumerState<CartPage> {
                             boxShadow: [
                               BoxShadow(
                                 color:
-                                    AppTheme.accentRed.withValues(alpha: 0.3),
+                                    AppTheme.accentRed.withOpacity(0.3),
                                 blurRadius: 16,
                                 offset: const Offset(0, 6),
                               ),
@@ -533,7 +533,7 @@ class _EmptyCart extends StatelessWidget {
                 borderRadius: BorderRadius.circular(14),
                 boxShadow: [
                   BoxShadow(
-                    color: AppTheme.accentRed.withValues(alpha: 0.3),
+                    color: AppTheme.accentRed.withOpacity(0.3),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),

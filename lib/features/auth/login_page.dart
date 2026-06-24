@@ -104,7 +104,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                         borderRadius: BorderRadius.circular(24),
                         boxShadow: [
                           BoxShadow(
-                            color: AppTheme.primaryGreen.withValues(alpha: 0.4),
+                            color: AppTheme.primaryGreen.withOpacity(0.4),
                             blurRadius: 30,
                             spreadRadius: 5,
                           ),
@@ -159,12 +159,12 @@ class _LoginPageState extends ConsumerState<LoginPage>
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(24),
                         border: Border.all(
-                          color: AppTheme.primaryGreen.withValues(alpha: 0.15),
+                          color: AppTheme.primaryGreen.withOpacity(0.15),
                         ),
                         boxShadow: [
                           BoxShadow(
                             color:
-                                AppTheme.primaryGreen.withValues(alpha: 0.08),
+                                AppTheme.primaryGreen.withOpacity(0.08),
                             blurRadius: 30,
                             offset: const Offset(0, 10),
                           ),
@@ -258,7 +258,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                       children: [
                         Expanded(
                           child: Divider(
-                            color: AppTheme.primaryGreen.withValues(alpha: 0.3),
+                            color: AppTheme.primaryGreen.withOpacity(0.3),
                           ),
                         ),
                         const Padding(
@@ -273,7 +273,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                         ),
                         Expanded(
                           child: Divider(
-                            color: AppTheme.primaryGreen.withValues(alpha: 0.3),
+                            color: AppTheme.primaryGreen.withOpacity(0.3),
                           ),
                         ),
                       ],

@@ -116,7 +116,7 @@ class ProfilePage extends ConsumerWidget {
                             boxShadow: [
                               BoxShadow(
                                 color: AppTheme.primaryGreen
-                                    .withValues(alpha: 0.35),
+                                    .withOpacity(0.35),
                                 blurRadius: 20,
                                 spreadRadius: 2,
                               ),
@@ -178,7 +178,7 @@ class ProfilePage extends ConsumerWidget {
                         color: AppTheme.cardMint,
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: AppTheme.primaryGreen.withValues(alpha: 0.3),
+                          color: AppTheme.primaryGreen.withOpacity(0.3),
                         ),
                       ),
                       child: const Text(
@@ -208,11 +208,11 @@ class ProfilePage extends ConsumerWidget {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                        color: AppTheme.primaryGreen.withValues(alpha: 0.12),
+                        color: AppTheme.primaryGreen.withOpacity(0.12),
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: AppTheme.primaryGreen.withValues(alpha: 0.06),
+                          color: AppTheme.primaryGreen.withOpacity(0.06),
                           blurRadius: 12,
                           offset: const Offset(0,4),
                         ),
@@ -276,7 +276,7 @@ class ProfilePage extends ConsumerWidget {
                         boxShadow: [
                           BoxShadow(
                             color:
-                                AppTheme.primaryGreen.withValues(alpha: 0.05),
+                                AppTheme.primaryGreen.withOpacity(0.05),
                             blurRadius: 8,
                             offset: const Offset(0, 2),
                           ),
@@ -376,7 +376,7 @@ class ProfilePage extends ConsumerWidget {
                         color: AppTheme.cardMint,
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(
-                          color: AppTheme.primaryGreen.withValues(alpha: 0.4),
+                          color: AppTheme.primaryGreen.withOpacity(0.4),
                         ),
                       ),
                       child: const Row(

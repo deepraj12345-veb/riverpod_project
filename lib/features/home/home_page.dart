@@ -129,16 +129,15 @@ class _HomePageState extends ConsumerState<HomePage> {
                       onSelected: (v) =>
                           ref.read(searchQueryProvider.notifier).state = v,
                     ),
-
+                    
                     const SizedBox(height: 12),
-
                     // ─── Category Chips ──────────────────────────────────────
                     SizedBox(
                       height: 36,
                       child: ListView.separated(
                         scrollDirection: Axis.horizontal,
                         itemCount: FakeData.categories.length,
-                        separatorBuilder: (_, _) => const SizedBox(width: 8),
+                        separatorBuilder: (_, __) => const SizedBox(width: 8),
                         itemBuilder: (ctx, i) {
                           final cat = FakeData.categories[i];
                           final isSelected = cat == selectedCategory;
@@ -160,7 +159,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                                 border: Border.all(
                                   color: isSelected
                                       ? AppTheme.textDark
-                                      : AppTheme.textGrey.withValues(alpha: 0.3),
+                                      : AppTheme.textGrey.withOpacity(0.3),
                                 ),
                               ),
                               child: Text(
@@ -180,9 +179,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                         },
                       ),
                     ),
-
                     const SizedBox(height: 16),
-
                     // ─── Section Header ──────────────────────────────────────
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -237,7 +234,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                             Icon(
                               Icons.search_off_rounded,
                               size: 60,
-                              color: AppTheme.textGrey.withValues(alpha: 0.5),
+                              color: AppTheme.textGrey.withOpacity(0.5),
                             ),
                             const SizedBox(height: 16),
                             const Text(
@@ -304,7 +301,7 @@ class _IconButton extends StatelessWidget {
           border: Border.all(color: const Color(0xFFE8E8E8)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.04),
+              color: Colors.black.withOpacity(0.04),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -334,7 +331,7 @@ class _ProductCard extends ConsumerWidget {
           borderRadius: BorderRadius.circular(18),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
+              color: Colors.black.withOpacity(0.05),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
@@ -365,12 +362,12 @@ class _ProductCard extends ConsumerWidget {
                       placeholder: (ctx, url) => Center(
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          color: AppTheme.textGrey.withValues(alpha: 0.4),
+                          color: AppTheme.textGrey.withOpacity(0.4),
                         ),
                       ),
                       errorWidget: (ctx, url, err) => Icon(
                         Icons.image_outlined,
-                        color: AppTheme.textGrey.withValues(alpha: 0.4),
+                        color: AppTheme.textGrey.withOpacity(0.4),
                         size: 40,
                       ),
                     ),

@@ -113,7 +113,7 @@ class AppTheme {
         labelStyle: const TextStyle(color: textGrey),
         hintStyle: const TextStyle(color: textGrey),
       ),
-      cardTheme: CardThemeData(
+      cardTheme: CardTheme(
         color: cardWhite,
         elevation: 0,
         shape: RoundedRectangleBorder(
@@ -197,7 +197,7 @@ class AppTheme {
         labelStyle: const TextStyle(color: textSecondary),
         hintStyle: const TextStyle(color: textSecondary),
       ),
-      cardTheme: CardThemeData(
+      cardTheme: CardTheme(
         color: darkCard,
         elevation: 0,
         shape: RoundedRectangleBorder(

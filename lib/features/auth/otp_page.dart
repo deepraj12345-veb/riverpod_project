@@ -163,7 +163,7 @@ class _OtpPageState extends ConsumerState<OtpPage>
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: AppTheme.primaryColor.withValues(alpha: 0.3),
+                          color: AppTheme.primaryColor.withOpacity(0.3),
                           blurRadius: 24,
                           spreadRadius: 4,
                         ),
@@ -202,10 +202,10 @@ class _OtpPageState extends ConsumerState<OtpPage>
                       vertical: 10,
                     ),
                     decoration: BoxDecoration(
-                      color: AppTheme.primaryColor.withValues(alpha: 0.1),
+                      color: AppTheme.primaryColor.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: AppTheme.primaryColor.withValues(alpha: 0.3),
+                        color: AppTheme.primaryColor.withOpacity(0.3),
                       ),
                     ),
                     child: const Text(

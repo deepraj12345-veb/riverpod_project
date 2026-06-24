@@ -53,7 +53,7 @@ class MainShell extends ConsumerWidget {
           color: Colors.white,
           boxShadow: [
             BoxShadow(
-              color: AppTheme.primaryGreen.withValues(alpha: 0.08),
+              color: AppTheme.primaryGreen.withOpacity(0.08),
               blurRadius: 20,
               offset: const Offset(0, -4),
             ),

@@ -125,7 +125,7 @@ class _SignupPageState extends ConsumerState<SignupPage>
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                                 color: AppTheme.primaryGreen
-                                    .withValues(alpha: 0.2)),
+                                    .withOpacity(0.2)),
                           ),
                           child: const Icon(
                             Icons.arrow_back_ios_new_rounded,
@@ -165,7 +165,7 @@ class _SignupPageState extends ConsumerState<SignupPage>
                             gradient: LinearGradient(
                               colors: [
                                 AppTheme.primaryGreen,
-                                AppTheme.primaryGreen.withValues(alpha: 0.2),
+                                AppTheme.primaryGreen.withOpacity(0.2),
                               ],
                             ),
                           ),
@@ -176,7 +176,7 @@ class _SignupPageState extends ConsumerState<SignupPage>
                         child: Container(
                             height: 2,
                             color:
-                                AppTheme.primaryGreen.withValues(alpha: 0.2)),
+                                AppTheme.primaryGreen.withOpacity(0.2)),
                       ),
                       _StepDot(active: false, label: '3\nDone'),
                     ],
@@ -189,11 +189,11 @@ class _SignupPageState extends ConsumerState<SignupPage>
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(24),
                       border: Border.all(
-                        color: AppTheme.primaryGreen.withValues(alpha: 0.15),
+                        color: AppTheme.primaryGreen.withOpacity(0.15),
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: AppTheme.primaryGreen.withValues(alpha: 0.08),
+                          color: AppTheme.primaryGreen.withOpacity(0.08),
                           blurRadius: 30,
                           offset: const Offset(0, 10),
                         ),
@@ -280,7 +280,7 @@ class _SignupPageState extends ConsumerState<SignupPage>
                                       color: _agreeToTerms
                                           ? AppTheme.primaryGreen
                                           : AppTheme.primaryGreen
-                                              .withValues(alpha: 0.3),
+                                              .withOpacity(0.3),
                                       width: 1.5,
                                     ),
                                   ),
@@ -382,7 +382,7 @@ class _StepDot extends StatelessWidget {
             shape: BoxShape.circle,
             color: active
                 ? AppTheme.primaryGreen
-                : AppTheme.primaryGreen.withValues(alpha: 0.2),
+                : AppTheme.primaryGreen.withOpacity(0.2),
           ),
           child: Center(
             child: Icon(

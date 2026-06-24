@@ -65,7 +65,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
                         border: Border.all(color: const Color(0xFFE8E8E8)),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.04),
+                            color: Colors.black.withOpacity(0.04),
                             blurRadius: 8,
                           ),
                         ],
@@ -99,7 +99,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
                         border: Border.all(color: const Color(0xFFE8E8E8)),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.04),
+                            color: Colors.black.withOpacity(0.04),
                             blurRadius: 8,
                           ),
                         ],
@@ -185,9 +185,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
                                           : null,
                                       boxShadow: [
                                         BoxShadow(
-                                          color: _colorOptions[i].withValues(
-                                            alpha: 0.4,
-                                          ),
+                                          color: _colorOptions[i].withOpacity(0.4),
                                           blurRadius: 6,
                                           offset: const Offset(0, 2),
                                         ),
@@ -216,9 +214,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
                                   decoration: BoxDecoration(
                                     color: i == 1
                                         ? AppTheme.textDark
-                                        : AppTheme.textGrey.withValues(
-                                            alpha: 0.4,
-                                          ),
+                                        : AppTheme.textGrey.withOpacity(0.4),
                                     borderRadius: BorderRadius.circular(3),
                                   ),
                                 );
@@ -432,7 +428,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
                 color: Colors.white,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.06),
+                    color: Colors.black.withOpacity(0.06),
                     blurRadius: 16,
                     offset: const Offset(0, -4),
                   ),
@@ -482,7 +478,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: AppTheme.accentRed.withValues(alpha: 0.35),
+                        color: AppTheme.accentRed.withOpacity(0.35),
                         blurRadius: 16,
                         offset: const Offset(0, 6),
                       ),
@@ -501,6 +497,7 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
                   ),
                 ),
               ),
+           
             ),
           ],
         ),
