@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:riverpod_project/core/providers/app_providers.dart';
 import 'package:riverpod_project/core/theme/app_theme.dart';
 import 'package:riverpod_project/core/widgets/suggestion_field.dart';
-import 'package:riverpod_project/features/auth/widgets/auth_widgets.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:riverpod_project/features/auth/presentation/controllers/login_controller.dart';
+import 'package:riverpod_project/features/auth/presentation/widgets/auth_widgets.dart';
 
-// ─── Email suggestion seeds ────────────────────────────────────────────────────
 const _emailSuggestions = [
   'test@gmail.com',
   'admin@gmail.com',
@@ -66,9 +64,8 @@ class _LoginPageState extends ConsumerState<LoginPage>
   Future<void> _login() async {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _isLoading = true);
-    await Future.delayed(const Duration(seconds: 1));
+    await ref.read(authProvider.notifier).login();
     if (!mounted) return;
-    ref.read(authProvider.notifier).login();
     setState(() => _isLoading = false);
   }
 
@@ -90,6 +87,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                   children: [
                     const SizedBox(height: 20),
 
+<<<<<<< HEAD:lib/features/auth/login_page.dart
                     // ── Logo ──────────────────────────────────────────────
                     Container(
                       width: 70,
@@ -141,6 +139,13 @@ class _LoginPageState extends ConsumerState<LoginPage>
                         color: AppTheme.textDark,
                         letterSpacing: 1.2,
                       ),
+=======
+                    // Logo
+                    Image.asset(
+                      'assets/logo.png',
+                      width: 130,
+                      height: 130,
+>>>>>>> a7827dde489fe9ddcee36f37ba6a8f4e8457db94:lib/features/auth/presentation/pages/login_page.dart
                     ),
                     const SizedBox(height: 4),
                     const Text(
@@ -152,7 +157,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                     ),
                     const SizedBox(height: 20),
 
-                    // ── Form Card ─────────────────────────────────────────
+                    // Form Card
                     Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
@@ -183,7 +188,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                           ),
                           const SizedBox(height: 16),
 
-                          // ── Email with suggestions ─────────────────────
+                          // Email with suggestions
                           SuggestionField(
                             controller: _emailCtrl,
                             label: 'Email Address',
@@ -193,7 +198,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                             suggestions: _emailSuggestions,
                             validator: (v) {
                               if (v == null || v.isEmpty) {
-                                return 'Please enter email';
+                                  return 'Please enter email';
                               }
                               if (!v.contains('@')) return 'Invalid email';
                               return null;
@@ -201,7 +206,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                           ),
                           const SizedBox(height: 12),
 
-                          // ── Password (no suggestions — private) ────────
+                          // Password
                           AuthTextField(
                             controller: _passCtrl,
                             label: 'Password',
@@ -253,7 +258,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                     ),
                     const SizedBox(height: 20),
 
-                    // ── Social divider ────────────────────────────────────
+                    // Social divider
                     Row(
                       children: [
                         Expanded(

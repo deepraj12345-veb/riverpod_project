@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pinput/pinput.dart';
-import 'package:riverpod_project/core/providers/app_providers.dart';
 import 'package:riverpod_project/core/theme/app_theme.dart';
-import 'package:riverpod_project/features/auth/widgets/auth_widgets.dart';
+import 'package:riverpod_project/features/auth/presentation/controllers/otp_controller.dart';
+import 'package:riverpod_project/features/auth/presentation/widgets/auth_widgets.dart';
 
 class OtpPage extends ConsumerStatefulWidget {
   final String phone;
@@ -77,9 +77,10 @@ class _OtpPageState extends ConsumerState<OtpPage>
     await Future.delayed(const Duration(milliseconds: 800));
     if (!mounted) return;
     final isValid =
-        ref.read(otpProvider.notifier).verifyOtp(_otpController.text);
+        await ref.read(otpProvider.notifier).verifyOtp(_otpController.text);
+    if (!mounted) return;
     if (isValid) {
-      ref.read(authProvider.notifier).login();
+      // Login is called inside controller.verifyOtp, so redirect is triggered automatically
     } else {
       setState(() {
         _hasError = true;
