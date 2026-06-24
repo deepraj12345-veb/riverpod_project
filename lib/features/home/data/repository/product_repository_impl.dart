@@ -10,9 +10,7 @@ class ProductRepositoryImpl implements ProductRepository {
 
   @override
   Future<List<ProductEntity>> getProducts() async {
-    if (_cachedProducts == null) {
-      _cachedProducts = await remoteDataSource.fetchProducts();
-    }
+    _cachedProducts ??= await remoteDataSource.fetchProducts();
     return _cachedProducts!;
   }
 
