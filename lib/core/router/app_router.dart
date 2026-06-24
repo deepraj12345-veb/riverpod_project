@@ -13,7 +13,12 @@ import 'package:riverpod_project/features/cart/presentation/pages/cart_page.dart
 import 'package:riverpod_project/features/profile/presentation/pages/profile_page.dart';
 import 'package:riverpod_project/features/wishlist/presentation/pages/wishlist_page.dart';
 import 'package:riverpod_project/features/categories/presentation/pages/categories_page.dart';
+import 'package:riverpod_project/features/categories/presentation/pages/subcategory_page.dart';
 import 'package:riverpod_project/features/orders/presentation/pages/order_again_page.dart';
+import 'package:riverpod_project/features/orders/presentation/pages/orders_list_page.dart';
+import 'package:riverpod_project/features/orders/presentation/pages/order_detail_page.dart';
+import 'package:riverpod_project/features/checkout/presentation/pages/checkout_page.dart';
+import 'package:riverpod_project/features/home/presentation/pages/search_page.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authProvider);
@@ -48,6 +53,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (ctx, state, child) => MainShell(child: child),
         routes: [
           GoRoute(path: '/home', builder: (ctx, state) => const HomePage()),
+          GoRoute(path: '/search', builder: (ctx, state) => const SearchPage()),
           GoRoute(
             path: '/product/:id',
             builder: (ctx, state) {
@@ -56,8 +62,30 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             },
           ),
           GoRoute(path: '/cart', builder: (ctx, state) => const CartPage()),
+          GoRoute(
+            path: '/checkout',
+            builder: (ctx, state) {
+              final appliedDiscount = state.extra as double? ?? 0.0;
+              return CheckoutPage(appliedDiscount: appliedDiscount);
+            },
+          ),
           GoRoute(path: '/categories', builder: (ctx, state) => const CategoriesPage()),
+          GoRoute(
+            path: '/subcategory',
+            builder: (ctx, state) {
+              final categoryName = state.extra as String? ?? 'All';
+              return SubcategoryPage(categoryName: categoryName);
+            },
+          ),
           GoRoute(path: '/order-again', builder: (ctx, state) => const OrderAgainPage()),
+          GoRoute(path: '/orders', builder: (ctx, state) => const OrdersListPage()),
+          GoRoute(
+            path: '/order/:id',
+            builder: (ctx, state) {
+              final id = state.pathParameters['id']!;
+              return OrderDetailPage(orderId: id);
+            },
+          ),
           GoRoute(path: '/profile', builder: (ctx, state) => const ProfilePage()),
           GoRoute(path: '/wishlist', builder: (ctx, state) => const WishlistPage()),
         ],

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_project/core/router/app_router.dart';
-import 'package:riverpod_project/core/theme/app_theme.dart';
-
 void main() {
   runApp(
     const ProviderScope(
@@ -21,7 +19,7 @@ class MyApp extends ConsumerWidget {
     return MaterialApp.router(
       title: 'Riverpod Project',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
+      theme: ThemeData(scaffoldBackgroundColor: Colors.white),
       routerConfig: router,
     );
   }

@@ -5,12 +5,12 @@ import 'package:riverpod_project/core/data/fake_data.dart';
 import 'package:riverpod_project/core/theme/app_theme.dart';
 import 'package:riverpod_project/core/widgets/product_card_widget.dart';
 import 'package:riverpod_project/core/widgets/section_header_widget.dart';
-import 'package:riverpod_project/core/widgets/suggestion_field.dart';
 import 'package:riverpod_project/features/home/domain/entities/product_entity.dart';
 import 'package:riverpod_project/features/home/presentation/controllers/home_controller.dart';
 import 'package:riverpod_project/features/home/presentation/widgets/category_row_widget.dart';
 import 'package:riverpod_project/features/home/presentation/widgets/home_banner_widget.dart';
 import 'package:riverpod_project/features/home/presentation/widgets/subcategory_chips_widget.dart';
+import 'package:riverpod_project/core/widgets/custom_text.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -20,31 +20,21 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> {
-  final _searchCtrl = TextEditingController();
   String _selectedSub = '';
-
-  @override
-  void dispose() {
-    _searchCtrl.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
     final selectedCategory = ref.watch(selectedCategoryProvider);
     final filteredProducts = ref.watch(filteredProductsProvider);
-    final searchQuery = ref.watch(searchQueryProvider);
     final allProducts = ref.watch(productsProvider);
-    final searchedProducts = ref.watch(searchedProductsProvider);
 
     // Reset subcategory when main category changes
     ref.listen(selectedCategoryProvider, (prev, next) {
       if (prev != next) setState(() => _selectedSub = '');
     });
 
-    final showDefault = searchQuery.isEmpty && selectedCategory == 'All';
-    final displayProducts =
-        searchQuery.isNotEmpty ? searchedProducts : filteredProducts;
+    final showDefault = selectedCategory == 'All';
+    final displayProducts = filteredProducts;
 
     final chefsPicks =
         allProducts.where((p) => p.rating >= 4.7).take(4).toList();
@@ -54,46 +44,52 @@ class _HomePageState extends ConsumerState<HomePage> {
         .take(5)
         .toList();
 
-    final productSuggestions = FakeData.products.map((p) => p.name).toList()
-      ..addAll(FakeData.categories.where((c) => c != 'All'))
-      ..addAll(FakeData.products.expand((p) => p.tags).toSet());
-
-    final currentSubs =
-        FakeData.subcategories[selectedCategory] ?? FakeData.subcategories['All']!;
+    final currentSubs = FakeData.subcategories[selectedCategory] ??
+        FakeData.subcategories['All']!;
 
     // ── Responsive values ───────────────────────────────────────────────────────
     final screenW = MediaQuery.of(context).size.width;
     final isTablet = screenW >= 600;
-    final isLargeTablet = screenW >= 900;
-    final crossAxisCount = isLargeTablet ? 4 : (isTablet ? 3 : 2);
-    final hCardWidth = isTablet ? 180.0 : 155.0;
-    final hListHeight = isTablet ? 275.0 : 238.0;
+    final hCardWidth = (screenW - 48) / 3;
+    final hListHeight = hCardWidth / 0.48;
     final bannerH = isTablet ? 190.0 : 148.0;
 
     return Scaffold(
-      backgroundColor: Colors.white,
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
             // ── Top header ──────────────────────────────────────
-            SliverToBoxAdapter(
-              child: const _AppHeader(),
+            const SliverToBoxAdapter(
+              child: _AppHeader(),
             ),
 
-            // ── Search bar ──────────────────────────────────────
+            // ── Dummy Search bar ──────────────────────────────────────
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-                child: SuggestionField(
-                  controller: _searchCtrl,
-                  label: 'Search',
-                  hint: 'Search products, brands, tags…',
-                  icon: Icons.search_rounded,
-                  suggestions: productSuggestions,
-                  onChanged: (v) =>
-                      ref.read(searchQueryProvider.notifier).state = v,
-                  onSelected: (v) =>
-                      ref.read(searchQueryProvider.notifier).state = v,
+                child: GestureDetector(
+                  onTap: () => context.push('/search'),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 14),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: AppTheme.borderColor),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.search_rounded,
+                            color: AppTheme.primaryGreen, size: 20),
+                        const SizedBox(width: 12),
+                        const CustomText(
+                          'Search products, brands, tags…',
+                          style:
+                              TextStyle(color: AppTheme.textGrey, fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -164,10 +160,10 @@ class _HomePageState extends ConsumerState<HomePage> {
               ),
 
               // Shop by Type header
-              SliverToBoxAdapter(
+              const SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 20, 16, 10),
-                  child: const SectionHeaderWidget(title: 'Shop by Type'),
+                  padding: EdgeInsets.fromLTRB(16, 20, 16, 10),
+                  child: SectionHeaderWidget(title: 'Shop by Type'),
                 ),
               ),
               // Subcategory chips
@@ -180,9 +176,9 @@ class _HomePageState extends ConsumerState<HomePage> {
               ),
 
               // All Products header
-              SliverToBoxAdapter(
+              const SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 20, 16, 10),
+                  padding: EdgeInsets.fromLTRB(16, 20, 16, 10),
                   child: SectionHeaderWidget(
                     title: 'All Products',
                     onSeeAll: null,
@@ -206,10 +202,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
                   child: Row(
                     children: [
-                      Text(
-                        searchQuery.isNotEmpty
-                            ? 'Results for "$searchQuery"'
-                            : selectedCategory,
+                      CustomText(
+                        selectedCategory,
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
@@ -223,10 +217,10 @@ class _HomePageState extends ConsumerState<HomePage> {
                           vertical: 3,
                         ),
                         decoration: BoxDecoration(
-                          color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+                          color: AppTheme.primaryGreen.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Text(
+                        child: CustomText(
                           '${displayProducts.length} items',
                           style: const TextStyle(
                             fontSize: 12,
@@ -248,11 +242,11 @@ class _HomePageState extends ConsumerState<HomePage> {
                     padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                     sliver: SliverGrid(
                       gridDelegate:
-                          SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: crossAxisCount,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                        childAspectRatio: 0.63,
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        crossAxisSpacing: 8,
+                        mainAxisSpacing: 8,
+                        childAspectRatio: 0.48,
                       ),
                       delegate: SliverChildBuilderDelegate(
                         (ctx, i) =>
@@ -274,7 +268,6 @@ class _HomePageState extends ConsumerState<HomePage> {
 
 class _AppHeader extends ConsumerWidget {
   const _AppHeader();
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
@@ -299,7 +292,7 @@ class _AppHeader extends ConsumerWidget {
                   shape: BoxShape.circle,
                 ),
                 child: const Center(
-                  child: Text('🥗', style: TextStyle(fontSize: 19)),
+                  child: CustomText('🥗', style: TextStyle(fontSize: 19)),
                 ),
               ),
               const SizedBox(width: 10),
@@ -307,7 +300,7 @@ class _AppHeader extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    CustomText(
                       'Fresh Veggie Mart',
                       style: TextStyle(
                         fontSize: 16,
@@ -315,7 +308,7 @@ class _AppHeader extends ConsumerWidget {
                         color: AppTheme.textDark,
                       ),
                     ),
-                    Text(
+                    CustomText(
                       'Fresh fruits & vegetables delivered',
                       style: TextStyle(
                         fontSize: 11,
@@ -342,7 +335,7 @@ class _AppHeader extends ConsumerWidget {
                 color: AppTheme.primaryGreen,
               ),
               const SizedBox(width: 4),
-              const Text(
+              const CustomText(
                 'Deliver to Jaipur',
                 style: TextStyle(
                   fontSize: 13,
@@ -365,10 +358,10 @@ class _AppHeader extends ConsumerWidget {
                   color: const Color(0xFFECFDF5),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: AppTheme.primaryGreen.withValues(alpha: 0.3),
+                    color: AppTheme.primaryGreen.withOpacity(0.3),
                   ),
                 ),
-                child: const Text(
+                child: const CustomText(
                   '⚡ 30 min delivery',
                   style: TextStyle(
                     fontSize: 11,
@@ -425,7 +418,7 @@ class _HorizontalProductList extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16),
         itemCount: products.length,
-        separatorBuilder: (_, _) => const SizedBox(width: 12),
+        separatorBuilder: (_, __) => const SizedBox(width: 12),
         itemBuilder: (ctx, i) => SizedBox(
           width: cardWidth,
           child: ProductCardWidget(product: products[i]),
@@ -459,7 +452,7 @@ class _EmptyState extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          const Text(
+          const CustomText(
             'No products found',
             style: TextStyle(
               fontSize: 16,
@@ -468,7 +461,7 @@ class _EmptyState extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 6),
-          const Text(
+          const CustomText(
             'Try a different search or category',
             style: TextStyle(fontSize: 13, color: AppTheme.textGrey),
           ),

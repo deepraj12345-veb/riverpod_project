@@ -1,5 +1,6 @@
 import 'package:riverpod_project/features/home/domain/entities/product_entity.dart';
 import 'package:riverpod_project/features/auth/domain/entities/user_entity.dart';
+import 'package:riverpod_project/core/models/models.dart';
 
 class BannerModel {
   final String id;
@@ -18,6 +19,32 @@ class BannerModel {
 }
 
 class FakeData {
+  static const List<AddressModel> addresses = [
+    AddressModel(
+      id: 'addr_1',
+      title: 'Home',
+      fullAddress: 'Flat 402, Green Valley Apartments, MG Road, Bangalore 560001',
+      isDefault: true,
+    ),
+    AddressModel(
+      id: 'addr_2',
+      title: 'Work',
+      fullAddress: 'Tech Park, Tower B, Electronic City Phase 1, Bangalore 560100',
+    ),
+    AddressModel(
+      id: 'addr_3',
+      title: 'Other',
+      fullAddress: '15th Cross, 4th Sector, HSR Layout, Bangalore 560102',
+    ),
+  ];
+
+  static const List<String> paymentMethods = [
+    'UPI (Google Pay, PhonePe, Paytm)',
+    'Credit / Debit Card',
+    'Cash on Delivery (COD)',
+    'Net Banking',
+  ];
+
   static const List<BannerModel> banners = [
     BannerModel(
       id: 'b1',

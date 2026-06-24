@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_project/core/theme/app_theme.dart';
+import 'package:riverpod_project/core/widgets/custom_text.dart';
 
 class AuthTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -36,6 +37,20 @@ class AuthTextField extends StatelessWidget {
         hintText: hint,
         prefixIcon: Icon(icon, color: AppTheme.textSecondary, size: 20),
         suffixIcon: suffixIcon,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+          borderSide: const BorderSide(color: AppTheme.borderColor),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+          borderSide: const BorderSide(color: AppTheme.borderColor),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+          borderSide: const BorderSide(color: AppTheme.primaryGreen, width: 2),
+        ),
+        filled: true,
+        fillColor: Colors.white,
       ),
     );
   }
@@ -68,15 +83,6 @@ class GradientButton extends StatelessWidget {
                 : [AppTheme.primaryColor, AppTheme.emeraldGreen],
           ),
           borderRadius: BorderRadius.circular(14),
-          boxShadow: isLoading
-              ? []
-              : [
-                  BoxShadow(
-                    color: AppTheme.primaryColor.withValues(alpha: 0.45),
-                    blurRadius: 20,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
         ),
         child: Center(
           child: isLoading
@@ -88,7 +94,7 @@ class GradientButton extends StatelessWidget {
                     strokeWidth: 2,
                   ),
                 )
-              : Text(
+              : CustomText(
                   text,
                   style: const TextStyle(
                     color: Colors.white,
@@ -122,15 +128,15 @@ class SocialButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
-          color: AppTheme.darkSurface,
+          color: AppTheme.primaryColor,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(color: AppTheme.darkBorder),
         ),
         child: Row(
           children: [
             Icon(icon, color: AppTheme.textPrimary, size: 22),
-            const SizedBox(width: 8),
-            Text(
+            const SizedBox(width: 80),
+            CustomText(
               label,
               style: const TextStyle(
                 color: AppTheme.textPrimary,

@@ -4,6 +4,7 @@ import 'package:riverpod_project/core/data/fake_data.dart';
 import 'package:riverpod_project/core/theme/app_theme.dart';
 import 'package:riverpod_project/core/widgets/product_card_widget.dart';
 import 'package:riverpod_project/features/home/presentation/controllers/home_controller.dart';
+import 'package:riverpod_project/core/widgets/custom_text.dart';
 
 class OrderAgainPage extends ConsumerWidget {
   const OrderAgainPage({super.key});
@@ -15,8 +16,6 @@ class OrderAgainPage extends ConsumerWidget {
         .where((p) => FakeData.orderedProductIds.contains(p.id))
         .toList();
 
-    final screenW = MediaQuery.of(context).size.width;
-    final crossAxisCount = screenW >= 900 ? 4 : (screenW >= 600 ? 3 : 2);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -26,7 +25,7 @@ class OrderAgainPage extends ConsumerWidget {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            const CustomText(
               'Order Again',
               style: TextStyle(
                 fontSize: 18,
@@ -34,7 +33,7 @@ class OrderAgainPage extends ConsumerWidget {
                 color: AppTheme.textDark,
               ),
             ),
-            Text(
+            CustomText(
               '${ordered.length} previously ordered items',
               style: const TextStyle(fontSize: 12, color: AppTheme.textGrey),
             ),
@@ -45,11 +44,11 @@ class OrderAgainPage extends ConsumerWidget {
           ? const _EmptyState()
           : GridView.builder(
               padding: const EdgeInsets.all(16),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: crossAxisCount,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 0.63,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+                childAspectRatio: 0.48,
               ),
               itemCount: ordered.length,
               itemBuilder: (ctx, i) => ProductCardWidget(product: ordered[i]),
@@ -81,7 +80,7 @@ class _EmptyState extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-          const Text(
+          const CustomText(
             'No orders yet',
             style: TextStyle(
               fontSize: 20,
@@ -90,7 +89,7 @@ class _EmptyState extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
+          const CustomText(
             'Your past orders will appear here',
             style: TextStyle(fontSize: 14, color: AppTheme.textGrey),
           ),

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:riverpod_project/core/widgets/custom_network_image.dart';
 import 'package:riverpod_project/core/theme/app_theme.dart';
-import 'package:riverpod_project/features/cart/presentation/controllers/cart_controller.dart';
 import 'package:riverpod_project/features/home/presentation/controllers/home_controller.dart';
+import 'package:riverpod_project/core/widgets/add_to_cart_button.dart';
+import 'package:riverpod_project/core/widgets/product_card_widget.dart';
+import 'package:riverpod_project/core/widgets/custom_text.dart';
 
 class ProductDetailPage extends ConsumerWidget {
   final String productId;
@@ -18,111 +20,109 @@ class ProductDetailPage extends ConsumerWidget {
       orElse: () => products.first,
     );
     final discount = product.discountPercent.toInt();
-    final cardColor =
-        AppTheme.cardColors[product.id.hashCode.abs() % AppTheme.cardColors.length];
 
-    final cartItems = ref.watch(cartProvider);
-    final cartQty = cartItems
-        .where((item) => item.product.id == product.id)
-        .fold(0, (sum, item) => sum + item.quantity);
+    // Fetch similar products
+    final similarProducts = products
+        .where((p) => p.category == product.category && p.id != product.id)
+        .toList();
+
+    final screenW = MediaQuery.of(context).size.width;
+    final cardWidth = (screenW - 48) / 3;
+    final listHeight = cardWidth / 0.48;
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Column(
-          children: [
-            // ── App bar ─────────────────────────────────────────
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-              child: Row(
-                children: [
-                  _CircleBtn(
-                    icon: Icons.arrow_back_ios_new_rounded,
-                    onTap: () => context.pop(),
-                  ),
-                  const Expanded(
-                    child: Text(
-                      'Product Details',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w700,
-                        color: AppTheme.textDark,
+      body: Column(
+        children: [
+          // ── Scrollable content with SliverAppBar ──────────────
+          Expanded(
+            child: CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                SliverAppBar(
+                  expandedHeight: 340,
+                  pinned: true,
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  leadingWidth: 56,
+                  leading: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 16),
+                      child: _CircleBtn(
+                        icon: Icons.arrow_back_ios_new_rounded,
+                        onTap: () => context.pop(),
                       ),
                     ),
                   ),
-                  _CircleBtn(
-                    icon: Icons.shopping_cart_outlined,
-                    onTap: () => context.go('/cart'),
-                  ),
-                ],
-              ),
-            ),
-
-            // ── Scrollable content ───────────────────────────────
-            Expanded(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 16),
-
-                    // Product image card
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                  actions: [
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 16),
+                        child: _CircleBtn(
+                          icon: Icons.shopping_cart_outlined,
+                          onTap: () => context.go('/cart'),
+                        ),
+                      ),
+                    ),
+                  ],
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: Container(
+                      color: product.inStock
+                          ? Colors.white
+                          : const Color(0xFFF3F4F6),
                       child: Stack(
+                        fit: StackFit.expand,
                         children: [
-                          Container(
-                            height: 260,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              color: product.inStock
-                                  ? cardColor
-                                  : const Color(0xFFF3F4F6),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            padding: const EdgeInsets.all(28),
-                            child: product.inStock
-                                ? CachedNetworkImage(
+                          // Product image
+                          product.inStock
+                              ? CustomNetworkImage(
+                                  imageUrl: product.imageUrl,
+                                  fit: BoxFit.cover,
+                                  errorWidget: const Icon(
+                                    Icons.image_outlined,
+                                    size: 60,
+                                    color: AppTheme.textGrey,
+                                  ),
+                                )
+                              : ColorFiltered(
+                                  colorFilter: const ColorFilter.matrix([
+                                    0.2126,
+                                    0.7152,
+                                    0.0722,
+                                    0,
+                                    0,
+                                    0.2126,
+                                    0.7152,
+                                    0.0722,
+                                    0,
+                                    0,
+                                    0.2126,
+                                    0.7152,
+                                    0.0722,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    1,
+                                    0,
+                                  ]),
+                                  child: CustomNetworkImage(
                                     imageUrl: product.imageUrl,
-                                    fit: BoxFit.contain,
-                                    placeholder: (ctx, url) => const Center(
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        color: AppTheme.primaryGreen,
-                                      ),
-                                    ),
-                                    errorWidget: (ctx, url, err) => const Icon(
+                                    fit: BoxFit.cover,
+                                    placeholder: const SizedBox(),
+                                    errorWidget: const Icon(
                                       Icons.image_outlined,
                                       size: 60,
                                       color: AppTheme.textGrey,
                                     ),
-                                  )
-                                : ColorFiltered(
-                                    colorFilter: const ColorFilter.matrix([
-                                      0.2126, 0.7152, 0.0722, 0, 0,
-                                      0.2126, 0.7152, 0.0722, 0, 0,
-                                      0.2126, 0.7152, 0.0722, 0, 0,
-                                      0,      0,      0,      1, 0,
-                                    ]),
-                                    child: CachedNetworkImage(
-                                      imageUrl: product.imageUrl,
-                                      fit: BoxFit.contain,
-                                      placeholder: (ctx, url) => const SizedBox(),
-                                      errorWidget: (ctx, url, err) => const Icon(
-                                        Icons.image_outlined,
-                                        size: 60,
-                                        color: AppTheme.textGrey,
-                                      ),
-                                    ),
                                   ),
-                          ),
+                                ),
                           // Discount badge
                           if (discount > 0 && product.inStock)
                             Positioned(
-                              top: 14,
-                              left: 14,
+                              bottom: 20,
+                              left: 20,
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 10,
@@ -132,7 +132,7 @@ class ProductDetailPage extends ConsumerWidget {
                                   color: const Color(0xFFFF3A00),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
-                                child: Text(
+                                child: CustomText(
                                   '$discount% OFF',
                                   style: const TextStyle(
                                     color: Colors.white,
@@ -149,15 +149,13 @@ class ProductDetailPage extends ConsumerWidget {
                               left: 0,
                               right: 0,
                               child: Container(
-                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8),
                                 decoration: const BoxDecoration(
                                   color: Color(0xFF1F2937),
-                                  borderRadius: BorderRadius.vertical(
-                                    bottom: Radius.circular(20),
-                                  ),
                                 ),
                                 alignment: Alignment.center,
-                                child: const Text(
+                                child: const CustomText(
                                   'OUT OF STOCK',
                                   style: TextStyle(
                                     color: Colors.white,
@@ -170,21 +168,21 @@ class ProductDetailPage extends ConsumerWidget {
                             ),
                           // Favourite
                           Positioned(
-                            top: 14,
-                            right: 14,
+                            bottom: 20,
+                            right: 20,
                             child: GestureDetector(
                               onTap: () => ref
                                   .read(productsProvider.notifier)
                                   .toggleFavorite(product.id),
                               child: Container(
-                                width: 38,
-                                height: 38,
+                                width: 44,
+                                height: 44,
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   shape: BoxShape.circle,
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.black.withValues(alpha: 0.1),
+                                      color: Colors.black.withOpacity(0.1),
                                       blurRadius: 8,
                                     ),
                                   ],
@@ -196,7 +194,7 @@ class ProductDetailPage extends ConsumerWidget {
                                   color: product.isFavorite
                                       ? AppTheme.accentRed
                                       : AppTheme.textGrey,
-                                  size: 20,
+                                  size: 22,
                                 ),
                               ),
                             ),
@@ -204,181 +202,296 @@ class ProductDetailPage extends ConsumerWidget {
                         ],
                       ),
                     ),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 10),
 
-                    const SizedBox(height: 20),
-
-                    // ── Product info ────────────────────────────
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Name + stock badge
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  product.name,
-                                  style: const TextStyle(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.w700,
-                                    color: AppTheme.textDark,
-                                    height: 1.25,
+                      // ── Product info ────────────────────────────
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Name + stock badge
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: CustomText(
+                                    product.name,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w700,
+                                      color: AppTheme.textDark,
+                                      height: 1.25,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              const SizedBox(width: 12),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 5,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: product.inStock
-                                      ? const Color(0xFFECFDF5)
-                                      : const Color(0xFFFEF2F2),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Text(
-                                  product.inStock ? 'In Stock' : 'Out of Stock',
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w600,
-                                    color: product.inStock
-                                        ? AppTheme.primaryGreen
-                                        : AppTheme.accentRed,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          const SizedBox(height: 6),
-                          Text(
-                            product.unit,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: AppTheme.textGrey,
-                            ),
-                          ),
-
-                          const SizedBox(height: 16),
-
-                          // Price row
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                'Rs ${product.price.toStringAsFixed(0)}',
-                                style: const TextStyle(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.w800,
-                                  color: AppTheme.textDark,
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 4),
-                                child: Text(
-                                  'MRP Rs ${product.originalPrice.toStringAsFixed(0)}',
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    color: AppTheme.textGrey,
-                                    decoration: TextDecoration.lineThrough,
-                                  ),
-                                ),
-                              ),
-                              const Spacer(),
-                              if (discount > 0 && product.inStock)
+                                const SizedBox(width: 12),
                                 Container(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 10,
                                     vertical: 5,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFFDCFCE7),
+                                    color: product.inStock
+                                        ? const Color(0xFFECFDF5)
+                                        : const Color(0xFFFEF2F2),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
-                                  child: Text(
-                                    '$discount% OFF',
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w700,
-                                      color: AppTheme.primaryGreen,
+                                  child: CustomText(
+                                    product.inStock
+                                        ? 'In Stock'
+                                        : 'Out of Stock',
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                      color: product.inStock
+                                          ? AppTheme.primaryGreen
+                                          : AppTheme.accentRed,
                                     ),
                                   ),
                                 ),
-                            ],
-                          ),
+                              ],
+                            ),
 
-                          const SizedBox(height: 14),
+                            const SizedBox(height: 0),
+                            CustomText(
+                              product.unit,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: AppTheme.textGrey,
+                              ),
+                            ),
 
-                          // Rating row
-                          Row(
-                            children: [
-                              ...List.generate(5, (i) {
-                                return Icon(
-                                  i < product.rating.floor()
-                                      ? Icons.star_rounded
-                                      : i < product.rating
-                                          ? Icons.star_half_rounded
-                                          : Icons.star_outline_rounded,
-                                  color: const Color(0xFFFFBE21),
-                                  size: 17,
-                                );
-                              }),
-                              const SizedBox(width: 6),
-                              Text(
-                                '${product.rating}  (${product.reviewCount} reviews)',
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  color: AppTheme.textGrey,
+                            const SizedBox(height: 5),
+
+                            // Price row
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                CustomText(
+                                  'Rs ${product.price.toStringAsFixed(0)}',
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w800,
+                                    color: AppTheme.textDark,
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 4),
+                                  child: CustomText(
+                                    'MRP Rs ${product.originalPrice.toStringAsFixed(0)}',
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      color: AppTheme.textGrey,
+                                      decoration: TextDecoration.lineThrough,
+                                    ),
+                                  ),
+                                ),
+                                const Spacer(),
+                                if (discount > 0 && product.inStock)
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 5,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFDCFCE7),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: CustomText(
+                                      '$discount% OFF',
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w700,
+                                        color: AppTheme.primaryGreen,
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+
+                            const SizedBox(height: 10),
+
+                            // ── Benefits Info Row ──
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: _BenefitCard(
+                                    emoji: '🌿',
+                                    title: '100% Organic',
+                                    subtitle: 'Naturally grown',
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: _BenefitCard(
+                                    emoji: '⏳',
+                                    title: '3-5 Days',
+                                    subtitle: 'Shelf life',
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: _BenefitCard(
+                                    emoji: '⚡',
+                                    title: '30 Mins',
+                                    subtitle: 'Fast delivery',
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            const SizedBox(height: 10),
+                            const Divider(color: AppTheme.borderColor),
+                            const SizedBox(height: 10),
+
+                            // Description
+                            const CustomText(
+                              'Description',
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w700,
+                                color: AppTheme.textDark,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            CustomText(
+                              product.description,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: AppTheme.textGrey,
+                                height: 1.7,
+                              ),
+                            ),
+
+                            const SizedBox(height: 10),
+                            const Divider(color: AppTheme.borderColor),
+                            const SizedBox(height: 8),
+
+                            // Accordions
+                            Theme(
+                              data: Theme.of(context)
+                                  .copyWith(dividerColor: Colors.transparent),
+                              child: const ExpansionTile(
+                                tilePadding: EdgeInsets.zero,
+                                iconColor: AppTheme.primaryGreen,
+                                collapsedIconColor: AppTheme.textGrey,
+                                title: CustomText(
+                                  'Storage & Handling',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppTheme.textDark,
+                                  ),
+                                ),
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(bottom: 12),
+                                    child: CustomText(
+                                      'Store in a cool, dry place. Keep away from direct sunlight. To maintain absolute freshness, wrap in organic wrap and store in your refrigerator vegetable crisper drawer.',
+                                      style: TextStyle(
+                                          fontSize: 13,
+                                          color: AppTheme.textGrey,
+                                          height: 1.6),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            //  const Divider(color: AppTheme.borderColor),
+
+                            Theme(
+                              data: Theme.of(context)
+                                  .copyWith(dividerColor: Colors.transparent),
+                              child: const ExpansionTile(
+                                childrenPadding: EdgeInsets.zero,
+                                tilePadding: EdgeInsets.zero,
+                                iconColor: AppTheme.primaryGreen,
+                                collapsedIconColor: AppTheme.textGrey,
+                                title: CustomText(
+                                  'Nutrition & Benefits',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppTheme.textDark,
+                                  ),
+                                ),
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(bottom: 12),
+                                    child: CustomText(
+                                      'Naturally rich in vitamins A, C, and K. Packed with dietary fiber which supports gut health and digestion. Source of organic minerals that promote healthy metabolism and robust immunity.',
+                                      style: TextStyle(
+                                          fontSize: 13,
+                                          color: AppTheme.textGrey,
+                                          height: 1.6),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Divider(color: AppTheme.borderColor),
+                            const SizedBox(height: 10),
+
+                            // Similar Products
+                            if (similarProducts.isNotEmpty) ...[
+                              const CustomText(
+                                'Similar Products',
+                                style: TextStyle(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppTheme.textDark),
+                              ),
+                              const SizedBox(height: 12),
+                              SizedBox(
+                                height: listHeight,
+                                child: ListView.separated(
+                                  scrollDirection: Axis.horizontal,
+                                  padding: EdgeInsets.zero,
+                                  itemCount: similarProducts.length,
+                                  separatorBuilder: (_, __) =>
+                                      const SizedBox(width: 12),
+                                  itemBuilder: (ctx, i) {
+                                    return SizedBox(
+                                      width: cardWidth,
+                                      child: ProductCardWidget(
+                                        product: similarProducts[i],
+                                      ),
+                                    );
+                                  },
                                 ),
                               ),
+                              const SizedBox(height: 32),
                             ],
-                          ),
-
-                          const SizedBox(height: 20),
-                          const Divider(color: AppTheme.borderColor),
-                          const SizedBox(height: 16),
-
-                          // Description
-                          const Text(
-                            'Description',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w700,
-                              color: AppTheme.textDark,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            product.description,
-                            style: const TextStyle(
-                              fontSize: 13,
-                              color: AppTheme.textGrey,
-                              height: 1.7,
-                            ),
-                          ),
-                          const SizedBox(height: 32),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
+              ],
             ),
+          ),
 
-            // ── Bottom bar with counter ──────────────────────────
-            Container(
-              padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+          // ── Bottom bar with counter ──────────────────────────
+          SafeArea(
+            top: false,
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
               decoration: BoxDecoration(
                 color: Colors.white,
-                border: const Border(top: BorderSide(color: AppTheme.borderColor)),
+                border:
+                    const Border(top: BorderSide(color: AppTheme.borderColor)),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
+                    color: Colors.black.withOpacity(0.05),
                     blurRadius: 12,
                     offset: const Offset(0, -4),
                   ),
@@ -391,15 +504,15 @@ class ProductDetailPage extends ConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        CustomText(
                           'Rs ${product.price.toStringAsFixed(0)}',
                           style: const TextStyle(
-                            fontSize: 22,
+                            fontSize: 20,
                             fontWeight: FontWeight.w800,
                             color: AppTheme.textDark,
                           ),
                         ),
-                        Text(
+                        CustomText(
                           'MRP Rs ${product.originalPrice.toStringAsFixed(0)}',
                           style: const TextStyle(
                             fontSize: 12,
@@ -428,7 +541,7 @@ class ProductDetailPage extends ConsumerWidget {
                           Icon(Icons.notifications_outlined,
                               size: 16, color: AppTheme.textGrey),
                           SizedBox(width: 6),
-                          Text(
+                          CustomText(
                             'Notify Me',
                             style: TextStyle(
                               color: AppTheme.textGrey,
@@ -439,74 +552,21 @@ class ProductDetailPage extends ConsumerWidget {
                         ],
                       ),
                     )
-                  else if (cartQty == 0)
-                    GestureDetector(
-                      onTap: () => ref
-                          .read(cartProvider.notifier)
-                          .addToCart(product),
-                      child: Container(
-                        width: 52,
-                        height: 48,
-                        decoration: BoxDecoration(
-                          color: AppTheme.primaryGreen,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Icon(Icons.add,
-                            color: Colors.white, size: 24),
-                      ),
-                    )
                   else
-                    Container(
-                      height: 48,
-                      decoration: BoxDecoration(
-                        color: AppTheme.primaryGreen,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          GestureDetector(
-                            onTap: () => ref
-                                .read(cartProvider.notifier)
-                                .decrementQuantity(product.id),
-                            child: const SizedBox(
-                              width: 48,
-                              height: 48,
-                              child: Icon(Icons.remove,
-                                  size: 18, color: Colors.white),
-                            ),
-                          ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 10),
-                            child: Text(
-                              '$cartQty',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w800,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () => ref
-                                .read(cartProvider.notifier)
-                                .incrementQuantity(product.id),
-                            child: const SizedBox(
-                              width: 48,
-                              height: 48,
-                              child: Icon(Icons.add,
-                                  size: 18, color: Colors.white),
-                            ),
-                          ),
-                        ],
-                      ),
+                    AddToCartButton(
+                      product: product,
+                      width: 80,
+                      height: 38.0,
+                      borderRadius: 12.0,
+                      fontSize: 16.0,
+                      isIconOnly: false,
+                      iconSize: 20.0,
                     ),
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -530,6 +590,54 @@ class _CircleBtn extends StatelessWidget {
           border: Border.all(color: AppTheme.borderColor),
         ),
         child: Icon(icon, size: 18, color: AppTheme.textDark),
+      ),
+    );
+  }
+}
+
+class _BenefitCard extends StatelessWidget {
+  final String emoji;
+  final String title;
+  final String subtitle;
+
+  const _BenefitCard({
+    required this.emoji,
+    required this.title,
+    required this.subtitle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+      decoration: BoxDecoration(
+        color: AppTheme.bgLight,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppTheme.borderColor, width: 0.8),
+      ),
+      child: Column(
+        children: [
+          CustomText(emoji, style: const TextStyle(fontSize: 22)),
+          const SizedBox(height: 6),
+          CustomText(
+            title,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w700,
+              color: AppTheme.textDark,
+            ),
+          ),
+          const SizedBox(height: 2),
+          CustomText(
+            subtitle,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 9,
+              color: AppTheme.textGrey,
+            ),
+          ),
+        ],
       ),
     );
   }

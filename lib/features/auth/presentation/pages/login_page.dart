@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:riverpod_project/core/widgets/custom_network_image.dart';
 import 'package:riverpod_project/core/theme/app_theme.dart';
 import 'package:riverpod_project/core/widgets/suggestion_field.dart';
 import 'package:riverpod_project/features/auth/presentation/controllers/login_controller.dart';
 import 'package:riverpod_project/features/auth/presentation/widgets/auth_widgets.dart';
+import 'package:riverpod_project/core/widgets/custom_text.dart';
 
 const _emailSuggestions = [
   'test@gmail.com',
@@ -21,10 +23,7 @@ class LoginPage extends ConsumerStatefulWidget {
 class _LoginPageState extends ConsumerState<LoginPage>
     with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
-  final _emailCtrl = TextEditingController();
-  final _passCtrl = TextEditingController();
-  bool _obscurePass = true;
-  bool _isLoading = false;
+  final _phoneCtrl = TextEditingController();
   late AnimationController _fadeCtrl;
   late AnimationController _slideCtrl;
   late Animation<double> _fadeAnim;
@@ -56,279 +55,250 @@ class _LoginPageState extends ConsumerState<LoginPage>
   void dispose() {
     _fadeCtrl.dispose();
     _slideCtrl.dispose();
-    _emailCtrl.dispose();
-    _passCtrl.dispose();
+    _phoneCtrl.dispose();
     super.dispose();
   }
 
-  Future<void> _login() async {
+  void _login() {
     if (!_formKey.currentState!.validate()) return;
-    setState(() => _isLoading = true);
-    await ref.read(authProvider.notifier).login();
-    if (!mounted) return;
-    setState(() => _isLoading = false);
+    context.push('/otp', extra: _phoneCtrl.text);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SafeArea(
-        child: FadeTransition(
-          opacity: _fadeAnim,
-          child: SlideTransition(
-            position: _slideAnim,
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const SizedBox(height: 20),
-
-<<<<<<< HEAD:lib/features/auth/login_page.dart
-                    // ── Logo ──────────────────────────────────────────────
-                    Container(
-                      width: 70,
-                      height: 70,
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [
-                            AppTheme.primaryGreen,
-                            AppTheme.lightGreen,
-                          ],
-                        ),
-                        borderRadius: BorderRadius.circular(24),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppTheme.primaryGreen.withOpacity(0.4),
-                            blurRadius: 30,
-                            spreadRadius: 5,
-                          ),
-                        ],
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(24),
-                        child: CachedNetworkImage(
-                          imageUrl:
-                              'https://images.unsplash.com/photo-1542838132-92c53300491e?w=200',
-                          fit: BoxFit.cover,
-                          placeholder: (ctx, url) => const Center(
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.white,
-                            ),
-                          ),
-                          errorWidget: (ctx, url, err) => const Icon(
-                            Icons.restaurant_menu,
-                            color: Colors.white,
-                            size: 40,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-
-                    // ── App Name ──────────────────────────────────────────
-                    const Text(
-                      'VeggieMart',
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.w700,
-                        color: AppTheme.textDark,
-                        letterSpacing: 1.2,
-                      ),
-=======
-                    // Logo
-                    Image.asset(
-                      'assets/logo.png',
-                      width: 130,
-                      height: 130,
->>>>>>> a7827dde489fe9ddcee36f37ba6a8f4e8457db94:lib/features/auth/presentation/pages/login_page.dart
-                    ),
-                    const SizedBox(height: 4),
-                    const Text(
-                      'Fresh groceries at your doorstep',
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: AppTheme.textGrey,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-
-                    // Form Card
-                    Container(
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(24),
-                        border: Border.all(
-                          color: AppTheme.primaryGreen.withOpacity(0.15),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color:
-                                AppTheme.primaryGreen.withOpacity(0.08),
-                            blurRadius: 30,
-                            offset: const Offset(0, 10),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Welcome Back 👋',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
-                              color: AppTheme.textDark,
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-
-                          // Email with suggestions
-                          SuggestionField(
-                            controller: _emailCtrl,
-                            label: 'Email Address',
-                            hint: 'you@example.com',
-                            icon: Icons.email_outlined,
-                            keyboardType: TextInputType.emailAddress,
-                            suggestions: _emailSuggestions,
-                            validator: (v) {
-                              if (v == null || v.isEmpty) {
-                                  return 'Please enter email';
-                              }
-                              if (!v.contains('@')) return 'Invalid email';
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 12),
-
-                          // Password
-                          AuthTextField(
-                            controller: _passCtrl,
-                            label: 'Password',
-                            hint: '••••••••',
-                            icon: Icons.lock_outline_rounded,
-                            obscureText: _obscurePass,
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                _obscurePass
-                                    ? Icons.visibility_outlined
-                                    : Icons.visibility_off_outlined,
-                                color: const Color.fromARGB(255, 8, 8, 8),
-                                size: 20,
-                              ),
-                              onPressed: () =>
-                                  setState(() => _obscurePass = !_obscurePass),
-                            ),
-                            validator: (v) {
-                              if (v == null || v.length < 6) {
-                                return 'Min 6 characters';
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 4),
-
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: TextButton(
-                              onPressed: () => context.go('/forgot-password'),
-                              child: const Text(
-                                'Forgot Password?',
-                                style: TextStyle(
-                                  color: AppTheme.primaryGreen,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 0),
-
-                          GradientButton(
-                            text: 'Login',
-                            isLoading: _isLoading,
-                            onPressed: _login,
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-
-                    // Social divider
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Divider(
-                            color: AppTheme.primaryGreen.withOpacity(0.3),
-                          ),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                          child: Text(
-                            'Or continue with',
-                            style: TextStyle(
-                              color: AppTheme.textGrey,
-                              fontSize: 13,
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Divider(
-                            color: AppTheme.primaryGreen.withOpacity(0.3),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SocialButton(
-                          icon: Icons.g_mobiledata_rounded,
-                          label: 'Google',
-                          onTap: () {},
-                        ),
-                        const SizedBox(width: 16),
-                        SocialButton(
-                          icon: Icons.apple_rounded,
-                          label: 'Apple',
-                          onTap: () {},
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 24),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          "Don't have an account? ",
-                          style: TextStyle(color: AppTheme.textGrey),
-                        ),
-                        GestureDetector(
-                          onTap: () => context.go('/signup'),
-                          child: const Text(
-                            'Sign Up',
-                            style: TextStyle(
-                              color: AppTheme.primaryGreen,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
+      body: Stack(
+        children: [
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            height: MediaQuery.of(context).size.height * 0.55,
+            child: Image.asset(
+              'assets/images/login_bg.png',
+              fit: BoxFit.cover,
+              alignment: Alignment.center,
+            ),
+          ),
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            height: MediaQuery.of(context).size.height * 0.55,
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.black.withOpacity(0.5),
+                    Colors.black.withOpacity(0.2),
+                    Colors.white.withOpacity(0.8),
+                    Colors.white,
                   ],
+                  stops: const [0.0, 0.4, 0.8, 1.0],
                 ),
               ),
             ),
           ),
-        ),
+          Positioned.fill(
+            child: SafeArea(
+              child: FadeTransition(
+                opacity: _fadeAnim,
+                child: SlideTransition(
+                  position: _slideAnim,
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const SizedBox(height: 20),
+
+                          // ── Logo ──────────────────────────────────────────────
+                          Container(
+                            width: 70,
+                            height: 70,
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [
+                                  AppTheme.primaryGreen,
+                                  AppTheme.lightGreen,
+                                ],
+                              ),
+                              borderRadius: BorderRadius.circular(24),
+                              // boxShadow: [
+                              //   BoxShadow(
+                              //     color: AppTheme.primaryGreen.withOpacity(0.4),
+                              //     blurRadius: 30,
+                              //     spreadRadius: 5,
+                              //   ),
+                              // ],
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(24),
+                              child: const CustomNetworkImage(
+                                imageUrl:
+                                    'https://images.unsplash.com/photo-1542838132-92c53300491e?w=200',
+                                fit: BoxFit.cover,
+                                placeholder: Center(
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                errorWidget: Icon(
+                                  Icons.restaurant_menu,
+                                  color: Colors.white,
+                                  size: 40,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+
+                          // ── App Name ──────────────────────────────────────────
+                          const CustomText(
+                            'VeggieMart',
+                            style: TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.w700,
+                              color: AppTheme.textDark,
+                              letterSpacing: 1.2,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          const CustomText(
+                            'Fresh groceries at your doorstep',
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: AppTheme.textGrey,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+
+                          // Form Area (Redesigned, no card/shadow)
+                          Container(
+                            width: double.infinity,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const CustomText(
+                                  'Welcome Back 👋',
+                                  style: TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w800,
+                                    color: AppTheme.textDark,
+                                  ),
+                                ),
+                                const SizedBox(height: 24),
+
+                                // Mobile Number
+                                AuthTextField(
+                                  controller: _phoneCtrl,
+                                  label: 'Mobile Number',
+                                  hint: 'Enter your 10-digit number',
+                                  icon: Icons.phone_android_outlined,
+                                  keyboardType: TextInputType.phone,
+                                  validator: (v) {
+                                    if (v == null || v.isEmpty) {
+                                      return 'Please enter mobile number';
+                                    }
+                                    if (v.length < 10) {
+                                      return 'Invalid mobile number';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                const SizedBox(height: 24),
+
+                                GradientButton(
+                                  text: 'Get OTP',
+                                  isLoading: false,
+                                  onPressed: _login,
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+
+                          // Social divider
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Divider(
+                                  color: AppTheme.primaryGreen.withOpacity(0.3),
+                                ),
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 16),
+                                child: CustomText(
+                                  'Or continue with',
+                                  style: TextStyle(
+                                    color: AppTheme.textGrey,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Divider(
+                                  color: AppTheme.primaryGreen.withOpacity(0.3),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.center,
+                          //   children: [
+
+                          //     const SizedBox(width: 16),
+                          //     SocialButton(
+                          //       icon: Icons.apple_rounded,
+                          //       label: 'Apple',
+                          //       onTap: () {},
+                          //     ),
+                          //   ],
+                          // ),
+                          SocialButton(
+                            icon: Icons.g_mobiledata_rounded,
+                            label: 'Google',
+                            onTap: () {},
+                          ),
+                          const SizedBox(height: 24),
+
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const CustomText(
+                                "Don't have an account? ",
+                                style: TextStyle(color: AppTheme.textGrey),
+                              ),
+                              GestureDetector(
+                                onTap: () => context.go('/signup'),
+                                child: const CustomText(
+                                  'Sign Up',
+                                  style: TextStyle(
+                                    color: AppTheme.primaryGreen,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          )
+        ],
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_project/core/theme/app_theme.dart';
+import 'package:riverpod_project/core/widgets/custom_text.dart';
 
 class SubcategoryChipsWidget extends StatelessWidget {
   final List<String> subcategories;
@@ -71,7 +72,7 @@ class SubcategoryChipsWidget extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16),
         itemCount: subcategories.length,
-        separatorBuilder: (_, _) => const SizedBox(width: 8),
+        separatorBuilder: (_, __) => const SizedBox(width: 8),
         itemBuilder: (ctx, i) {
           final sub = subcategories[i];
           final isSelected = sub == selected;
@@ -94,7 +95,7 @@ class SubcategoryChipsWidget extends StatelessWidget {
                 boxShadow: isSelected
                     ? [
                         BoxShadow(
-                          color: AppTheme.primaryGreen.withValues(alpha: 0.2),
+                          color: AppTheme.primaryGreen.withOpacity(0.2),
                           blurRadius: 6,
                           offset: const Offset(0, 2),
                         )
@@ -104,9 +105,9 @@ class SubcategoryChipsWidget extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(emoji, style: const TextStyle(fontSize: 13)),
+                  CustomText(emoji, style: const TextStyle(fontSize: 13)),
                   const SizedBox(width: 5),
-                  Text(
+                  CustomText(
                     sub,
                     style: TextStyle(
                       fontSize: 12,

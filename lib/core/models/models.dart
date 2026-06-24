@@ -105,3 +105,17 @@ class BannerModel {
     required this.bgColor,
   });
 }
+
+class AddressModel {
+  final String id;
+  final String title;
+  final String fullAddress;
+  final bool isDefault;
+
+  const AddressModel({
+    required this.id,
+    required this.title,
+    required this.fullAddress,
+    this.isDefault = false,
+  });
+}

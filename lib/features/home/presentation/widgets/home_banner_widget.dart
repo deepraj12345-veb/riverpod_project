@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:riverpod_project/core/widgets/custom_network_image.dart';
 import 'package:riverpod_project/core/data/fake_data.dart';
 import 'package:riverpod_project/core/theme/app_theme.dart';
+import 'package:riverpod_project/core/widgets/custom_text.dart';
 
 class HomeBannerWidget extends StatefulWidget {
   final List<BannerModel> banners;
@@ -101,12 +102,12 @@ class _BannerCard extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           // Background image with dark overlay
-          CachedNetworkImage(
+          CustomNetworkImage(
             imageUrl: banner.imageUrl,
             fit: BoxFit.cover,
-            color: Colors.black.withValues(alpha: 0.35),
+            color: Colors.black.withOpacity(0.35),
             colorBlendMode: BlendMode.darken,
-            errorWidget: (ctx, url, err) => const SizedBox(),
+            errorWidget: const SizedBox(),
           ),
           // Content
           Padding(
@@ -115,7 +116,7 @@ class _BannerCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
+                CustomText(
                   banner.title,
                   style: const TextStyle(
                     color: Colors.white,
@@ -125,7 +126,7 @@ class _BannerCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 6),
-                Text(
+                CustomText(
                   banner.subtitle,
                   style: const TextStyle(
                     color: Colors.white70,
@@ -140,7 +141,7 @@ class _BannerCard extends StatelessWidget {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Text(
+                  child: const CustomText(
                     'Shop Now',
                     style: TextStyle(
                       color: AppTheme.primaryGreen,

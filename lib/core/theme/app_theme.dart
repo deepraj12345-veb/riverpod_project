@@ -10,7 +10,7 @@ class AppTheme {
 
   // ─── Background & Surface ──────────────────────────────────────
   static const Color bgWhite = Color(0xFFFFFFFF);
-  static const Color bgLight = Color(0xFFF8F9FA);
+  static const Color bgLight = Color(0xFFFFFFFF);
   static const Color borderColor = Color(0xFFE5E7EB);
 
   // ─── Text Colors ───────────────────────────────────────────────
@@ -95,7 +95,8 @@ class AppTheme {
         style: ElevatedButton.styleFrom(
           backgroundColor: primaryGreen,
           foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           padding: const EdgeInsets.symmetric(vertical: 14),
           textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
         ),
@@ -115,17 +116,13 @@ class AppTheme {
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: primaryGreen, width: 1.5),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         hintStyle: const TextStyle(color: textGrey, fontSize: 14),
         labelStyle: const TextStyle(color: textGrey),
       ),
-<<<<<<< HEAD
       cardTheme: CardTheme(
         color: cardWhite,
-=======
-      cardTheme: CardThemeData(
-        color: bgWhite,
->>>>>>> a7827dde489fe9ddcee36f37ba6a8f4e8457db94
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
@@ -138,8 +135,10 @@ class AppTheme {
         unselectedItemColor: textGrey,
         type: BottomNavigationBarType.fixed,
         elevation: 8,
-        selectedLabelStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 11),
-        unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w400, fontSize: 11),
+        selectedLabelStyle:
+            TextStyle(fontWeight: FontWeight.w600, fontSize: 11),
+        unselectedLabelStyle:
+            TextStyle(fontWeight: FontWeight.w400, fontSize: 11),
       ),
     );
   }
@@ -175,7 +174,8 @@ class AppTheme {
         style: ElevatedButton.styleFrom(
           backgroundColor: primaryColor,
           foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
           padding: const EdgeInsets.symmetric(vertical: 16),
           textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         ),

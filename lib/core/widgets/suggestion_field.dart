@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_project/core/theme/app_theme.dart';
+import 'package:riverpod_project/core/widgets/custom_text.dart';
 
 /// A responsive TextField that shows a live dropdown of filtered suggestions
 /// below the input. Works for any page — just pass a [suggestions] list.
@@ -12,6 +13,7 @@ class SuggestionField extends StatefulWidget {
   final bool obscureText;
   final Widget? suffixWidget;
   final TextInputType? keyboardType;
+  final FocusNode? focusNode;
   final String? Function(String?)? validator;
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSelected;
@@ -29,6 +31,7 @@ class SuggestionField extends StatefulWidget {
     this.obscureText = false,
     this.suffixWidget,
     this.keyboardType,
+    this.focusNode,
     this.validator,
     this.onChanged,
     this.onSelected,
@@ -41,7 +44,7 @@ class SuggestionField extends StatefulWidget {
 
 class _SuggestionFieldState extends State<SuggestionField>
     with SingleTickerProviderStateMixin {
-  final FocusNode _focusNode = FocusNode();
+  late final FocusNode _focusNode;
   List<String> _filtered = [];
   bool _showDropdown = false;
   late AnimationController _animCtrl;
@@ -69,6 +72,7 @@ class _SuggestionFieldState extends State<SuggestionField>
   @override
   void initState() {
     super.initState();
+    _focusNode = widget.focusNode ?? FocusNode();
     _animCtrl = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 200),
@@ -125,7 +129,9 @@ class _SuggestionFieldState extends State<SuggestionField>
   @override
   void dispose() {
     widget.controller.removeListener(_onTextChanged);
-    _focusNode.dispose();
+    if (widget.focusNode == null) {
+      _focusNode.dispose();
+    }
     _animCtrl.dispose();
     super.dispose();
   }
@@ -316,7 +322,7 @@ class _SuggestionTileState extends State<_SuggestionTile> {
     if (widget.matchStart < 0 ||
         widget.matchEnd > widget.text.length ||
         widget.matchStart >= widget.matchEnd) {
-      return Text(
+      return CustomText(
         widget.text,
         overflow: TextOverflow.ellipsis,
         style: TextStyle(

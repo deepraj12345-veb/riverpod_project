@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:riverpod_project/core/theme/app_theme.dart';
 import 'package:riverpod_project/core/widgets/product_card_widget.dart';
 import 'package:riverpod_project/features/home/presentation/controllers/home_controller.dart';
+import 'package:riverpod_project/core/widgets/custom_text.dart';
 
 class WishlistPage extends ConsumerWidget {
   const WishlistPage({super.key});
@@ -13,18 +14,20 @@ class WishlistPage extends ConsumerWidget {
     final allProducts = ref.watch(productsProvider);
     final wishlist = allProducts.where((p) => p.isFavorite).toList();
 
-    final screenW = MediaQuery.of(context).size.width;
-    final crossAxisCount = screenW >= 900 ? 4 : (screenW >= 600 ? 3 : 2);
 
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 18, color: AppTheme.textDark),
+          onPressed: () => context.pop(),
+        ),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            const CustomText(
               'Wishlist',
               style: TextStyle(
                 fontSize: 18,
@@ -32,7 +35,7 @@ class WishlistPage extends ConsumerWidget {
                 color: AppTheme.textDark,
               ),
             ),
-            Text(
+            CustomText(
               '${wishlist.length} saved items',
               style: const TextStyle(fontSize: 12, color: AppTheme.textGrey),
             ),
@@ -43,11 +46,11 @@ class WishlistPage extends ConsumerWidget {
           ? _EmptyWishlistView()
           : GridView.builder(
               padding: const EdgeInsets.all(16),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: crossAxisCount,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 0.63,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+                childAspectRatio: 0.48,
               ),
               itemCount: wishlist.length,
               itemBuilder: (ctx, i) =>
@@ -78,7 +81,7 @@ class _EmptyWishlistView extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-          const Text(
+          const CustomText(
             'No favourites yet',
             style: TextStyle(
               fontSize: 20,
@@ -87,7 +90,7 @@ class _EmptyWishlistView extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
+          const CustomText(
             'Tap ♥ on any product to save it here',
             textAlign: TextAlign.center,
             style: TextStyle(
@@ -108,7 +111,7 @@ class _EmptyWishlistView extends StatelessWidget {
                 color: AppTheme.primaryGreen,
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: const Text(
+              child: const CustomText(
                 'Browse Products',
                 style: TextStyle(
                   color: Colors.white,

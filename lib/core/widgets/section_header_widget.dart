@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_project/core/theme/app_theme.dart';
+import 'package:riverpod_project/core/widgets/custom_text.dart';
 
 class SectionHeaderWidget extends StatelessWidget {
   final String title;
@@ -22,7 +23,7 @@ class SectionHeaderWidget extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              CustomText(
                 title,
                 style: const TextStyle(
                   fontSize: 16,
@@ -32,7 +33,7 @@ class SectionHeaderWidget extends StatelessWidget {
               ),
               if (subtitle != null) ...[
                 const SizedBox(height: 2),
-                Text(
+                CustomText(
                   subtitle!,
                   style: const TextStyle(
                     fontSize: 12,
@@ -48,7 +49,7 @@ class SectionHeaderWidget extends StatelessWidget {
             onTap: onSeeAll,
             child: const Padding(
               padding: EdgeInsets.only(top: 2),
-              child: Text(
+              child: CustomText(
                 'See all',
                 style: TextStyle(
                   fontSize: 13,

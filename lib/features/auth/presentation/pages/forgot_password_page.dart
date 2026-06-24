@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:riverpod_project/core/theme/app_theme.dart';
 import 'package:riverpod_project/core/widgets/suggestion_field.dart';
 import 'package:riverpod_project/features/auth/presentation/widgets/auth_widgets.dart';
+import 'package:riverpod_project/core/widgets/custom_text.dart';
 
 const _emailSuggestions = [
   'alex.johnson@gmail.com',
@@ -61,7 +62,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage>
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text('Reset link sent to your email!'),
+        content: const CustomText('Reset link sent to your email!'),
         backgroundColor: AppTheme.primaryGreen,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -101,7 +102,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage>
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                                 color: AppTheme.primaryGreen
-                                    .withValues(alpha: 0.2)),
+                                    .withOpacity(0.2)),
                           ),
                           child: const Icon(
                             Icons.arrow_back_ios_new_rounded,
@@ -115,7 +116,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage>
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            CustomText(
                               'Forgot Password',
                               style: TextStyle(
                                 fontSize: 20,
@@ -132,7 +133,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage>
                   const SizedBox(height: 20),
 
                   // Instruction Text
-                  const Text(
+                  const CustomText(
                     'Enter your registered email address below. We will send you a link to reset your password.',
                     style: TextStyle(
                       fontSize: 14,
@@ -149,11 +150,11 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage>
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(24),
                       border: Border.all(
-                        color: AppTheme.primaryGreen.withValues(alpha: 0.15),
+                        color: AppTheme.primaryGreen.withOpacity(0.15),
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: AppTheme.primaryGreen.withValues(alpha: 0.08),
+                          color: AppTheme.primaryGreen.withOpacity(0.08),
                           blurRadius: 30,
                           offset: const Offset(0, 10),
                         ),

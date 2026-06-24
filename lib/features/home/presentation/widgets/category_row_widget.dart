@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_project/core/theme/app_theme.dart';
+import 'package:riverpod_project/core/widgets/custom_text.dart';
 
 class CategoryRowWidget extends StatelessWidget {
   final List<String> categories;
@@ -30,7 +31,7 @@ class CategoryRowWidget extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16),
         itemCount: categories.length,
-        separatorBuilder: (_, _) => const SizedBox(width: 14),
+        separatorBuilder: (_, __) => const SizedBox(width: 14),
         itemBuilder: (ctx, i) {
           final cat = categories[i];
           final isSelected = cat == selected;
@@ -57,11 +58,11 @@ class CategoryRowWidget extends StatelessWidget {
                     ),
                   ),
                   child: Center(
-                    child: Text(emoji, style: const TextStyle(fontSize: 22)),
+                    child: CustomText(emoji, style: const TextStyle(fontSize: 22)),
                   ),
                 ),
                 const SizedBox(height: 6),
-                Text(
+                CustomText(
                   cat,
                   style: TextStyle(
                     fontSize: 11,

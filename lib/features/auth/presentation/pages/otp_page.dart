@@ -5,6 +5,7 @@ import 'package:pinput/pinput.dart';
 import 'package:riverpod_project/core/theme/app_theme.dart';
 import 'package:riverpod_project/features/auth/presentation/controllers/otp_controller.dart';
 import 'package:riverpod_project/features/auth/presentation/widgets/auth_widgets.dart';
+import 'package:riverpod_project/core/widgets/custom_text.dart';
 
 class OtpPage extends ConsumerStatefulWidget {
   final String phone;
@@ -98,12 +99,12 @@ class _OtpPageState extends ConsumerState<OtpPage>
       textStyle: const TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.w600,
-        color: AppTheme.textPrimary,
+        color: AppTheme.textDark,
       ),
       decoration: BoxDecoration(
-        color: AppTheme.darkCard,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppTheme.darkBorder, width: 1.5),
+        border: Border.all(color: AppTheme.borderColor, width: 1.5),
       ),
     );
 
@@ -122,7 +123,7 @@ class _OtpPageState extends ConsumerState<OtpPage>
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
-          color: AppTheme.darkBg,
+          color: Colors.white,
         ),
         child: SafeArea(
           child: FadeTransition(
@@ -139,13 +140,13 @@ class _OtpPageState extends ConsumerState<OtpPage>
                         child: Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: AppTheme.darkCard,
+                            color: Colors.white,
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: AppTheme.darkBorder),
+                            border: Border.all(color: AppTheme.borderColor),
                           ),
                           child: const Icon(
                             Icons.arrow_back_ios_new_rounded,
-                            color: AppTheme.textPrimary,
+                            color: AppTheme.textDark,
                             size: 18,
                           ),
                         ),
@@ -162,13 +163,7 @@ class _OtpPageState extends ConsumerState<OtpPage>
                         colors: [Color(0xFF6C63FF), Color(0xFFFF6584)],
                       ),
                       shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppTheme.primaryColor.withOpacity(0.3),
-                          blurRadius: 24,
-                          spreadRadius: 4,
-                        ),
-                      ],
+                      // Removed shadow for clean design
                     ),
                     child: const Icon(
                       Icons.sms_rounded,
@@ -177,21 +172,21 @@ class _OtpPageState extends ConsumerState<OtpPage>
                     ),
                   ),
                   const SizedBox(height: 16),
-                  const Text(
+                  const CustomText(
                     'Verify Your Phone 📱',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
-                      color: AppTheme.textPrimary,
+                      color: AppTheme.textDark,
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Text(
+                  CustomText(
                     'We sent a 6-digit code to\n${widget.phone.isEmpty ? '+1 *** *** 5678' : widget.phone}',
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       fontSize: 13,
-                      color: AppTheme.textSecondary,
+                      color: AppTheme.textGrey,
                       height: 1.6,
                     ),
                   ),
@@ -209,7 +204,7 @@ class _OtpPageState extends ConsumerState<OtpPage>
                         color: AppTheme.primaryColor.withOpacity(0.3),
                       ),
                     ),
-                    child: const Text(
+                    child: const CustomText(
                       '💡 Demo OTP: 123456',
                       style: TextStyle(
                         color: AppTheme.primaryColor,
@@ -247,7 +242,7 @@ class _OtpPageState extends ConsumerState<OtpPage>
                   ),
                   const SizedBox(height: 8),
                   if (_hasError)
-                    const Text(
+                    const CustomText(
                       '❌ Invalid OTP. Please try again.',
                       style: TextStyle(
                         color: AppTheme.secondaryColor,
@@ -266,14 +261,14 @@ class _OtpPageState extends ConsumerState<OtpPage>
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Flexible(
-                        child: Text(
+                        child: CustomText(
                           "Didn't receive the code? ",
-                          style: TextStyle(color: AppTheme.textSecondary),
+                          style: TextStyle(color: AppTheme.textGrey),
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       _resendSeconds > 0
-                          ? Text(
+                          ? CustomText(
                               'Resend in 0:${_resendSeconds.toString().padLeft(2, '0')}',
                               style: const TextStyle(
                                 color: AppTheme.primaryColor,
@@ -286,7 +281,7 @@ class _OtpPageState extends ConsumerState<OtpPage>
                                 setState(() => _resendSeconds = 59);
                                 _startResendTimer();
                               },
-                              child: const Text(
+                              child: const CustomText(
                                 'Resend OTP',
                                 style: TextStyle(
                                   color: AppTheme.primaryColor,

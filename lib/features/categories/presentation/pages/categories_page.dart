@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:riverpod_project/core/data/fake_data.dart';
 import 'package:riverpod_project/core/theme/app_theme.dart';
 import 'package:riverpod_project/features/home/presentation/controllers/home_controller.dart';
+import 'package:riverpod_project/core/widgets/custom_text.dart';
 
 class CategoriesPage extends ConsumerWidget {
   const CategoriesPage({super.key});
@@ -69,7 +70,7 @@ class CategoriesPage extends ConsumerWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: const Text(
+        title: const CustomText(
           'Categories',
           style: TextStyle(
             fontSize: 18,
@@ -90,7 +91,7 @@ class CategoriesPage extends ConsumerWidget {
       body: ListView.separated(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
         itemCount: categories.length,
-        separatorBuilder: (_, _) => const Divider(height: 36, color: AppTheme.borderColor),
+        separatorBuilder: (_, __) => const Divider(height: 36, color: AppTheme.borderColor),
         itemBuilder: (ctx, i) {
           final cat = categories[i];
           final subs = FakeData.subcategories[cat] ?? [];
@@ -101,12 +102,13 @@ class CategoriesPage extends ConsumerWidget {
             color: color,
             subEmojiMap: _subEmoji,
             onSeeAll: () {
-              ref.read(selectedCategoryProvider.notifier).state = cat;
-              context.go('/home');
+              context.push('/subcategory', extra: cat);
             },
-            onSubTap: (_) {
-              ref.read(selectedCategoryProvider.notifier).state = cat;
-              context.go('/home');
+            onSubTap: (sub) {
+              // We could pass 'sub' via extra or a query param, but currently SubcategoryPage only takes categoryName
+              // To handle 'sub' properly, we should update SubcategoryPage to accept an initial subcategory.
+              // For now we'll just pass the categoryName and user will start on 'All'
+              context.push('/subcategory', extra: cat);
             },
           );
         },
@@ -144,7 +146,7 @@ class _CategorySection extends StatelessWidget {
       children: [
         Row(
           children: [
-            Text(
+            CustomText(
               category,
               style: const TextStyle(
                 fontSize: 16,
@@ -155,7 +157,7 @@ class _CategorySection extends StatelessWidget {
             const Spacer(),
             GestureDetector(
               onTap: onSeeAll,
-              child: const Text(
+              child: const CustomText(
                 'See all →',
                 style: TextStyle(
                   fontSize: 12,
@@ -190,16 +192,16 @@ class _CategorySection extends StatelessWidget {
                         color: color,
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(
-                          color: color.withValues(alpha: 0.4),
+                          color: color.withOpacity(0.4),
                         ),
                       ),
                       child: Center(
-                        child: Text(emoji, style: const TextStyle(fontSize: 26)),
+                        child: CustomText(emoji, style: const TextStyle(fontSize: 26)),
                       ),
                     ),
                   ),
                   const SizedBox(height: 5),
-                  Text(
+                  CustomText(
                     sub,
                     textAlign: TextAlign.center,
                     maxLines: 2,
@@ -220,7 +222,7 @@ class _CategorySection extends StatelessWidget {
           GestureDetector(
             onTap: onSeeAll,
             child: Center(
-              child: Text(
+              child: CustomText(
                 'View all ${subcategories.length} subcategories →',
                 style: const TextStyle(
                   fontSize: 12,

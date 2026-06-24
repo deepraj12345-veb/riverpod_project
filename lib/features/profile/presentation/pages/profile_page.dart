@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:riverpod_project/core/widgets/custom_network_image.dart';
 import 'package:riverpod_project/core/theme/app_theme.dart';
 import 'package:riverpod_project/features/auth/presentation/controllers/login_controller.dart';
 import 'package:riverpod_project/features/cart/presentation/controllers/cart_controller.dart';
 import 'package:riverpod_project/features/home/presentation/controllers/home_controller.dart';
 import 'package:riverpod_project/features/profile/presentation/controllers/profile_controller.dart';
+import 'package:riverpod_project/features/orders/presentation/controllers/orders_controller.dart';
+import 'package:riverpod_project/core/widgets/custom_text.dart';
 
 class ProfilePage extends ConsumerWidget {
   const ProfilePage({super.key});
@@ -17,9 +19,10 @@ class ProfilePage extends ConsumerWidget {
     final cartCount = ref.watch(cartItemCountProvider);
     final wishlistCount =
         ref.watch(productsProvider).where((p) => p.isFavorite).length;
+    final ordersCount = ref.watch(ordersProvider).length;
 
     final menuItems = [
-      _MenuItem(
+      const _MenuItem(
         icon: Icons.person_outline_rounded,
         title: 'Edit Profile',
         subtitle: 'Update your personal info',
@@ -33,7 +36,7 @@ class ProfilePage extends ConsumerWidget {
         bgColor: AppTheme.cardLavender,
         iconColor: AppTheme.emeraldGreen,
       ),
-      _MenuItem(
+      const _MenuItem(
         icon: Icons.payment_outlined,
         title: 'Payment Methods',
         subtitle: 'UPI, Cards, Wallets',
@@ -43,18 +46,18 @@ class ProfilePage extends ConsumerWidget {
       _MenuItem(
         icon: Icons.receipt_long_outlined,
         title: 'Order History',
-        subtitle: '12 orders completed',
+        subtitle: '$ordersCount orders completed',
         bgColor: AppTheme.cardPeach,
         iconColor: AppTheme.primaryGreen,
       ),
-      _MenuItem(
+      const _MenuItem(
         icon: Icons.notifications_outlined,
         title: 'Notifications',
         subtitle: 'Push notifications enabled',
         bgColor: AppTheme.cardLightBlue,
         iconColor: AppTheme.emeraldGreen,
       ),
-      _MenuItem(
+      const _MenuItem(
         icon: Icons.help_outline_rounded,
         title: 'Help & Support',
         subtitle: 'FAQs, contact us',
@@ -64,7 +67,6 @@ class ProfilePage extends ConsumerWidget {
     ];
 
     return Scaffold(
-      backgroundColor: AppTheme.bgLight,
       body: CustomScrollView(
         slivers: [
           // ── Profile header ───────────────────────────────────
@@ -106,10 +108,10 @@ class ProfilePage extends ConsumerWidget {
                           ),
                           padding: const EdgeInsets.all(3),
                           child: ClipOval(
-                            child: CachedNetworkImage(
+                            child: CustomNetworkImage(
                               imageUrl: user.avatarUrl,
                               fit: BoxFit.cover,
-                              placeholder: (ctx, url) => Container(
+                              placeholder: Container(
                                 color: AppTheme.cardMint,
                                 child: const Icon(Icons.person_rounded,
                                     color: AppTheme.primaryGreen, size: 40),
@@ -134,7 +136,7 @@ class ProfilePage extends ConsumerWidget {
                       ],
                     ),
                     const SizedBox(height: 12),
-                    Text(
+                    CustomText(
                       user.name,
                       style: const TextStyle(
                         fontSize: 18,
@@ -143,7 +145,7 @@ class ProfilePage extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(height: 2),
-                    Text(
+                    CustomText(
                       user.email,
                       style: const TextStyle(
                         fontSize: 13,
@@ -160,10 +162,10 @@ class ProfilePage extends ConsumerWidget {
                         color: const Color(0xFFECFDF5),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: AppTheme.primaryGreen.withValues(alpha: 0.3),
+                          color: AppTheme.primaryGreen.withOpacity(0.3),
                         ),
                       ),
-                      child: const Text(
+                      child: const CustomText(
                         '⭐ Premium Member',
                         style: TextStyle(
                           color: AppTheme.primaryGreen,
@@ -190,19 +192,11 @@ class ProfilePage extends ConsumerWidget {
                         child: _QuickActionCard(
                           icon: Icons.receipt_long_rounded,
                           label: 'Orders',
-                          value: '12',
+                          value: '$ordersCount',
                           subtitle: 'completed',
                           bgColor: AppTheme.cardMint,
                           iconColor: AppTheme.primaryGreen,
-                          onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: const Text('Order history coming soon'),
-                              backgroundColor: AppTheme.primaryGreen,
-                              behavior: SnackBarBehavior.floating,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                              duration: const Duration(seconds: 2),
-                            ),
-                          ),
+                          onTap: () => context.push('/orders'),
                         ),
                       ),
                       const SizedBox(width: 10),
@@ -214,7 +208,7 @@ class ProfilePage extends ConsumerWidget {
                           subtitle: 'saved items',
                           bgColor: const Color(0xFFFFF1F2),
                           iconColor: AppTheme.accentRed,
-                          onTap: () => context.go('/wishlist'),
+                          onTap: () => context.push('/wishlist'),
                         ),
                       ),
                       const SizedBox(width: 10),
@@ -236,7 +230,7 @@ class ProfilePage extends ConsumerWidget {
 
                   const Align(
                     alignment: Alignment.centerLeft,
-                    child: Text(
+                    child: CustomText(
                       'Account Settings',
                       style: TextStyle(
                         fontSize: 14,
@@ -260,7 +254,11 @@ class ProfilePage extends ConsumerWidget {
                         return Column(
                           children: [
                             ListTile(
-                              onTap: () {},
+                              onTap: () {
+                                if (item.title == 'Order History') {
+                                  context.go('/orders');
+                                }
+                              },
                               contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 16,
                                 vertical: 4,
@@ -278,7 +276,7 @@ class ProfilePage extends ConsumerWidget {
                                   size: 21,
                                 ),
                               ),
-                              title: Text(
+                              title: CustomText(
                                 item.title,
                                 style: const TextStyle(
                                   fontSize: 14,
@@ -286,7 +284,7 @@ class ProfilePage extends ConsumerWidget {
                                   color: AppTheme.textDark,
                                 ),
                               ),
-                              subtitle: Text(
+                              subtitle: CustomText(
                                 item.subtitle,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -324,7 +322,8 @@ class ProfilePage extends ConsumerWidget {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: AppTheme.accentRed.withValues(alpha: 0.4)),
+                        border: Border.all(
+                            color: AppTheme.accentRed.withOpacity(0.4)),
                       ),
                       child: const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -332,7 +331,7 @@ class ProfilePage extends ConsumerWidget {
                           Icon(Icons.logout_rounded,
                               color: AppTheme.accentRed, size: 20),
                           SizedBox(width: 8),
-                          Text(
+                          CustomText(
                             'Sign Out',
                             style: TextStyle(
                               color: AppTheme.accentRed,
@@ -346,7 +345,7 @@ class ProfilePage extends ConsumerWidget {
                   ),
 
                   const SizedBox(height: 28),
-                  const Text(
+                  const CustomText(
                     'Fresh Veggie Mart v1.0.0  •  Via Two Wheels 🛵',
                     style: TextStyle(
                       color: AppTheme.textLight,
@@ -369,16 +368,16 @@ class ProfilePage extends ConsumerWidget {
       builder: (ctx) => AlertDialog(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text('Sign Out?',
+        title: const CustomText('Sign Out?',
             style: TextStyle(color: AppTheme.textDark)),
-        content: const Text(
+        content: const CustomText(
           'Are you sure you want to sign out of Fresh Veggie Mart?',
           style: TextStyle(color: AppTheme.textGrey),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel',
+            child: const CustomText('Cancel',
                 style: TextStyle(color: AppTheme.textGrey)),
           ),
           TextButton(
@@ -386,7 +385,7 @@ class ProfilePage extends ConsumerWidget {
               Navigator.pop(ctx);
               ref.read(authProvider.notifier).logout();
             },
-            child: const Text('Sign Out',
+            child: const CustomText('Sign Out',
                 style: TextStyle(color: AppTheme.accentRed)),
           ),
         ],
@@ -442,13 +441,13 @@ class _QuickActionCard extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(color: AppTheme.borderColor),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.03),
-              blurRadius: 6,
-              offset: const Offset(0, 2),
-            ),
-          ],
+          // boxShadow: [
+          //   BoxShadow(
+          //     color: Colors.black.withOpacity(0.03),
+          //     blurRadius: 6,
+          //     offset: const Offset(0, 2),
+          //   ),
+          // ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -463,7 +462,7 @@ class _QuickActionCard extends StatelessWidget {
               child: Icon(icon, color: iconColor, size: 18),
             ),
             const SizedBox(height: 10),
-            Text(
+            CustomText(
               value,
               style: const TextStyle(
                 fontSize: 22,
@@ -472,7 +471,7 @@ class _QuickActionCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 1),
-            Text(
+            CustomText(
               label,
               style: const TextStyle(
                 fontSize: 13,
@@ -480,7 +479,7 @@ class _QuickActionCard extends StatelessWidget {
                 color: AppTheme.textDark,
               ),
             ),
-            Text(
+            CustomText(
               subtitle,
               style: const TextStyle(
                 fontSize: 11,
