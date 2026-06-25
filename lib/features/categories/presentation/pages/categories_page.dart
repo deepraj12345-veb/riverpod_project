@@ -66,7 +66,6 @@ class CategoriesPage extends ConsumerWidget {
     final categories = FakeData.categories.where((c) => c != 'All').toList();
 
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -91,7 +90,8 @@ class CategoriesPage extends ConsumerWidget {
       body: ListView.separated(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
         itemCount: categories.length,
-        separatorBuilder: (_, __) => const Divider(height: 36, color: AppTheme.borderColor),
+        separatorBuilder: (_, __) =>
+            const Divider(height: 36, color: AppTheme.borderColor),
         itemBuilder: (ctx, i) {
           final cat = categories[i];
           final subs = FakeData.subcategories[cat] ?? [];
@@ -137,9 +137,8 @@ class _CategorySection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Show max 8 subcategories, link to see all if more
-    final visible = subcategories.length > 8
-        ? subcategories.sublist(0, 8)
-        : subcategories;
+    final visible =
+        subcategories.length > 8 ? subcategories.sublist(0, 8) : subcategories;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -196,7 +195,8 @@ class _CategorySection extends StatelessWidget {
                         ),
                       ),
                       child: Center(
-                        child: CustomText(emoji, style: const TextStyle(fontSize: 26)),
+                        child: CustomText(emoji,
+                            style: const TextStyle(fontSize: 26)),
                       ),
                     ),
                   ),

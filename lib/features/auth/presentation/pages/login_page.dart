@@ -264,7 +264,11 @@ class _LoginPageState extends ConsumerState<LoginPage>
                           //   ],
                           // ),
                           SocialButton(
-                            icon: Icons.g_mobiledata_rounded,
+                            icon: Image.asset(
+                              'assets/images/google.png',
+                              width: 22,
+                              height: 22,
+                            ),
                             label: 'Google',
                             onTap: () {},
                           ),

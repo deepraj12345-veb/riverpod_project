@@ -144,7 +144,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(16, 20, 16, 10),
                   child: SectionHeaderWidget(
-                    title: '🔥 Trending Near You',
+                    title: 'Trending Near You',
                     subtitle: 'Discover the top products trending today',
                     onSeeAll: () {},
                   ),

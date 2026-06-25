@@ -4,6 +4,7 @@ import 'package:veggie_mart/core/theme/app_theme.dart';
 import 'package:veggie_mart/features/home/domain/entities/product_entity.dart';
 import 'package:veggie_mart/features/cart/presentation/controllers/cart_controller.dart';
 import 'package:veggie_mart/core/widgets/custom_text.dart';
+import 'package:veggie_mart/core/widgets/floating_cart_bar.dart';
 
 class AddToCartButton extends ConsumerWidget {
   final ProductEntity product;
@@ -34,7 +35,10 @@ class AddToCartButton extends ConsumerWidget {
 
     if (cartQty == 0) {
       return GestureDetector(
-        onTap: () => ref.read(cartProvider.notifier).addToCart(product),
+        onTap: () {
+          _triggerFlyAnimation(context);
+          ref.read(cartProvider.notifier).addToCart(product);
+        },
         child: Container(
           width: width,
           height: height,
@@ -108,8 +112,10 @@ class AddToCartButton extends ConsumerWidget {
             ),
           ),
           GestureDetector(
-            onTap: () =>
-                ref.read(cartProvider.notifier).incrementQuantity(product.id),
+            onTap: () {
+              _triggerFlyAnimation(context);
+              ref.read(cartProvider.notifier).incrementQuantity(product.id);
+            },
             child: SizedBox(
               width: width != null ? (width! / 3.27) : height,
               height: height,
@@ -124,5 +130,26 @@ class AddToCartButton extends ConsumerWidget {
       ),
     );
   }
-}
 
+  void _triggerFlyAnimation(BuildContext context) {
+    final renderBox = context.findRenderObject() as RenderBox?;
+    if (renderBox != null) {
+      final startPos = renderBox.localToGlobal(Offset.zero);
+
+      // Target position of the overlapping thumbnails stack in FloatingCartBar
+      final cartBox = FloatingCartBar.cartKey.currentContext?.findRenderObject()
+          as RenderBox?;
+      final endPos = cartBox != null
+          ? cartBox.localToGlobal(Offset.zero).translate(20, 10)
+          : Offset(40.0, MediaQuery.of(context).size.height - 120.0);
+
+      FlyToCartOverlay.run(
+        context: context,
+        imageUrl: product.imageUrl,
+        startPos: startPos,
+        endPos: endPos,
+        startSize: const Size(40, 40),
+      );
+    }
+  }
+}

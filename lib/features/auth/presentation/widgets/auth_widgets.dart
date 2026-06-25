@@ -110,7 +110,7 @@ class GradientButton extends StatelessWidget {
 }
 
 class SocialButton extends StatelessWidget {
-  final IconData icon;
+  final Widget icon;
   final String label;
   final VoidCallback onTap;
 
@@ -126,21 +126,31 @@ class SocialButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        width: double.infinity,
+        height: 48,
         decoration: BoxDecoration(
-          color: AppTheme.primaryColor,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppTheme.darkBorder),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(30),
+          border: Border.all(color: AppTheme.borderColor),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.03),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, color: AppTheme.textPrimary, size: 22),
-            const SizedBox(width: 80),
+            icon,
+            const SizedBox(width: 12),
             CustomText(
               label,
               style: const TextStyle(
-                color: AppTheme.textPrimary,
-                fontWeight: FontWeight.w500,
+                color: AppTheme.textDark,
+                fontWeight: FontWeight.w600,
+                fontSize: 15,
               ),
             ),
           ],

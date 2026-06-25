@@ -5,6 +5,7 @@ import 'package:badges/badges.dart' as badges;
 import 'package:veggie_mart/features/cart/presentation/controllers/cart_controller.dart';
 import 'package:veggie_mart/core/theme/app_theme.dart';
 import 'package:veggie_mart/core/widgets/custom_text.dart';
+import 'package:veggie_mart/core/widgets/floating_cart_bar.dart';
 
 import 'package:flutter/rendering.dart';
 
@@ -37,9 +38,9 @@ class _MainShellState extends ConsumerState<MainShell> with SingleTickerProvider
 
   static const _tabs = [
     _Tab(icon: Icons.home_outlined, activeIcon: Icons.home_rounded, label: 'Home', route: '/home'),
-    _Tab(icon: Icons.grid_view_outlined, activeIcon: Icons.grid_view_rounded, label: 'Categories', route: '/categories'),
-    _Tab(icon: Icons.shopping_cart_outlined, activeIcon: Icons.shopping_cart_rounded, label: 'Cart', route: '/cart'),
-    _Tab(icon: Icons.person_outline_rounded, activeIcon: Icons.person_rounded, label: 'Profile', route: '/profile'),
+    _Tab(assetPath: 'assets/images/categories_icon.png', label: 'Categories', route: '/categories'),
+    _Tab(assetPath: 'assets/images/cart_icon.png', label: 'Cart', route: '/cart'),
+    _Tab(assetPath: 'assets/images/profile_icon.png', label: 'Profile', route: '/profile'),
   ];
 
   int _currentIndex(BuildContext context) {
@@ -75,8 +76,13 @@ class _MainShellState extends ConsumerState<MainShell> with SingleTickerProvider
       bottomNavigationBar: SizeTransition(
         sizeFactor: _hideAnimCtrl,
         axisAlignment: -1.0,
-        child: BottomNavigationBar(
-        currentIndex: index,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const FloatingCartBar(),
+            BottomNavigationBar(
+              currentIndex: index,
         selectedItemColor: AppTheme.primaryGreen,
         unselectedItemColor: AppTheme.textGrey,
         type: BottomNavigationBarType.fixed,
@@ -86,10 +92,20 @@ class _MainShellState extends ConsumerState<MainShell> with SingleTickerProvider
           final isSelected = index == i;
           final isCart = tab.route == '/cart';
 
-          Widget iconWidget = Icon(
-            isSelected ? tab.activeIcon : tab.icon,
-            color: isSelected ? AppTheme.primaryGreen : AppTheme.textGrey,
-          );
+          Widget iconWidget;
+          if (tab.assetPath != null) {
+            iconWidget = Image.asset(
+              tab.assetPath!,
+              width: 24,
+              height: 24,
+              color: isSelected ? AppTheme.primaryGreen : AppTheme.textGrey,
+            );
+          } else {
+            iconWidget = Icon(
+              isSelected ? tab.activeIcon! : tab.icon!,
+              color: isSelected ? AppTheme.primaryGreen : AppTheme.textGrey,
+            );
+          }
 
           if (isCart && cartCount > 0) {
             iconWidget = badges.Badge(
@@ -115,19 +131,23 @@ class _MainShellState extends ConsumerState<MainShell> with SingleTickerProvider
           );
         }),
       ),
-    ),
-    );
+    ],
+  ),
+),
+);
   }
 }
 
 class _Tab {
-  final IconData icon;
-  final IconData activeIcon;
+  final IconData? icon;
+  final IconData? activeIcon;
+  final String? assetPath;
   final String label;
   final String route;
   const _Tab({
-    required this.icon,
-    required this.activeIcon,
+    this.icon,
+    this.activeIcon,
+    this.assetPath,
     required this.label,
     required this.route,
   });
