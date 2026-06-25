@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_project/core/router/app_router.dart';
+import 'package:veggie_mart/core/router/app_router.dart';
 void main() {
   runApp(
     const ProviderScope(
@@ -17,10 +17,11 @@ class MyApp extends ConsumerWidget {
     final router = ref.watch(appRouterProvider);
 
     return MaterialApp.router(
-      title: 'Riverpod Project',
+      title: 'Veggie mart',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(scaffoldBackgroundColor: Colors.white),
       routerConfig: router,
     );
   }
 }
+

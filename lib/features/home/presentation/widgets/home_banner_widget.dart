@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:riverpod_project/core/widgets/custom_network_image.dart';
-import 'package:riverpod_project/core/data/fake_data.dart';
-import 'package:riverpod_project/core/theme/app_theme.dart';
-import 'package:riverpod_project/core/widgets/custom_text.dart';
+import 'package:veggie_mart/core/widgets/custom_network_image.dart';
+import 'package:veggie_mart/core/data/fake_data.dart';
+import 'package:veggie_mart/core/theme/app_theme.dart';
+import 'package:veggie_mart/core/widgets/custom_text.dart';
 
 class HomeBannerWidget extends StatefulWidget {
   final List<BannerModel> banners;
@@ -158,3 +158,4 @@ class _BannerCard extends StatelessWidget {
     );
   }
 }
+

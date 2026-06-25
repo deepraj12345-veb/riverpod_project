@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:riverpod_project/core/theme/app_theme.dart';
-import 'package:riverpod_project/core/widgets/custom_text.dart';
+import 'package:veggie_mart/core/theme/app_theme.dart';
+import 'package:veggie_mart/core/widgets/custom_text.dart';
 
 class CategoryRowWidget extends StatelessWidget {
   final List<String> categories;
@@ -81,3 +81,4 @@ class CategoryRowWidget extends StatelessWidget {
     );
   }
 }
+

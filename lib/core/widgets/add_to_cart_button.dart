@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_project/core/theme/app_theme.dart';
-import 'package:riverpod_project/features/home/domain/entities/product_entity.dart';
-import 'package:riverpod_project/features/cart/presentation/controllers/cart_controller.dart';
-import 'package:riverpod_project/core/widgets/custom_text.dart';
+import 'package:veggie_mart/core/theme/app_theme.dart';
+import 'package:veggie_mart/features/home/domain/entities/product_entity.dart';
+import 'package:veggie_mart/features/cart/presentation/controllers/cart_controller.dart';
+import 'package:veggie_mart/core/widgets/custom_text.dart';
 
 class AddToCartButton extends ConsumerWidget {
   final ProductEntity product;
@@ -125,3 +125,4 @@ class AddToCartButton extends ConsumerWidget {
     );
   }
 }
+

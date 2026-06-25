@@ -1,4 +1,4 @@
-import 'package:riverpod_project/features/home/domain/entities/product_entity.dart';
+import 'package:veggie_mart/features/home/domain/entities/product_entity.dart';
 
 class OrderItemEntity {
   final ProductEntity product;
@@ -63,3 +63,4 @@ class OrderEntity {
     );
   }
 }
+

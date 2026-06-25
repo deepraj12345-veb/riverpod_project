@@ -1,4 +1,4 @@
-import 'package:riverpod_project/features/home/domain/entities/product_entity.dart';
+import 'package:veggie_mart/features/home/domain/entities/product_entity.dart';
 
 class FilterByCategoryUseCase {
   Future<List<ProductEntity>> execute(List<ProductEntity> products, String category) async {
@@ -6,3 +6,4 @@ class FilterByCategoryUseCase {
     return products.where((p) => p.category == category).toList();
   }
 }
+

@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_project/features/auth/domain/usecases/send_otp_usecase.dart';
-import 'package:riverpod_project/features/auth/domain/usecases/verify_otp_usecase.dart';
-import 'package:riverpod_project/features/auth/presentation/controllers/login_controller.dart';
+import 'package:veggie_mart/features/auth/domain/usecases/send_otp_usecase.dart';
+import 'package:veggie_mart/features/auth/domain/usecases/verify_otp_usecase.dart';
+import 'package:veggie_mart/features/auth/presentation/controllers/login_controller.dart';
 
 final sendOtpUseCaseProvider = Provider<SendOtpUseCase>((ref) {
   return SendOtpUseCase(ref.watch(authRepositoryProvider));
@@ -47,3 +47,4 @@ final otpProvider = StateNotifierProvider<OtpNotifier, String>((ref) {
     ref: ref,
   );
 });
+

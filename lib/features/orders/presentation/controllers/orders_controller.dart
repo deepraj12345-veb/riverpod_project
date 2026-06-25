@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_project/features/orders/domain/entities/order_entity.dart';
-import 'package:riverpod_project/features/cart/domain/entities/cart_item_entity.dart';
-import 'package:riverpod_project/core/data/fake_data.dart';
+import 'package:veggie_mart/features/orders/domain/entities/order_entity.dart';
+import 'package:veggie_mart/features/cart/domain/entities/cart_item_entity.dart';
+import 'package:veggie_mart/core/data/fake_data.dart';
 
 class OrdersNotifier extends StateNotifier<List<OrderEntity>> {
   OrdersNotifier() : super(_initialOrders());
@@ -69,3 +69,4 @@ class OrdersNotifier extends StateNotifier<List<OrderEntity>> {
 final ordersProvider = StateNotifierProvider<OrdersNotifier, List<OrderEntity>>((ref) {
   return OrdersNotifier();
 });
+

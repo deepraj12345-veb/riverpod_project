@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_project/core/data/fake_data.dart';
-import 'package:riverpod_project/core/models/models.dart';
+import 'package:veggie_mart/core/data/fake_data.dart';
+import 'package:veggie_mart/core/models/models.dart';
 
 // ─── Auth Provider ─────────────────────────────────────────────────────────────
 
@@ -18,7 +18,6 @@ final authProvider = StateNotifierProvider<AuthNotifier, AuthState>(
 );
 
 // ─── User Provider ──────────────────────────────────────────────────────────────
-
 
 // ─── Products Provider ──────────────────────────────────────────────────────────
 
@@ -114,8 +113,7 @@ class CartNotifier extends StateNotifier<List<CartItemModel>> {
 
   void clearCart() => state = [];
 
-  double get totalAmount =>
-      state.fold(0, (sum, item) => sum + item.totalPrice);
+  double get totalAmount => state.fold(0, (sum, item) => sum + item.totalPrice);
 
   int get totalItems => state.fold(0, (sum, item) => sum + item.quantity);
 }

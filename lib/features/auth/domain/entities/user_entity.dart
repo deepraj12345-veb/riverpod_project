@@ -15,3 +15,4 @@ class UserEntity {
     required this.address,
   });
 }
+

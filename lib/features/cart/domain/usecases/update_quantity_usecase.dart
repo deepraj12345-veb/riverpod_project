@@ -1,5 +1,5 @@
-import 'package:riverpod_project/features/cart/domain/entities/cart_item_entity.dart';
-import 'package:riverpod_project/features/cart/domain/repository/cart_repository.dart';
+import 'package:veggie_mart/features/cart/domain/entities/cart_item_entity.dart';
+import 'package:veggie_mart/features/cart/domain/repository/cart_repository.dart';
 
 class UpdateQuantityUseCase {
   final CartRepository repository;
@@ -14,3 +14,4 @@ class UpdateQuantityUseCase {
     }
   }
 }
+

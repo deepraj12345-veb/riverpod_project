@@ -1,6 +1,6 @@
-import 'package:riverpod_project/features/home/domain/entities/product_entity.dart';
-import 'package:riverpod_project/features/auth/domain/entities/user_entity.dart';
-import 'package:riverpod_project/core/models/models.dart';
+import 'package:veggie_mart/features/home/domain/entities/product_entity.dart';
+import 'package:veggie_mart/features/auth/domain/entities/user_entity.dart';
+import 'package:veggie_mart/core/models/models.dart';
 
 class BannerModel {
   final String id;
@@ -325,3 +325,4 @@ class FakeData {
     address: '12, Vaishali Nagar, Jaipur, Rajasthan 302021',
   );
 }
+

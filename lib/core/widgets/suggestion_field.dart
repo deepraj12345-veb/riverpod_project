@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:riverpod_project/core/theme/app_theme.dart';
-import 'package:riverpod_project/core/widgets/custom_text.dart';
+import 'package:veggie_mart/core/theme/app_theme.dart';
+import 'package:veggie_mart/core/widgets/custom_text.dart';
 
 /// A responsive TextField that shows a live dropdown of filtered suggestions
 /// below the input. Works for any page — just pass a [suggestions] list.
@@ -367,3 +367,4 @@ class _SuggestionTileState extends State<_SuggestionTile> {
     );
   }
 }
+

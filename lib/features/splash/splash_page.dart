@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:riverpod_project/core/theme/app_theme.dart';
+import 'package:veggie_mart/core/theme/app_theme.dart';
 
 class SplashPage extends ConsumerStatefulWidget {
   const SplashPage({super.key});
@@ -110,3 +110,4 @@ class _SplashPageState extends ConsumerState<SplashPage> {
     );
   }
 }
+

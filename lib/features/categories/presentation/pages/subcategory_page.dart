@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:riverpod_project/core/data/fake_data.dart';
-import 'package:riverpod_project/core/theme/app_theme.dart';
-import 'package:riverpod_project/core/widgets/custom_text.dart';
-import 'package:riverpod_project/core/widgets/product_card_widget.dart';
-import 'package:riverpod_project/features/cart/presentation/controllers/cart_controller.dart';
+import 'package:veggie_mart/core/data/fake_data.dart';
+import 'package:veggie_mart/core/theme/app_theme.dart';
+import 'package:veggie_mart/core/widgets/custom_text.dart';
+import 'package:veggie_mart/core/widgets/product_card_widget.dart';
+import 'package:veggie_mart/features/cart/presentation/controllers/cart_controller.dart';
 
 class SubcategoryPage extends ConsumerStatefulWidget {
   final String categoryName;
@@ -359,3 +359,4 @@ class _SubcategoryPageState extends ConsumerState<SubcategoryPage> {
     );
   }
 }
+

@@ -1,5 +1,5 @@
-import 'package:riverpod_project/features/cart/domain/entities/cart_item_entity.dart';
-import 'package:riverpod_project/features/home/domain/entities/product_entity.dart';
+import 'package:veggie_mart/features/cart/domain/entities/cart_item_entity.dart';
+import 'package:veggie_mart/features/home/domain/entities/product_entity.dart';
 
 abstract class CartLocalDataSource {
   Future<List<CartItemEntity>> getItems();
@@ -66,3 +66,4 @@ class CartLocalDataSourceImpl implements CartLocalDataSource {
     return List.unmodifiable(_cartItems);
   }
 }
+

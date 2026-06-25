@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_project/features/auth/domain/usecases/login_usecase.dart';
-import 'package:riverpod_project/features/auth/domain/usecases/logout_usecase.dart';
-import 'package:riverpod_project/features/auth/data/datasource/auth_remote_data_source.dart';
-import 'package:riverpod_project/features/auth/data/datasource/auth_local_data_source.dart';
-import 'package:riverpod_project/features/auth/data/repository/auth_repository_impl.dart';
-import 'package:riverpod_project/features/auth/domain/repository/auth_repository.dart';
+import 'package:veggie_mart/features/auth/domain/usecases/login_usecase.dart';
+import 'package:veggie_mart/features/auth/domain/usecases/logout_usecase.dart';
+import 'package:veggie_mart/features/auth/data/datasource/auth_remote_data_source.dart';
+import 'package:veggie_mart/features/auth/data/datasource/auth_local_data_source.dart';
+import 'package:veggie_mart/features/auth/data/repository/auth_repository_impl.dart';
+import 'package:veggie_mart/features/auth/domain/repository/auth_repository.dart';
 
 enum AuthState { unauthenticated, authenticated }
 
@@ -53,3 +53,4 @@ final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
     logoutUseCase: ref.watch(logoutUseCaseProvider),
   );
 });
+

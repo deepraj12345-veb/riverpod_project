@@ -1,4 +1,4 @@
-import 'package:riverpod_project/features/home/domain/repository/product_repository.dart';
+import 'package:veggie_mart/features/home/domain/repository/product_repository.dart';
 
 class ToggleFavoriteUseCase {
   final ProductRepository repository;
@@ -9,3 +9,4 @@ class ToggleFavoriteUseCase {
     return repository.toggleFavorite(productId);
   }
 }
+

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:riverpod_project/core/theme/app_theme.dart';
-import 'package:riverpod_project/core/widgets/product_card_widget.dart';
-import 'package:riverpod_project/features/home/presentation/controllers/home_controller.dart';
-import 'package:riverpod_project/core/widgets/custom_text.dart';
+import 'package:veggie_mart/core/theme/app_theme.dart';
+import 'package:veggie_mart/core/widgets/product_card_widget.dart';
+import 'package:veggie_mart/features/home/presentation/controllers/home_controller.dart';
+import 'package:veggie_mart/core/widgets/custom_text.dart';
 
 class WishlistPage extends ConsumerWidget {
   const WishlistPage({super.key});
@@ -126,3 +126,4 @@ class _EmptyWishlistView extends StatelessWidget {
     );
   }
 }
+

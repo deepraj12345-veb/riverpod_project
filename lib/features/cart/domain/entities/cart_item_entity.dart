@@ -1,4 +1,4 @@
-import 'package:riverpod_project/features/home/domain/entities/product_entity.dart';
+import 'package:veggie_mart/features/home/domain/entities/product_entity.dart';
 
 class CartItemEntity {
   final ProductEntity product;
@@ -18,3 +18,4 @@ class CartItemEntity {
     );
   }
 }
+

@@ -4,3 +4,4 @@ abstract class AuthRepository {
   Future<void> sendOtp();
   Future<bool> verifyOtp(String enteredOtp);
 }
+

@@ -2,57 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
-  // ─── Brand Colors ──────────────────────────────────────────────
+  // ─── Green Light Theme Colors ──────────────────────────────────────────────
   static const Color primaryGreen = Color(0xFF16A34A);
-  static const Color deepGreen = Color(0xFF14532D);
-  static const Color lightGreen = Color(0xFF22C55E);
+  static const Color deepGreen = Color(0xFF166534);
   static const Color emeraldGreen = Color(0xFF059669);
+  static const Color lightGreen = Color(0xFF22C55E);
 
-  // ─── Background & Surface ──────────────────────────────────────
-  static const Color bgWhite = Color(0xFFFFFFFF);
-  static const Color bgLight = Color(0xFFFFFFFF);
-  static const Color borderColor = Color(0xFFE5E7EB);
-
-  // ─── Text Colors ───────────────────────────────────────────────
-  static const Color textDark = Color(0xFF111827);
-  static const Color textMedium = Color(0xFF374151);
+  // Semantic aliases used across screens
+  static const Color priceOrange = Color(0xFF15803D);
+  static const Color buyBlack = Color(0xFF166534);
+  static const Color textDark = Color(0xFF14532D);
   static const Color textGrey = Color(0xFF6B7280);
-  static const Color textLight = Color(0xFF9CA3AF);
-
-  // ─── Semantic ──────────────────────────────────────────────────
-  static const Color discountRed = Color(0xFFEF4444);
-  static const Color accentRed = Color(0xFFEF4444);
-  static const Color accentGreen = Color(0xFF16A34A);
-  static const Color warningColor = Color(0xFFFFBE21);
-  static const Color successColor = Color(0xFF4ADE80);
-
-  // Keep for compatibility
-  static const Color priceOrange = Color(0xFF16A34A);
-  static const Color buyBlack = Color(0xFF16A34A);
-
-  // ─── Product card background tints ─────────────────────────────
-  static const Color cardMint = Color(0xFFECFDF5);
-  static const Color cardYellow = Color(0xFFFFFBEB);
-  static const Color cardLavender = Color(0xFFF0F9FF);
-  static const Color cardSkyBlue = Color(0xFFEFF6FF);
-  static const Color cardPeach = Color(0xFFFFF7ED);
-  static const Color cardRose = Color(0xFFFFF1F2);
-  static const Color cardLightBlue = Color(0xFFF0FDFB);
-  static const Color cardLightGreen = Color(0xFFF0FDF4);
+  static const Color bgWhite = Color(0xFFF0FDF4);
   static const Color cardWhite = Color(0xFFFFFFFF);
+  static const Color accentRed = Color(0xFF16A34A);
+  static const Color accentGreen = Color(0xFF22C55E);
 
-  static const List<Color> cardColors = [
-    cardMint,
-    cardYellow,
-    cardLavender,
-    cardPeach,
-    cardRose,
-    cardLightBlue,
-    cardSkyBlue,
-    cardLightGreen,
-  ];
+  // ─── Pastel card background palette (green-tinted) ────────────────────────
+  static const Color cardLavender = Color(0xFFDCFCE7);
+  static const Color cardYellow = Color(0xFFF0FDF4);
+  static const Color cardSkyBlue = Color(0xFFECFDF5);
+  static const Color cardMint = Color(0xFFD1FAE5);
+  static const Color cardPeach = Color(0xFFBBF7D0);
+  static const Color cardRose = Color(0xFFA7F3D0);
+  static const Color cardLightBlue = Color(0xFFCCFBF1);
+  static const Color cardLightGreen = Color(0xFFECFDF5);
 
-  // ─── Auth dark theme ───────────────────────────────────────────
+  // ─── Auth dark theme colours (kept dark, green accents) ───────────────────
   static const Color darkBg = Color(0xFF052E16);
   static const Color darkCard = Color(0xFF14532D);
   static const Color darkSurface = Color(0xFF166534);
@@ -61,8 +37,26 @@ class AppTheme {
   static const Color textSecondary = Color(0xFF86EFAC);
   static const Color primaryColor = Color(0xFF22C55E);
   static const Color secondaryColor = Color(0xFF16A34A);
+  static const Color successColor = Color(0xFF4ADE80);
+  static const Color warningColor = Color(0xFFFFBE21);
+  static const Color borderColor = Color(0xFFE5E7EB);
+  static const Color bgLight = Color(0xFFF8F9FA);
+  static const Color textLight = Color(0xFF9CA3AF);
+  static const Color textMedium = Color(0xFF374151);
 
-  // ─── Light Theme ───────────────────────────────────────────────
+  // ─── Card color cycle ─────────────────────────────────────────────────────
+  static const List<Color> cardColors = [
+    cardLavender,
+    cardMint,
+    cardSkyBlue,
+    cardPeach,
+    cardRose,
+    cardLightBlue,
+    cardYellow,
+    cardLightGreen,
+  ];
+
+  // ─── Light (green) Theme ──────────────────────────────────────────────────
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
@@ -72,7 +66,7 @@ class AppTheme {
       colorScheme: const ColorScheme.light(
         primary: primaryGreen,
         secondary: lightGreen,
-        surface: bgWhite,
+        surface: cardWhite,
         onPrimary: Colors.white,
         onSecondary: Colors.white,
         onSurface: textDark,
@@ -86,7 +80,7 @@ class AppTheme {
         iconTheme: IconThemeData(color: textDark),
         titleTextStyle: TextStyle(
           color: textDark,
-          fontSize: 18,
+          fontSize: 22,
           fontWeight: FontWeight.w700,
           fontFamily: 'Poppins',
         ),
@@ -95,55 +89,55 @@ class AppTheme {
         style: ElevatedButton.styleFrom(
           backgroundColor: primaryGreen,
           foregroundColor: Colors.white,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          padding: const EdgeInsets.symmetric(vertical: 14),
-          textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: bgLight,
+        fillColor: cardWhite,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: borderColor),
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: Color(0xFFBBF7D0)),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: borderColor),
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: Color(0xFFBBF7D0)),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(14),
           borderSide: const BorderSide(color: primaryGreen, width: 1.5),
         ),
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        hintStyle: const TextStyle(color: textGrey, fontSize: 14),
         labelStyle: const TextStyle(color: textGrey),
+        hintStyle: const TextStyle(color: textGrey),
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: cardWhite,
         elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-          side: const BorderSide(color: borderColor, width: 0.8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        backgroundColor: bgWhite,
-        selectedItemColor: primaryGreen,
-        unselectedItemColor: textGrey,
+        backgroundColor: cardWhite,
+        selectedItemColor: Color.fromARGB(255, 148, 9, 76),
+        unselectedItemColor: Color.fromARGB(255, 16, 16, 17),
         type: BottomNavigationBarType.fixed,
         elevation: 8,
-        selectedLabelStyle:
-            TextStyle(fontWeight: FontWeight.w600, fontSize: 11),
-        unselectedLabelStyle:
-            TextStyle(fontWeight: FontWeight.w400, fontSize: 11),
+        selectedLabelStyle: TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: 11,
+        ),
+        unselectedLabelStyle: TextStyle(
+          fontWeight: FontWeight.w400,
+          fontSize: 11,
+        ),
       ),
     );
   }
 
-  // ─── Auth Dark Theme ───────────────────────────────────────────
+  // ─── Dark (auth) Theme — stays dark with green accents ─────
   static ThemeData get darkTheme {
     return ThemeData(
       useMaterial3: true,
@@ -174,8 +168,9 @@ class AppTheme {
         style: ElevatedButton.styleFrom(
           backgroundColor: primaryColor,
           foregroundColor: Colors.white,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
           padding: const EdgeInsets.symmetric(vertical: 16),
           textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         ),
@@ -198,7 +193,7 @@ class AppTheme {
         labelStyle: const TextStyle(color: textSecondary),
         hintStyle: const TextStyle(color: textSecondary),
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: darkCard,
         elevation: 0,
         shape: RoundedRectangleBorder(
@@ -209,3 +204,4 @@ class AppTheme {
     );
   }
 }
+

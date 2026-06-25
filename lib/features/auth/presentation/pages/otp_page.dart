@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pinput/pinput.dart';
-import 'package:riverpod_project/core/theme/app_theme.dart';
-import 'package:riverpod_project/features/auth/presentation/controllers/otp_controller.dart';
-import 'package:riverpod_project/features/auth/presentation/widgets/auth_widgets.dart';
-import 'package:riverpod_project/core/widgets/custom_text.dart';
+import 'package:veggie_mart/core/theme/app_theme.dart';
+import 'package:veggie_mart/features/auth/presentation/controllers/otp_controller.dart';
+import 'package:veggie_mart/features/auth/presentation/widgets/auth_widgets.dart';
+import 'package:veggie_mart/core/widgets/custom_text.dart';
 
 class OtpPage extends ConsumerStatefulWidget {
   final String phone;
@@ -301,3 +301,4 @@ class _OtpPageState extends ConsumerState<OtpPage>
     );
   }
 }
+

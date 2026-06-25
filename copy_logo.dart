@@ -5,5 +5,6 @@ void main() {
   final dst = File(r'c:\Projects\veggie mart\riverpod_project\assets\logo.png');
   dst.parent.createSync(recursive: true);
   src.copySync(dst.path);
+  // ignore: avoid_print
   print('Logo copied via Dart!');
 }

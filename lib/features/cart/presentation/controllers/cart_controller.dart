@@ -1,14 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_project/features/cart/data/datasource/cart_local_data_source.dart';
-import 'package:riverpod_project/features/cart/data/repository/cart_repository_impl.dart';
-import 'package:riverpod_project/features/cart/domain/repository/cart_repository.dart';
-import 'package:riverpod_project/features/cart/domain/entities/cart_item_entity.dart';
-import 'package:riverpod_project/features/cart/domain/usecases/get_cart_items_usecase.dart';
-import 'package:riverpod_project/features/cart/domain/usecases/add_to_cart_usecase.dart';
-import 'package:riverpod_project/features/cart/domain/usecases/remove_from_cart_usecase.dart';
-import 'package:riverpod_project/features/cart/domain/usecases/update_quantity_usecase.dart';
-import 'package:riverpod_project/features/cart/domain/usecases/clear_cart_usecase.dart';
-import 'package:riverpod_project/features/home/domain/entities/product_entity.dart';
+import 'package:veggie_mart/features/cart/data/datasource/cart_local_data_source.dart';
+import 'package:veggie_mart/features/cart/data/repository/cart_repository_impl.dart';
+import 'package:veggie_mart/features/cart/domain/repository/cart_repository.dart';
+import 'package:veggie_mart/features/cart/domain/entities/cart_item_entity.dart';
+import 'package:veggie_mart/features/cart/domain/usecases/get_cart_items_usecase.dart';
+import 'package:veggie_mart/features/cart/domain/usecases/add_to_cart_usecase.dart';
+import 'package:veggie_mart/features/cart/domain/usecases/remove_from_cart_usecase.dart';
+import 'package:veggie_mart/features/cart/domain/usecases/update_quantity_usecase.dart';
+import 'package:veggie_mart/features/cart/domain/usecases/clear_cart_usecase.dart';
+import 'package:veggie_mart/features/home/domain/entities/product_entity.dart';
 
 final cartRepositoryProvider = Provider<CartRepository>((ref) {
   return CartRepositoryImpl(localDataSource: CartLocalDataSourceImpl());
@@ -90,3 +90,4 @@ final cartItemCountProvider = Provider<int>((ref) {
   final cart = ref.watch(cartProvider);
   return cart.fold(0, (sum, item) => sum + item.quantity);
 });
+

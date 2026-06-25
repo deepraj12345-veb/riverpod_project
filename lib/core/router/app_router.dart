@@ -1,24 +1,24 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:riverpod_project/features/auth/presentation/controllers/login_controller.dart';
-import 'package:riverpod_project/features/auth/presentation/pages/login_page.dart';
-import 'package:riverpod_project/features/auth/presentation/pages/signup_page.dart';
-import 'package:riverpod_project/features/auth/presentation/pages/otp_page.dart';
-import 'package:riverpod_project/features/auth/presentation/pages/forgot_password_page.dart';
-import 'package:riverpod_project/features/splash/presentation/pages/splash_page.dart';
-import 'package:riverpod_project/features/shell/presentation/pages/main_shell.dart';
-import 'package:riverpod_project/features/home/presentation/pages/home_page.dart';
-import 'package:riverpod_project/features/product/presentation/pages/product_detail_page.dart';
-import 'package:riverpod_project/features/cart/presentation/pages/cart_page.dart';
-import 'package:riverpod_project/features/profile/presentation/pages/profile_page.dart';
-import 'package:riverpod_project/features/wishlist/presentation/pages/wishlist_page.dart';
-import 'package:riverpod_project/features/categories/presentation/pages/categories_page.dart';
-import 'package:riverpod_project/features/categories/presentation/pages/subcategory_page.dart';
-import 'package:riverpod_project/features/orders/presentation/pages/order_again_page.dart';
-import 'package:riverpod_project/features/orders/presentation/pages/orders_list_page.dart';
-import 'package:riverpod_project/features/orders/presentation/pages/order_detail_page.dart';
-import 'package:riverpod_project/features/checkout/presentation/pages/checkout_page.dart';
-import 'package:riverpod_project/features/home/presentation/pages/search_page.dart';
+import 'package:veggie_mart/features/auth/presentation/controllers/login_controller.dart';
+import 'package:veggie_mart/features/auth/presentation/pages/login_page.dart';
+import 'package:veggie_mart/features/auth/presentation/pages/signup_page.dart';
+import 'package:veggie_mart/features/auth/presentation/pages/otp_page.dart';
+import 'package:veggie_mart/features/auth/presentation/pages/forgot_password_page.dart';
+import 'package:veggie_mart/features/splash/presentation/pages/splash_page.dart';
+import 'package:veggie_mart/features/shell/presentation/pages/main_shell.dart';
+import 'package:veggie_mart/features/home/presentation/pages/home_page.dart';
+import 'package:veggie_mart/features/product/presentation/pages/product_detail_page.dart';
+import 'package:veggie_mart/features/cart/presentation/pages/cart_page.dart';
+import 'package:veggie_mart/features/profile/presentation/pages/profile_page.dart';
+import 'package:veggie_mart/features/wishlist/presentation/pages/wishlist_page.dart';
+import 'package:veggie_mart/features/categories/presentation/pages/categories_page.dart';
+import 'package:veggie_mart/features/categories/presentation/pages/subcategory_page.dart';
+import 'package:veggie_mart/features/orders/presentation/pages/order_again_page.dart';
+import 'package:veggie_mart/features/orders/presentation/pages/orders_list_page.dart';
+import 'package:veggie_mart/features/orders/presentation/pages/order_detail_page.dart';
+import 'package:veggie_mart/features/checkout/presentation/pages/checkout_page.dart';
+import 'package:veggie_mart/features/home/presentation/pages/search_page.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authProvider);
@@ -93,3 +93,4 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     ],
   );
 });
+

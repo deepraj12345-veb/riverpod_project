@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:riverpod_project/core/widgets/custom_network_image.dart';
-import 'package:riverpod_project/core/theme/app_theme.dart';
-import 'package:riverpod_project/features/auth/presentation/controllers/login_controller.dart';
-import 'package:riverpod_project/features/cart/presentation/controllers/cart_controller.dart';
-import 'package:riverpod_project/features/home/presentation/controllers/home_controller.dart';
-import 'package:riverpod_project/features/profile/presentation/controllers/profile_controller.dart';
-import 'package:riverpod_project/features/orders/presentation/controllers/orders_controller.dart';
-import 'package:riverpod_project/core/widgets/custom_text.dart';
+import 'package:veggie_mart/core/widgets/custom_network_image.dart';
+import 'package:veggie_mart/core/theme/app_theme.dart';
+import 'package:veggie_mart/features/auth/presentation/controllers/login_controller.dart';
+import 'package:veggie_mart/features/cart/presentation/controllers/cart_controller.dart';
+import 'package:veggie_mart/features/home/presentation/controllers/home_controller.dart';
+import 'package:veggie_mart/features/profile/presentation/controllers/profile_controller.dart';
+import 'package:veggie_mart/features/orders/presentation/controllers/orders_controller.dart';
+import 'package:veggie_mart/core/widgets/custom_text.dart';
 
 class ProfilePage extends ConsumerWidget {
   const ProfilePage({super.key});
@@ -73,7 +73,7 @@ class ProfilePage extends ConsumerWidget {
           SliverAppBar(
             expandedHeight: 240,
             pinned: true,
-            backgroundColor: Colors.white,
+            backgroundColor: AppTheme.bgWhite,
             elevation: 0,
             actions: [
               IconButton(
@@ -85,7 +85,7 @@ class ProfilePage extends ConsumerWidget {
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
                 decoration: const BoxDecoration(
-                  color: Colors.white,
+                  color: AppTheme.bgWhite,
                   border: Border(
                     bottom: BorderSide(color: AppTheme.borderColor),
                   ),
@@ -159,7 +159,7 @@ class ProfilePage extends ConsumerWidget {
                         vertical: 5,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFECFDF5),
+                        color: AppTheme.cardMint,
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
                           color: AppTheme.primaryGreen.withOpacity(0.3),
@@ -206,7 +206,7 @@ class ProfilePage extends ConsumerWidget {
                           label: 'Wishlist',
                           value: '$wishlistCount',
                           subtitle: 'saved items',
-                          bgColor: const Color(0xFFFFF1F2),
+                          bgColor: AppTheme.cardRose,
                           iconColor: AppTheme.accentRed,
                           onTap: () => context.push('/wishlist'),
                         ),
@@ -244,7 +244,7 @@ class ProfilePage extends ConsumerWidget {
                   // Menu items
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: AppTheme.bgWhite,
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(color: AppTheme.borderColor),
                     ),
@@ -320,7 +320,7 @@ class ProfilePage extends ConsumerWidget {
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: AppTheme.bgWhite,
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(
                             color: AppTheme.accentRed.withOpacity(0.4)),
@@ -366,7 +366,7 @@ class ProfilePage extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: Colors.white,
+        backgroundColor: AppTheme.bgWhite,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: const CustomText('Sign Out?',
             style: TextStyle(color: AppTheme.textDark)),
@@ -438,7 +438,7 @@ class _QuickActionCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppTheme.bgWhite,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(color: AppTheme.borderColor),
           // boxShadow: [
@@ -492,3 +492,4 @@ class _QuickActionCard extends StatelessWidget {
     );
   }
 }
+

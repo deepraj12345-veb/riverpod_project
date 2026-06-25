@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_project/features/home/data/datasource/product_remote_data_source.dart';
-import 'package:riverpod_project/features/home/data/repository/product_repository_impl.dart';
-import 'package:riverpod_project/features/home/domain/repository/product_repository.dart';
-import 'package:riverpod_project/features/home/domain/entities/product_entity.dart';
-import 'package:riverpod_project/features/home/domain/usecases/get_products_usecase.dart';
-import 'package:riverpod_project/features/home/domain/usecases/toggle_favorite_usecase.dart';
+import 'package:veggie_mart/features/home/data/datasource/product_remote_data_source.dart';
+import 'package:veggie_mart/features/home/data/repository/product_repository_impl.dart';
+import 'package:veggie_mart/features/home/domain/repository/product_repository.dart';
+import 'package:veggie_mart/features/home/domain/entities/product_entity.dart';
+import 'package:veggie_mart/features/home/domain/usecases/get_products_usecase.dart';
+import 'package:veggie_mart/features/home/domain/usecases/toggle_favorite_usecase.dart';
 
 final productRepositoryProvider = Provider<ProductRepository>((ref) {
   return ProductRepositoryImpl(remoteDataSource: ProductRemoteDataSourceImpl());
@@ -73,3 +73,4 @@ final searchedProductsProvider = Provider<List<ProductEntity>>((ref) {
       )
       .toList();
 });
+

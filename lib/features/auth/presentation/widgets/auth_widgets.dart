@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:riverpod_project/core/theme/app_theme.dart';
-import 'package:riverpod_project/core/widgets/custom_text.dart';
+import 'package:veggie_mart/core/theme/app_theme.dart';
+import 'package:veggie_mart/core/widgets/custom_text.dart';
 
 class AuthTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -149,3 +149,4 @@ class SocialButton extends StatelessWidget {
     );
   }
 }
+

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:riverpod_project/core/data/fake_data.dart';
-import 'package:riverpod_project/core/theme/app_theme.dart';
-import 'package:riverpod_project/core/widgets/product_card_widget.dart';
-import 'package:riverpod_project/core/widgets/section_header_widget.dart';
-import 'package:riverpod_project/features/home/domain/entities/product_entity.dart';
-import 'package:riverpod_project/features/home/presentation/controllers/home_controller.dart';
-import 'package:riverpod_project/features/home/presentation/widgets/category_row_widget.dart';
-import 'package:riverpod_project/features/home/presentation/widgets/home_banner_widget.dart';
-import 'package:riverpod_project/features/home/presentation/widgets/subcategory_chips_widget.dart';
-import 'package:riverpod_project/core/widgets/custom_text.dart';
+import 'package:veggie_mart/core/data/fake_data.dart';
+import 'package:veggie_mart/core/theme/app_theme.dart';
+import 'package:veggie_mart/core/widgets/product_card_widget.dart';
+import 'package:veggie_mart/core/widgets/section_header_widget.dart';
+import 'package:veggie_mart/features/home/domain/entities/product_entity.dart';
+import 'package:veggie_mart/features/home/presentation/controllers/home_controller.dart';
+import 'package:veggie_mart/features/home/presentation/widgets/category_row_widget.dart';
+import 'package:veggie_mart/features/home/presentation/widgets/home_banner_widget.dart';
+import 'package:veggie_mart/features/home/presentation/widgets/subcategory_chips_widget.dart';
+import 'package:veggie_mart/core/widgets/custom_text.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -470,3 +470,4 @@ class _EmptyState extends StatelessWidget {
     );
   }
 }
+

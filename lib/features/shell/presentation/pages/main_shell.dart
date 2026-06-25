@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:badges/badges.dart' as badges;
-import 'package:riverpod_project/features/cart/presentation/controllers/cart_controller.dart';
-import 'package:riverpod_project/core/theme/app_theme.dart';
-import 'package:riverpod_project/core/widgets/custom_text.dart';
+import 'package:veggie_mart/features/cart/presentation/controllers/cart_controller.dart';
+import 'package:veggie_mart/core/theme/app_theme.dart';
+import 'package:veggie_mart/core/widgets/custom_text.dart';
 
 import 'package:flutter/rendering.dart';
 
@@ -132,3 +132,4 @@ class _Tab {
     required this.route,
   });
 }
+

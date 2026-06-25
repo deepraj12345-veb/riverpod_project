@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:riverpod_project/core/theme/app_theme.dart';
+import 'package:veggie_mart/core/theme/app_theme.dart';
 
 class CustomNetworkImage extends StatelessWidget {
   final String imageUrl;
@@ -69,3 +69,4 @@ class CustomNetworkImage extends StatelessWidget {
     );
   }
 }
+

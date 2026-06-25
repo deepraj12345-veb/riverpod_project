@@ -1,6 +1,6 @@
-import 'package:riverpod_project/features/auth/data/datasource/auth_remote_data_source.dart';
-import 'package:riverpod_project/features/auth/data/datasource/auth_local_data_source.dart';
-import 'package:riverpod_project/features/auth/domain/repository/auth_repository.dart';
+import 'package:veggie_mart/features/auth/data/datasource/auth_remote_data_source.dart';
+import 'package:veggie_mart/features/auth/data/datasource/auth_local_data_source.dart';
+import 'package:veggie_mart/features/auth/domain/repository/auth_repository.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
@@ -39,3 +39,4 @@ class AuthRepositoryImpl implements AuthRepository {
     return success;
   }
 }
+

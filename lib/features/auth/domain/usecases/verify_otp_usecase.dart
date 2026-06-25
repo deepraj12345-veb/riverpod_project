@@ -1,4 +1,4 @@
-import 'package:riverpod_project/features/auth/domain/repository/auth_repository.dart';
+import 'package:veggie_mart/features/auth/domain/repository/auth_repository.dart';
 
 class VerifyOtpUseCase {
   final AuthRepository repository;
@@ -9,3 +9,4 @@ class VerifyOtpUseCase {
     return repository.verifyOtp(code);
   }
 }
+

@@ -1,7 +1,7 @@
-import 'package:riverpod_project/features/cart/data/datasource/cart_local_data_source.dart';
-import 'package:riverpod_project/features/cart/domain/entities/cart_item_entity.dart';
-import 'package:riverpod_project/features/cart/domain/repository/cart_repository.dart';
-import 'package:riverpod_project/features/home/domain/entities/product_entity.dart';
+import 'package:veggie_mart/features/cart/data/datasource/cart_local_data_source.dart';
+import 'package:veggie_mart/features/cart/domain/entities/cart_item_entity.dart';
+import 'package:veggie_mart/features/cart/domain/repository/cart_repository.dart';
+import 'package:veggie_mart/features/home/domain/entities/product_entity.dart';
 
 class CartRepositoryImpl implements CartRepository {
   final CartLocalDataSource localDataSource;
@@ -38,3 +38,4 @@ class CartRepositoryImpl implements CartRepository {
     return localDataSource.clear();
   }
 }
+
