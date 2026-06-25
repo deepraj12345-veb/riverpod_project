@@ -9,6 +9,7 @@ import 'package:veggie_mart/features/home/presentation/controllers/home_controll
 import 'package:veggie_mart/features/profile/presentation/controllers/profile_controller.dart';
 import 'package:veggie_mart/features/orders/presentation/controllers/orders_controller.dart';
 import 'package:veggie_mart/core/widgets/custom_text.dart';
+import 'package:veggie_mart/core/providers/app_providers.dart' hide cartItemCountProvider, productsProvider, authProvider;
 
 class ProfilePage extends ConsumerWidget {
   const ProfilePage({super.key});
@@ -16,12 +17,20 @@ class ProfilePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userProvider);
+    final isPremium = ref.watch(isPremiumUserProvider);
     final cartCount = ref.watch(cartItemCountProvider);
     final wishlistCount =
         ref.watch(productsProvider).where((p) => p.isFavorite).length;
     final ordersCount = ref.watch(ordersProvider).length;
 
     final menuItems = [
+      _MenuItem(
+        icon: Icons.star_rounded,
+        title: 'Subscription Details',
+        subtitle: isPremium ? 'Premium Active' : 'Upgrade to Premium',
+        bgColor: AppTheme.cardMint,
+        iconColor: AppTheme.primaryGreen,
+      ),
       const _MenuItem(
         icon: Icons.person_outline_rounded,
         title: 'Edit Profile',
@@ -153,24 +162,29 @@ class ProfilePage extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 5,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppTheme.cardMint,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: AppTheme.primaryGreen.withOpacity(0.3),
+                    GestureDetector(
+                      onTap: () {
+                        context.push('/subscription');
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 5,
                         ),
-                      ),
-                      child: const CustomText(
-                        '⭐ Premium Member',
-                        style: TextStyle(
-                          color: AppTheme.primaryGreen,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
+                        decoration: BoxDecoration(
+                          color: isPremium ? AppTheme.cardMint : Colors.grey.shade100,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: isPremium ? AppTheme.primaryGreen.withValues(alpha: 0.3) : Colors.grey.shade300,
+                          ),
+                        ),
+                        child: CustomText(
+                          isPremium ? '⭐ Premium Member' : '⭐ Upgrade to Premium',
+                          style: TextStyle(
+                            color: isPremium ? AppTheme.primaryGreen : Colors.grey.shade600,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ),
@@ -255,7 +269,9 @@ class ProfilePage extends ConsumerWidget {
                           children: [
                             ListTile(
                               onTap: () {
-                                if (item.title == 'Order History') {
+                                if (item.title == 'Subscription Details') {
+                                  context.push('/subscription');
+                                } else if (item.title == 'Order History') {
                                   context.go('/orders');
                                 }
                               },
@@ -436,53 +452,51 @@ class _QuickActionCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         decoration: BoxDecoration(
           color: AppTheme.bgWhite,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(color: AppTheme.borderColor),
-          // boxShadow: [
-          //   BoxShadow(
-          //     color: Colors.black.withOpacity(0.03),
-          //     blurRadius: 6,
-          //     offset: const Offset(0, 2),
-          //   ),
-          // ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(
-                color: bgColor,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Icon(icon, color: iconColor, size: 18),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  width: 30,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    color: bgColor,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(icon, color: iconColor, size: 16),
+                ),
+                CustomText(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                    color: AppTheme.textDark,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 10),
-            CustomText(
-              value,
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w800,
-                color: AppTheme.textDark,
-              ),
-            ),
-            const SizedBox(height: 1),
+            const SizedBox(height: 8),
             CustomText(
               label,
               style: const TextStyle(
                 fontSize: 13,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w700,
                 color: AppTheme.textDark,
               ),
             ),
             CustomText(
               subtitle,
               style: const TextStyle(
-                fontSize: 11,
+                fontSize: 10,
                 color: AppTheme.textGrey,
               ),
             ),

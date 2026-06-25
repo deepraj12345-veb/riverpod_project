@@ -1,17 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:veggie_mart/core/widgets/custom_network_image.dart';
 import 'package:veggie_mart/core/theme/app_theme.dart';
-import 'package:veggie_mart/core/widgets/suggestion_field.dart';
-import 'package:veggie_mart/features/auth/presentation/controllers/login_controller.dart';
 import 'package:veggie_mart/features/auth/presentation/widgets/auth_widgets.dart';
 import 'package:veggie_mart/core/widgets/custom_text.dart';
-
-const _emailSuggestions = [
-  'test@gmail.com',
-  'admin@gmail.com',
-];
+import 'package:veggie_mart/core/widgets/custom_network_image.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -129,13 +123,6 @@ class _LoginPageState extends ConsumerState<LoginPage>
                                 ],
                               ),
                               borderRadius: BorderRadius.circular(24),
-                              // boxShadow: [
-                              //   BoxShadow(
-                              //     color: AppTheme.primaryGreen.withOpacity(0.4),
-                              //     blurRadius: 30,
-                              //     spreadRadius: 5,
-                              //   ),
-                              // ],
                             ),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(24),
@@ -169,59 +156,55 @@ class _LoginPageState extends ConsumerState<LoginPage>
                               letterSpacing: 1.2,
                             ),
                           ),
-                          const SizedBox(height: 4),
-                          const CustomText(
-                            'Fresh groceries at your doorstep',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: AppTheme.textGrey,
-                            ),
-                          ),
-                          const SizedBox(height: 20),
 
-                          // Form Area (Redesigned, no card/shadow)
-                          Container(
-                            width: double.infinity,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const CustomText(
-                                  'Welcome Back 👋',
-                                  style: TextStyle(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.w800,
-                                    color: AppTheme.textDark,
+                          const SizedBox(height: 80),
+
+                          SizedBox(
+                              width: double.infinity,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const CustomText(
+                                    'Welcome Back 👋',
+                                    style: TextStyle(
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.w700,
+                                      color: AppTheme.textDark,
+                                      letterSpacing: -0.5,
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(height: 24),
 
-                                // Mobile Number
-                                AuthTextField(
-                                  controller: _phoneCtrl,
-                                  label: 'Mobile Number',
-                                  hint: 'Enter your 10-digit number',
-                                  icon: Icons.phone_android_outlined,
-                                  keyboardType: TextInputType.phone,
-                                  validator: (v) {
-                                    if (v == null || v.isEmpty) {
-                                      return 'Please enter mobile number';
-                                    }
-                                    if (v.length < 10) {
-                                      return 'Invalid mobile number';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                const SizedBox(height: 24),
+                                  const SizedBox(height: 12),
 
-                                GradientButton(
-                                  text: 'Get OTP',
-                                  isLoading: false,
-                                  onPressed: _login,
-                                ),
-                              ],
-                            ),
-                          ),
+                                  // Mobile Number
+                                  AuthTextField(
+                                    controller: _phoneCtrl,
+                                    hint: 'Enter your 10-digit number',
+                                    icon: Icons.phone_android_outlined,
+                                    keyboardType: TextInputType.phone,
+                                    maxLength: 10,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.digitsOnly
+                                    ],
+                                    validator: (v) {
+                                      if (v == null || v.isEmpty) {
+                                        return 'Please enter mobile number';
+                                      }
+                                      if (v.length < 10) {
+                                        return 'Invalid mobile number';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                  const SizedBox(height: 24),
+
+                                  GradientButton(
+                                    text: 'Get OTP',
+                                    isLoading: false,
+                                    onPressed: _login,
+                                  ),
+                                ],
+                              )),
                           const SizedBox(height: 20),
 
                           // Social divider
@@ -251,18 +234,6 @@ class _LoginPageState extends ConsumerState<LoginPage>
                           ),
                           const SizedBox(height: 16),
 
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.center,
-                          //   children: [
-
-                          //     const SizedBox(width: 16),
-                          //     SocialButton(
-                          //       icon: Icons.apple_rounded,
-                          //       label: 'Apple',
-                          //       onTap: () {},
-                          //     ),
-                          //   ],
-                          // ),
                           SocialButton(
                             icon: Image.asset(
                               'assets/images/google.png',
@@ -307,4 +278,3 @@ class _LoginPageState extends ConsumerState<LoginPage>
     );
   }
 }
-

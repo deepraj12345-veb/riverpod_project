@@ -17,7 +17,8 @@ class MainShell extends ConsumerStatefulWidget {
   ConsumerState<MainShell> createState() => _MainShellState();
 }
 
-class _MainShellState extends ConsumerState<MainShell> with SingleTickerProviderStateMixin {
+class _MainShellState extends ConsumerState<MainShell>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _hideAnimCtrl;
 
   @override
@@ -37,10 +38,26 @@ class _MainShellState extends ConsumerState<MainShell> with SingleTickerProvider
   }
 
   static const _tabs = [
-    _Tab(icon: Icons.home_outlined, activeIcon: Icons.home_rounded, label: 'Home', route: '/home'),
-    _Tab(assetPath: 'assets/images/categories_icon.png', label: 'Categories', route: '/categories'),
-    _Tab(assetPath: 'assets/images/cart_icon.png', label: 'Cart', route: '/cart'),
-    _Tab(assetPath: 'assets/images/profile_icon.png', label: 'Profile', route: '/profile'),
+    _Tab(
+        icon: Icons.home_outlined,
+        activeIcon: Icons.home_rounded,
+        label: 'Home',
+        route: '/home'),
+    _Tab(
+        icon: Icons.grid_view_outlined,
+        activeIcon: Icons.grid_view_rounded,
+        label: 'Categories',
+        route: '/categories'),
+    _Tab(
+        icon: Icons.shopping_cart_outlined,
+        activeIcon: Icons.shopping_cart_rounded,
+        label: 'Cart',
+        route: '/cart'),
+    _Tab(
+        icon: Icons.person_outline_rounded,
+        activeIcon: Icons.person_rounded,
+        label: 'Profile',
+        route: '/profile'),
   ];
 
   int _currentIndex(BuildContext context) {
@@ -83,58 +100,62 @@ class _MainShellState extends ConsumerState<MainShell> with SingleTickerProvider
             const FloatingCartBar(),
             BottomNavigationBar(
               currentIndex: index,
-        selectedItemColor: AppTheme.primaryGreen,
-        unselectedItemColor: AppTheme.textGrey,
-        type: BottomNavigationBarType.fixed,
-        onTap: (i) => context.go(_tabs[i].route),
-        items: List.generate(_tabs.length, (i) {
-          final tab = _tabs[i];
-          final isSelected = index == i;
-          final isCart = tab.route == '/cart';
+              backgroundColor: Colors.white,
+              selectedItemColor: AppTheme.primaryGreen,
+              unselectedItemColor: AppTheme.textGrey,
+              selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
+              type: BottomNavigationBarType.fixed,
+              onTap: (i) => context.go(_tabs[i].route),
+              items: List.generate(_tabs.length, (i) {
+                final tab = _tabs[i];
+                final isSelected = index == i;
+                final isCart = tab.route == '/cart';
 
-          Widget iconWidget;
-          if (tab.assetPath != null) {
-            iconWidget = Image.asset(
-              tab.assetPath!,
-              width: 24,
-              height: 24,
-              color: isSelected ? AppTheme.primaryGreen : AppTheme.textGrey,
-            );
-          } else {
-            iconWidget = Icon(
-              isSelected ? tab.activeIcon! : tab.icon!,
-              color: isSelected ? AppTheme.primaryGreen : AppTheme.textGrey,
-            );
-          }
+                Widget iconWidget;
+                if (tab.assetPath != null) {
+                  iconWidget = Image.asset(
+                    tab.assetPath!,
+                    width: 24,
+                    height: 24,
+                    color:
+                        isSelected ? AppTheme.primaryGreen : AppTheme.textGrey,
+                  );
+                } else {
+                  iconWidget = Icon(
+                    isSelected ? tab.activeIcon! : tab.icon!,
+                    color:
+                        isSelected ? AppTheme.primaryGreen : AppTheme.textGrey,
+                  );
+                }
 
-          if (isCart && cartCount > 0) {
-            iconWidget = badges.Badge(
-              badgeContent: CustomText(
-                cartCount > 9 ? '9+' : '$cartCount',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 9,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              badgeStyle: const badges.BadgeStyle(
-                badgeColor: AppTheme.primaryGreen,
-                padding: EdgeInsets.all(4),
-              ),
-              child: iconWidget,
-            );
-          }
+                if (isCart && cartCount > 0) {
+                  iconWidget = badges.Badge(
+                    badgeContent: CustomText(
+                      cartCount > 9 ? '9+' : '$cartCount',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 9,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    badgeStyle: const badges.BadgeStyle(
+                      badgeColor: AppTheme.primaryGreen,
+                      padding: EdgeInsets.all(4),
+                    ),
+                    child: iconWidget,
+                  );
+                }
 
-          return BottomNavigationBarItem(
-            icon: iconWidget,
-            label: tab.label,
-          );
-        }),
+                return BottomNavigationBarItem(
+                  icon: iconWidget,
+                  label: tab.label,
+                );
+              }),
+            ),
+          ],
+        ),
       ),
-    ],
-  ),
-),
-);
+    );
   }
 }
 
@@ -152,4 +173,3 @@ class _Tab {
     required this.route,
   });
 }
-

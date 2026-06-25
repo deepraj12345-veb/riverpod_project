@@ -9,6 +9,8 @@ import 'package:veggie_mart/features/cart/presentation/controllers/cart_controll
 import 'package:veggie_mart/features/orders/presentation/controllers/orders_controller.dart';
 import 'package:veggie_mart/core/data/fake_data.dart';
 import 'package:veggie_mart/core/models/models.dart';
+import 'package:veggie_mart/core/providers/app_providers.dart'
+    hide cartProvider, cartTotalProvider;
 
 import 'package:veggie_mart/features/cart/domain/entities/cart_item_entity.dart';
 
@@ -27,17 +29,29 @@ class _CartPageState extends ConsumerState<CartPage> {
   AddressModel? _selectedAddress;
   String? _selectedPayment;
 
-  static const _promoDiscounts = {
-    'SAVE10': 0.10,
-    'SAVE20': 0.20,
-    'VEGGIE15': 0.15,
-    'WELCOME': 0.10,
-    'SUMMER25': 0.25,
-    'FRESH30': 0.30,
-    'GREEN50': 0.50,
-    'NEWUSER': 0.20,
-    'LOYALTY5': 0.05,
-  };
+  String _selectedDuration = 'One Time';
+  DateTimeRange? _customDateRange;
+
+  Map<String, double> get _currentPromoDiscounts {
+    final isPremium = ref.read(isPremiumUserProvider);
+    if (isPremium) {
+      return {
+        'PREMIUM20': 0.20,
+        'PREMIUM50': 0.50,
+        'FRESH30': 0.30,
+        'VEGGIE15': 0.15,
+        'GREEN50': 0.50,
+        'VIPDELIGHT': 0.40,
+        'CASHBACK10': 0.10,
+      };
+    }
+    return {
+      'SAVE10': 0.10,
+      'WELCOME': 0.10,
+      'NEWUSER': 0.20,
+      'LOYALTY5': 0.05,
+    };
+  }
 
   @override
   void initState() {
@@ -59,8 +73,9 @@ class _CartPageState extends ConsumerState<CartPage> {
 
   void _applyPromo() {
     final code = _promoCtrl.text.trim().toUpperCase();
-    if (_promoDiscounts.containsKey(code)) {
-      final disc = _promoDiscounts[code] ?? 0.0;
+    final promos = _currentPromoDiscounts;
+    if (promos.containsKey(code)) {
+      final disc = promos[code] ?? 0.0;
       setState(() {
         _promoApplied = true;
         _appliedDiscount = disc;
@@ -120,7 +135,7 @@ class _CartPageState extends ConsumerState<CartPage> {
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
                           color: isSelected
-                              ? AppTheme.primaryGreen.withOpacity(0.05)
+                              ? AppTheme.primaryGreen.withValues(alpha: 0.05)
                               : Colors.white,
                           border: Border.all(
                               color: isSelected
@@ -158,7 +173,7 @@ class _CartPageState extends ConsumerState<CartPage> {
                         ),
                       ),
                     );
-                  }).toList()
+                  })
                 ],
               ),
             ),
@@ -199,7 +214,7 @@ class _CartPageState extends ConsumerState<CartPage> {
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
                           color: isSelected
-                              ? AppTheme.primaryGreen.withOpacity(0.05)
+                              ? AppTheme.primaryGreen.withValues(alpha: 0.05)
                               : Colors.white,
                           border: Border.all(
                               color: isSelected
@@ -217,19 +232,58 @@ class _CartPageState extends ConsumerState<CartPage> {
                                     ? AppTheme.primaryGreen
                                     : AppTheme.textGrey),
                             const SizedBox(width: 12),
-                            Text(pm,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w700, fontSize: 15)),
+                            Expanded(
+                              child: Text(pm,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w700, fontSize: 15)),
+                            ),
                           ],
                         ),
                       ),
                     );
-                  }).toList()
+                  })
                 ],
               ),
             ),
           );
         });
+  }
+
+  Future<void> _selectCustomDateRange() async {
+    final picked = await showDateRangePicker(
+      context: context,
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: AppTheme.primaryGreen,
+              onPrimary: Colors.white,
+              onSurface: AppTheme.textDark,
+            ),
+            datePickerTheme: const DatePickerThemeData(
+              headerHeadlineStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              headerHelpStyle: TextStyle(fontSize: 12),
+              dayStyle: TextStyle(fontSize: 12),
+              weekdayStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+              yearStyle: TextStyle(fontSize: 12),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null) {
+      setState(() {
+        _selectedDuration = 'Custom Dates';
+        _customDateRange = picked;
+      });
+    } else {
+      if (_customDateRange == null) {
+        setState(() => _selectedDuration = 'One Time');
+      }
+    }
   }
 
   void _placeOrder(double total, double tax, double discount, double subtotal,
@@ -300,10 +354,16 @@ class _CartPageState extends ConsumerState<CartPage> {
   @override
   Widget build(BuildContext context) {
     final cartItems = ref.watch(cartProvider);
+    final isPremium = ref.watch(isPremiumUserProvider);
     final subtotal = ref.watch(cartTotalProvider);
     final discount = subtotal * _appliedDiscount;
     final tax = subtotal * 0.05;
-    final total = subtotal + tax - discount;
+
+    final handlingFee = isPremium ? 0.0 : 10.0;
+    final freeDeliveryThreshold = isPremium ? 100.0 : 200.0;
+    final deliveryFee = subtotal >= freeDeliveryThreshold ? 0.0 : 40.0;
+
+    final total = subtotal + tax - discount + handlingFee + deliveryFee;
 
     if (cartItems.isEmpty) {
       return Scaffold(
@@ -489,7 +549,8 @@ class _CartPageState extends ConsumerState<CartPage> {
                           Container(
                             padding: const EdgeInsets.all(6),
                             decoration: BoxDecoration(
-                                color: AppTheme.primaryGreen.withOpacity(0.1),
+                                color: AppTheme.primaryGreen
+                                    .withValues(alpha: 0.1),
                                 shape: BoxShape.circle),
                             child: const Icon(Icons.location_on_rounded,
                                 color: AppTheme.primaryGreen, size: 18),
@@ -515,6 +576,98 @@ class _CartPageState extends ConsumerState<CartPage> {
                           ),
                         ],
                       )
+                    ]
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            // Subscription Options
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Container(
+                margin: const EdgeInsets.only(bottom: 16),
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: AppTheme.borderColor),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const CustomText('Order Type & Delivery Schedule',
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: AppTheme.textDark)),
+                    const SizedBox(height: 12),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        'One Time',
+                        '1 Week',
+                        '15 Days',
+                        '1 Month',
+                        'Custom Dates'
+                      ].map((duration) {
+                        final isSelected = _selectedDuration == duration;
+                        return InkWell(
+                          onTap: () {
+                            if (duration == 'Custom Dates') {
+                              _selectCustomDateRange();
+                            } else {
+                              setState(() {
+                                _selectedDuration = duration;
+                                _customDateRange = null;
+                              });
+                            }
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: isSelected
+                                  ? AppTheme.primaryGreen
+                                  : AppTheme.bgLight,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: CustomText(duration,
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: isSelected
+                                        ? Colors.white
+                                        : AppTheme.textDark)),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                    if (_selectedDuration == 'Custom Dates' &&
+                        _customDateRange != null) ...[
+                      const SizedBox(height: 12),
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.date_range_rounded,
+                                color: AppTheme.primaryGreen, size: 18),
+                            const SizedBox(width: 8),
+                            CustomText(
+                              '${_customDateRange!.start.day}/${_customDateRange!.start.month}/${_customDateRange!.start.year} - ${_customDateRange!.end.day}/${_customDateRange!.end.month}/${_customDateRange!.end.year}',
+                              style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppTheme.primaryGreen),
+                            ),
+                          ],
+                        ),
+                      ),
                     ]
                   ],
                 ),
@@ -548,7 +701,7 @@ class _CartPageState extends ConsumerState<CartPage> {
                             label: 'Promo Code',
                             hint: 'Try FRESH30...',
                             icon: Icons.local_offer_outlined,
-                            suggestions: _promoDiscounts.keys.toList(),
+                            suggestions: _currentPromoDiscounts.keys.toList(),
                             onSelected: (code) => _promoCtrl.text = code,
                           ),
                         ),
@@ -586,10 +739,22 @@ class _CartPageState extends ConsumerState<CartPage> {
                     _SummaryRow(
                         label: 'GST (5%)',
                         value: '₹ ${tax.toStringAsFixed(0)}'),
-                    const _SummaryRow(
+                    _SummaryRow(
+                        label: 'Handling Fee',
+                        value: handlingFee == 0
+                            ? 'FREE'
+                            : '₹ ${handlingFee.toStringAsFixed(0)}',
+                        valueColor: handlingFee == 0
+                            ? AppTheme.primaryGreen
+                            : AppTheme.textDark),
+                    _SummaryRow(
                         label: 'Delivery Fee',
-                        value: 'FREE',
-                        valueColor: AppTheme.primaryGreen),
+                        value: deliveryFee == 0
+                            ? 'FREE'
+                            : '₹ ${deliveryFee.toStringAsFixed(0)}',
+                        valueColor: deliveryFee == 0
+                            ? AppTheme.primaryGreen
+                            : AppTheme.textDark),
                     const SizedBox(height: 5),
                     const Divider(color: AppTheme.borderColor),
                     const SizedBox(height: 5),
@@ -622,7 +787,7 @@ class _CartPageState extends ConsumerState<CartPage> {
           color: Colors.white,
           boxShadow: [
             BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 10,
                 offset: const Offset(0, -5))
           ],
@@ -734,7 +899,7 @@ class _EmptyCartView extends StatelessWidget {
             width: 140,
             height: 140,
             decoration: BoxDecoration(
-                color: AppTheme.primaryGreen.withOpacity(0.1),
+                color: AppTheme.primaryGreen.withValues(alpha: 0.1),
                 shape: BoxShape.circle),
             child: const Icon(Icons.shopping_cart_outlined,
                 size: 64, color: AppTheme.primaryGreen),
@@ -873,4 +1038,3 @@ class _SummaryRow extends StatelessWidget {
     );
   }
 }
-

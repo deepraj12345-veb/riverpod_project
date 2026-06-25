@@ -367,4 +367,3 @@ class _SuggestionTileState extends State<_SuggestionTile> {
     );
   }
 }
-

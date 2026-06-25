@@ -14,7 +14,8 @@ class FloatingCartBar extends ConsumerStatefulWidget {
   ConsumerState<FloatingCartBar> createState() => _FloatingCartBarState();
 }
 
-class _FloatingCartBarState extends ConsumerState<FloatingCartBar> with SingleTickerProviderStateMixin {
+class _FloatingCartBarState extends ConsumerState<FloatingCartBar>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _chevronCtrl;
   late final Animation<double> _chevronAnim;
 
@@ -43,8 +44,12 @@ class _FloatingCartBarState extends ConsumerState<FloatingCartBar> with SingleTi
     final cartTotal = ref.watch(cartTotalProvider);
 
     final loc = GoRouterState.of(context).matchedLocation;
-    // Do not show on cart or checkout screens
-    final showCartBar = cartCount > 0 && loc != '/cart' && loc != '/checkout';
+    // Do not show on cart, checkout, profile, or subscription screens
+    final showCartBar = cartCount > 0 &&
+        loc != '/cart' &&
+        loc != '/checkout' &&
+        !loc.startsWith('/profile') &&
+        !loc.startsWith('/subscription');
 
     final cartSavings = cartItems.fold<double>(0.0, (sum, item) {
       final savings = item.product.originalPrice - item.product.price;
@@ -122,49 +127,55 @@ class _FloatingCartBarState extends ConsumerState<FloatingCartBar> with SingleTi
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Row(
-                              children: [
-                                CustomText(
-                                  '$cartCount item${cartCount > 1 ? 's' : ''}',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                const SizedBox(width: 5),
-                                const Text(
-                                  '|',
-                                  style: TextStyle(color: Colors.white38, fontSize: 11),
-                                ),
-                                const SizedBox(width: 5),
-                                CustomText(
-                                  '₹${cartTotal.toStringAsFixed(0)}',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w800,
-                                  ),
-                                ),
-                                if (cartSavings > 0) ...[
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    '₹${totalOriginalPrice.toStringAsFixed(0)}',
+                            FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: Alignment.centerLeft,
+                              child: Row(
+                                children: [
+                                  CustomText(
+                                    '$cartCount item${cartCount > 1 ? 's' : ''}',
                                     style: const TextStyle(
-                                      color: Colors.white38,
-                                      fontSize: 10.5,
-                                      decoration: TextDecoration.lineThrough,
-                                      fontWeight: FontWeight.w500,
+                                      color: Colors.white,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
+                                  const SizedBox(width: 5),
+                                  const Text(
+                                    '|',
+                                    style: TextStyle(
+                                        color: Colors.white38, fontSize: 11),
+                                  ),
+                                  const SizedBox(width: 5),
+                                  CustomText(
+                                    '₹${cartTotal.toStringAsFixed(0)}',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                  if (cartSavings > 0) ...[
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      '₹${totalOriginalPrice.toStringAsFixed(0)}',
+                                      style: const TextStyle(
+                                        color: Colors.white38,
+                                        fontSize: 10.5,
+                                        decoration: TextDecoration.lineThrough,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
                                 ],
-                              ],
+                              ),
                             ),
                             if (cartSavings > 0)
                               Padding(
                                 padding: const EdgeInsets.only(top: 2.0),
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 5, vertical: 1.5),
                                   decoration: BoxDecoration(
                                     color: Colors.white.withOpacity(0.16),
                                     borderRadius: BorderRadius.circular(4),
@@ -195,7 +206,8 @@ class _FloatingCartBarState extends ConsumerState<FloatingCartBar> with SingleTi
                       ),
                       // View Cart white pill/capsule button
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 6),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(16),
@@ -246,8 +258,10 @@ class _FloatingCartBarState extends ConsumerState<FloatingCartBar> with SingleTi
                       Row(
                         children: [
                           Icon(
-                            isFreeDelivery ? Icons.check_circle_rounded : Icons.delivery_dining_rounded,
-                            color: const Color(0xFF86EFAC),
+                            isFreeDelivery
+                                ? Icons.check_circle_rounded
+                                : Icons.delivery_dining_rounded,
+                            color: const Color.fromARGB(255, 255, 255, 255),
                             size: 10.5,
                           ),
                           const SizedBox(width: 4),
@@ -257,9 +271,13 @@ class _FloatingCartBarState extends ConsumerState<FloatingCartBar> with SingleTi
                                   ? 'FREE delivery applied to this order!'
                                   : 'Add ₹${(199 - cartTotal).toStringAsFixed(0)} more for FREE delivery',
                               style: TextStyle(
-                                color: isFreeDelivery ? const Color(0xFF86EFAC) : Colors.white.withOpacity(0.85),
+                                color: isFreeDelivery
+                                    ? Colors.white
+                                    : Colors.white.withOpacity(0.85),
                                 fontSize: 8.5,
-                                fontWeight: isFreeDelivery ? FontWeight.w700 : FontWeight.w500,
+                                fontWeight: isFreeDelivery
+                                    ? FontWeight.w700
+                                    : FontWeight.w500,
                               ),
                             ),
                           ),
@@ -272,7 +290,8 @@ class _FloatingCartBarState extends ConsumerState<FloatingCartBar> with SingleTi
                           value: progress,
                           minHeight: 2,
                           backgroundColor: Colors.white.withOpacity(0.15),
-                          valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF86EFAC)),
+                          valueColor: const AlwaysStoppedAnimation<Color>(
+                              Color(0xFF86EFAC)),
                         ),
                       ),
                     ],
@@ -406,7 +425,8 @@ class _FlyingImageWidget extends StatefulWidget {
   State<_FlyingImageWidget> createState() => _FlyingImageWidgetState();
 }
 
-class _FlyingImageWidgetState extends State<_FlyingImageWidget> with SingleTickerProviderStateMixin {
+class _FlyingImageWidgetState extends State<_FlyingImageWidget>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _animation;
 
@@ -439,13 +459,17 @@ class _FlyingImageWidgetState extends State<_FlyingImageWidget> with SingleTicke
       animation: _animation,
       builder: (context, child) {
         final t = _animation.value;
-        final x = widget.startPos.dx + (widget.endPos.dx - widget.startPos.dx) * t;
-        final y = widget.startPos.dy + (widget.endPos.dy - widget.startPos.dy) * t;
+        final x =
+            widget.startPos.dx + (widget.endPos.dx - widget.startPos.dx) * t;
+        final y =
+            widget.startPos.dy + (widget.endPos.dy - widget.startPos.dy) * t;
         // Parabolic arc peaking upward (negative Y coordinate shift)
         final arc = -100.0 * (t * (1.0 - t) * 4.0);
 
-        final width = widget.startSize.width + (30.0 - widget.startSize.width) * t;
-        final height = widget.startSize.height + (30.0 - widget.startSize.height) * t;
+        final width =
+            widget.startSize.width + (30.0 - widget.startSize.width) * t;
+        final height =
+            widget.startSize.height + (30.0 - widget.startSize.height) * t;
         final rotation = t * 2.0 * 3.14159; // 1 spin
 
         return Positioned(

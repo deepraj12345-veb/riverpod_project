@@ -359,4 +359,3 @@ class _SubcategoryPageState extends ConsumerState<SubcategoryPage> {
     );
   }
 }
-

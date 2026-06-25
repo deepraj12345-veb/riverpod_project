@@ -19,6 +19,9 @@ final authProvider = StateNotifierProvider<AuthNotifier, AuthState>(
 
 // ─── User Provider ──────────────────────────────────────────────────────────────
 
+final isPremiumUserProvider = StateProvider<bool>((ref) => false);
+final activeSubscriptionPlanProvider = StateProvider<String?>((ref) => null);
+
 // ─── Products Provider ──────────────────────────────────────────────────────────
 
 class ProductsNotifier extends StateNotifier<List<ProductModel>> {
