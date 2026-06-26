@@ -236,7 +236,6 @@ class _OtpPageState extends ConsumerState<OtpPage>
                       focusedPinTheme: focusedPinTheme,
                       errorPinTheme: errorPinTheme,
                       forceErrorState: _hasError,
-                      onCompleted: (_) => _verifyOtp(),
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     ),
                   ),

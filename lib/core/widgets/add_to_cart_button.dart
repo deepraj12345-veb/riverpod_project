@@ -40,37 +40,26 @@ class AddToCartButton extends ConsumerWidget {
           ref.read(cartProvider.notifier).addToCart(product);
         },
         child: Container(
-          width: width,
+          width: height,
           height: height,
-          margin: const EdgeInsets.only(right: 2),
-          padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 4),
           decoration: BoxDecoration(
+            color: Colors.white,
             borderRadius: BorderRadius.circular(borderRadius),
-            gradient: const LinearGradient(
-              colors: [
-                Color(0xFF4CAF50),
-                Color(0xFF8BC34A),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
+            border: Border.all(color: AppTheme.primaryColor, width: 1.2),
+            boxShadow: [
+              BoxShadow(
+                color: AppTheme.primaryColor.withOpacity(0.1),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
           child: Center(
-            child: isIconOnly
-                ? Icon(
-                    Icons.add,
-                    color: Colors.white,
-                    size: iconSize + 6,
-                  )
-                : CustomText(
-                    'ADD',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: fontSize,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0.5,
-                    ),
-                  ),
+            child: Icon(
+              Icons.add,
+              color: AppTheme.primaryColor,
+              size: iconSize + 6,
+            ),
           ),
         ),
       );
@@ -80,8 +69,16 @@ class AddToCartButton extends ConsumerWidget {
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color: AppTheme.primaryGreen,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(borderRadius),
+        border: Border.all(color: AppTheme.primaryColor, width: 1.2),
+        boxShadow: [
+          BoxShadow(
+            color: AppTheme.primaryColor.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -94,8 +91,8 @@ class AddToCartButton extends ConsumerWidget {
               height: height,
               child: Icon(
                 Icons.remove,
-                size: iconSize,
-                color: Colors.white,
+                size: iconSize + 4,
+                color: AppTheme.primaryColor,
               ),
             ),
           ),
@@ -104,9 +101,9 @@ class AddToCartButton extends ConsumerWidget {
               child: CustomText(
                 '$cartQty',
                 style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w800,
-                  fontSize: fontSize,
+                  color: AppTheme.primaryColor,
+                  fontWeight: FontWeight.w700,
+                  fontSize: fontSize + 2,
                 ),
               ),
             ),
@@ -121,8 +118,8 @@ class AddToCartButton extends ConsumerWidget {
               height: height,
               child: Icon(
                 Icons.add,
-                size: iconSize,
-                color: Colors.white,
+                size: iconSize + 4,
+                color: AppTheme.primaryColor,
               ),
             ),
           ),

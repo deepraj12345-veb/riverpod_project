@@ -150,6 +150,7 @@ class _SuggestionFieldState extends State<SuggestionField>
           keyboardType: widget.keyboardType,
           validator: widget.validator,
           onChanged: widget.onChanged,
+          cursorColor: _focusBorder,
           style: TextStyle(
             color: _text,
             fontSize: 14,

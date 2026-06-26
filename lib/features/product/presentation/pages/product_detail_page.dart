@@ -28,7 +28,7 @@ class ProductDetailPage extends ConsumerWidget {
 
     final screenW = MediaQuery.of(context).size.width;
     final cardWidth = (screenW - 48) / 3;
-    final listHeight = cardWidth / 0.48;
+    final listHeight = (cardWidth / 0.82) + 108.0;
 
     return Scaffold(
       backgroundColor: Colors.white,

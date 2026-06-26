@@ -71,6 +71,11 @@ class AppTheme {
         onSecondary: Colors.white,
         onSurface: textDark,
       ),
+      textSelectionTheme: const TextSelectionThemeData(
+        cursorColor: primaryGreen,
+        selectionColor: cardPeach,
+        selectionHandleColor: primaryGreen,
+      ),
       textTheme: GoogleFonts.poppinsTextTheme(ThemeData.light().textTheme),
       appBarTheme: const AppBarTheme(
         backgroundColor: bgWhite,
@@ -151,6 +156,11 @@ class AppTheme {
         onPrimary: Colors.white,
         onSecondary: Colors.white,
         onSurface: textPrimary,
+      ),
+      textSelectionTheme: const TextSelectionThemeData(
+        cursorColor: primaryColor,
+        selectionColor: darkSurface,
+        selectionHandleColor: primaryColor,
       ),
       textTheme: GoogleFonts.poppinsTextTheme(ThemeData.dark().textTheme),
       appBarTheme: const AppBarTheme(

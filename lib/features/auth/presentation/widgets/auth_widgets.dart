@@ -38,6 +38,7 @@ class AuthTextField extends StatelessWidget {
       inputFormatters: inputFormatters,
       maxLength: maxLength,
       style: const TextStyle(color: Colors.black),
+      cursorColor: AppTheme.primaryGreen,
       decoration: InputDecoration(
         counterText: '',
         hintText: hint,
@@ -84,10 +85,8 @@ class GradientButton extends StatelessWidget {
         width: double.infinity,
         height: 48,
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: isLoading
-                ? [Colors.grey.shade700, Colors.grey.shade800]
-                : [AppTheme.primaryColor, AppTheme.emeraldGreen],
+          gradient: const LinearGradient(
+            colors: [AppTheme.primaryColor, AppTheme.emeraldGreen],
           ),
           borderRadius: BorderRadius.circular(14),
         ),

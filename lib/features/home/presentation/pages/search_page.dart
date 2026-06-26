@@ -113,11 +113,11 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                     ? const _NoResultsState()
                     : GridView.builder(
                         padding: const EdgeInsets.all(16),
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           crossAxisSpacing: 12,
                           mainAxisSpacing: 12,
-                          childAspectRatio: 0.56,
+                          childAspectRatio: ((MediaQuery.of(context).size.width - 44) / 2) / (((MediaQuery.of(context).size.width - 44) / 2) / 0.82 + 108.0),
                         ),
                         itemCount: searchedProducts.length,
                         itemBuilder: (ctx, i) {

@@ -100,7 +100,7 @@ class _SubcategoryPageState extends ConsumerState<SubcategoryPage> {
     final contentW = screenW - 80; // 80 is sidebar width
     final cardWidth = (contentW - 32) /
         2; // 16 padding on each side, 2 columns -> no spacing in between if we use grid aspect ratio
-    final listHeight = cardWidth / 0.48;
+    final listHeight = (cardWidth / 0.82) + 108.0;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -217,12 +217,11 @@ class _SubcategoryPageState extends ConsumerState<SubcategoryPage> {
                     child: GridView.builder(
                       padding: const EdgeInsets.all(12),
                       gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
+                          SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         crossAxisSpacing: 12,
                         mainAxisSpacing: 12,
-                        childAspectRatio:
-                            0.56, // To match the ProductCardWidget aspect ratio
+                        childAspectRatio: cardWidth / ((cardWidth / 0.82) + 108.0),
                       ),
                       itemCount: finalProducts.length,
                       itemBuilder: (ctx, i) {

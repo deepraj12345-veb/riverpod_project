@@ -51,7 +51,9 @@ class _HomePageState extends ConsumerState<HomePage> {
     final screenW = MediaQuery.of(context).size.width;
     final isTablet = screenW >= 600;
     final hCardWidth = (screenW - 48) / 3;
-    final hListHeight = hCardWidth / 0.48;
+    final textHeight = 108.0;
+    final imageH = hCardWidth / 0.82;
+    final hListHeight = imageH + textHeight;
     final bannerH = isTablet ? 190.0 : 148.0;
 
     return Scaffold(
@@ -242,11 +244,11 @@ class _HomePageState extends ConsumerState<HomePage> {
                     padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                     sliver: SliverGrid(
                       gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
+                          SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 3,
                         crossAxisSpacing: 8,
                         mainAxisSpacing: 8,
-                        childAspectRatio: 0.48,
+                        childAspectRatio: hCardWidth / (hCardWidth / 0.82 + 108.0),
                       ),
                       delegate: SliverChildBuilderDelegate(
                         (ctx, i) =>
@@ -407,7 +409,7 @@ class _HorizontalProductList extends StatelessWidget {
   const _HorizontalProductList({
     required this.products,
     this.cardWidth = 155,
-    this.height = 238,
+    this.height = 310,
   });
 
   @override

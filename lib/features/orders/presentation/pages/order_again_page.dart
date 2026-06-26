@@ -16,6 +16,7 @@ class OrderAgainPage extends ConsumerWidget {
         .where((p) => FakeData.orderedProductIds.contains(p.id))
         .toList();
 
+    final cardWidth = (MediaQuery.of(context).size.width - 48) / 3;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -44,11 +45,11 @@ class OrderAgainPage extends ConsumerWidget {
           ? const _EmptyState()
           : GridView.builder(
               padding: const EdgeInsets.all(16),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
-                childAspectRatio: 0.48,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+                childAspectRatio: cardWidth / ((cardWidth / 0.82) + 108.0),
               ),
               itemCount: ordered.length,
               itemBuilder: (ctx, i) => ProductCardWidget(product: ordered[i]),

@@ -14,6 +14,7 @@ class WishlistPage extends ConsumerWidget {
     final allProducts = ref.watch(productsProvider);
     final wishlist = allProducts.where((p) => p.isFavorite).toList();
 
+    final cardWidth = (MediaQuery.of(context).size.width - 48) / 3;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -46,11 +47,11 @@ class WishlistPage extends ConsumerWidget {
           ? _EmptyWishlistView()
           : GridView.builder(
               padding: const EdgeInsets.all(16),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
-                childAspectRatio: 0.48,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+                childAspectRatio: cardWidth / ((cardWidth / 0.82) + 108.0),
               ),
               itemCount: wishlist.length,
               itemBuilder: (ctx, i) =>
