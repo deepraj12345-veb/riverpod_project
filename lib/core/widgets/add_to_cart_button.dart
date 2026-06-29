@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:veggie_mart/core/theme/app_theme.dart';
-import 'package:veggie_mart/features/home/domain/entities/product_entity.dart';
-import 'package:veggie_mart/features/cart/presentation/controllers/cart_controller.dart';
+import 'package:veggie_mart/domain/entities/product_entity.dart';
+import 'package:veggie_mart/presentation/providers/cart_controller.dart';
 import 'package:veggie_mart/core/widgets/custom_text.dart';
 import 'package:veggie_mart/core/widgets/floating_cart_bar.dart';
 
@@ -48,7 +48,7 @@ class AddToCartButton extends ConsumerWidget {
             border: Border.all(color: AppTheme.primaryColor, width: 1.2),
             boxShadow: [
               BoxShadow(
-                color: AppTheme.primaryColor.withOpacity(0.1),
+                color: AppTheme.primaryColor.withValues(alpha: 0.1),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -74,7 +74,7 @@ class AddToCartButton extends ConsumerWidget {
         border: Border.all(color: AppTheme.primaryColor, width: 1.2),
         boxShadow: [
           BoxShadow(
-            color: AppTheme.primaryColor.withOpacity(0.1),
+            color: AppTheme.primaryColor.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -134,8 +134,9 @@ class AddToCartButton extends ConsumerWidget {
       final startPos = renderBox.localToGlobal(Offset.zero);
 
       // Target position of the overlapping thumbnails stack in FloatingCartBar
-      final cartBox = FloatingCartBar.cartKey.currentContext?.findRenderObject()
-          as RenderBox?;
+      final cartBox =
+          FloatingCartBar.cartKey.currentContext?.findRenderObject()
+              as RenderBox?;
       final endPos = cartBox != null
           ? cartBox.localToGlobal(Offset.zero).translate(20, 10)
           : Offset(40.0, MediaQuery.of(context).size.height - 120.0);

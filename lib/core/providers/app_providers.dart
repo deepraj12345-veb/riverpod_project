@@ -2,20 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:veggie_mart/core/data/fake_data.dart';
 import 'package:veggie_mart/core/models/models.dart';
 
-// ─── Auth Provider ─────────────────────────────────────────────────────────────
-
-enum AuthState { unauthenticated, authenticated }
-
-class AuthNotifier extends StateNotifier<AuthState> {
-  AuthNotifier() : super(AuthState.unauthenticated);
-
-  void login() => state = AuthState.authenticated;
-  void logout() => state = AuthState.unauthenticated;
-}
-
-final authProvider = StateNotifierProvider<AuthNotifier, AuthState>(
-  (ref) => AuthNotifier(),
-);
+// Auth Provider moved to lib/features/auth/presentation/providers/auth_provider.dart
 
 // ─── User Provider ──────────────────────────────────────────────────────────────
 

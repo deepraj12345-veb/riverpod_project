@@ -35,11 +35,10 @@ class CustomText extends StatelessWidget {
       textDirection: textDirection,
       locale: locale,
       softWrap: softWrap,
-      textScaler: textScaleFactor != null ? TextScaler.linear(textScaleFactor!) : null,
-      style: GoogleFonts.poppins(
-        textStyle: style,
-      ),
+      textScaler: textScaleFactor != null
+          ? TextScaler.linear(textScaleFactor!)
+          : null,
+      style: GoogleFonts.poppins(textStyle: style),
     );
   }
 }
-

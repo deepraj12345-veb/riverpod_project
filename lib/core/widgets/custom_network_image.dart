@@ -60,13 +60,8 @@ class CustomNetworkImage extends StatelessWidget {
       height: height,
       color: AppTheme.bgLight,
       child: const Center(
-        child: Icon(
-          Icons.image_outlined,
-          color: AppTheme.textGrey,
-          size: 24,
-        ),
+        child: Icon(Icons.image_outlined, color: AppTheme.textGrey, size: 24),
       ),
     );
   }
 }
-

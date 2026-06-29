@@ -4,8 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import 'package:veggie_mart/core/widgets/custom_network_image.dart';
 import 'package:veggie_mart/core/theme/app_theme.dart';
-import 'package:veggie_mart/features/home/domain/entities/product_entity.dart';
-import 'package:veggie_mart/features/home/presentation/controllers/home_controller.dart';
+import 'package:veggie_mart/domain/entities/product_entity.dart';
+import 'package:veggie_mart/presentation/providers/home_controller.dart';
 import 'package:veggie_mart/core/widgets/add_to_cart_button.dart';
 import 'package:veggie_mart/core/widgets/custom_text.dart';
 
@@ -71,7 +71,9 @@ class ProductCardWidget extends ConsumerWidget {
                       left: 8,
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 6, vertical: 3),
+                          horizontal: 6,
+                          vertical: 3,
+                        ),
                         decoration: const BoxDecoration(
                           color: AppTheme.primaryColor,
                           borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -92,7 +94,7 @@ class ProductCardWidget extends ConsumerWidget {
                     Positioned.fill(
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.4),
+                          color: Colors.black.withValues(alpha: 0.4),
                           borderRadius: BorderRadius.circular(16),
                         ),
                         alignment: Alignment.center,
@@ -127,7 +129,10 @@ class ProductCardWidget extends ConsumerWidget {
                           size: 20,
                           shadows: [
                             if (!product.isFavorite)
-                              const Shadow(color: Colors.white70, blurRadius: 2)
+                              const Shadow(
+                                color: Colors.white70,
+                                blurRadius: 2,
+                              ),
                           ],
                         ),
                       ),
@@ -241,7 +246,7 @@ class ProductCardWidget extends ConsumerWidget {
                   ),
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),

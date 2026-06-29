@@ -72,24 +72,7 @@ class CartItemModel {
   double get totalPrice => product.price * quantity;
 }
 
-class UserModel {
-  final String id;
-  final String name;
-  final String email;
-  final String phone;
-  final String avatarUrl;
-  final String address;
-
-  const UserModel({
-    required this.id,
-    required this.name,
-    required this.email,
-    required this.phone,
-    required this.avatarUrl,
-    required this.address,
-  });
-}
-
+// UserModel moved to lib/features/auth/data/models/user_model.dart
 class BannerModel {
   final String id;
   final String title;

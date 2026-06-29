@@ -1,5 +1,5 @@
-import 'package:veggie_mart/features/home/domain/entities/product_entity.dart';
-import 'package:veggie_mart/features/auth/domain/entities/user_entity.dart';
+import 'package:veggie_mart/domain/entities/product_entity.dart';
+import 'package:veggie_mart/domain/entities/user_entity.dart';
 import 'package:veggie_mart/core/models/models.dart';
 
 class BannerModel {
@@ -23,13 +23,15 @@ class FakeData {
     AddressModel(
       id: 'addr_1',
       title: 'Home',
-      fullAddress: 'Flat 402, Green Valley Apartments, MG Road, Bangalore 560001',
+      fullAddress:
+          'Flat 402, Green Valley Apartments, MG Road, Bangalore 560001',
       isDefault: true,
     ),
     AddressModel(
       id: 'addr_2',
       title: 'Work',
-      fullAddress: 'Tech Park, Tower B, Electronic City Phase 1, Bangalore 560100',
+      fullAddress:
+          'Tech Park, Tower B, Electronic City Phase 1, Bangalore 560100',
     ),
     AddressModel(
       id: 'addr_3',
@@ -92,8 +94,8 @@ class FakeData {
       'New Arrivals',
       'Premium',
     ],
-    'Fruits': ['Berries & Other', 'Tropical Fruits'],
-    'Vegetables': ['Roots, Herbs & Other', 'Basic Vegetables'],
+    'Fruits': ['Berries & Other', 'Tropical Fruits', 'Apples & Pears', 'Citrus Fruits'],
+    'Vegetables': ['Roots, Herbs & Other', 'Basic Vegetables', 'Gourds', 'Onion & Potato'],
     'Groceries': [
       'Atta, Rice, Dal & More',
       'Cold Drink, Energy Drinks & Juice',
@@ -117,8 +119,14 @@ class FakeData {
       'Gifts',
       'Electronics',
     ],
-    'Dairy': ['Milk', 'Cheese', 'Curd & Yoghurt', 'Butter & Cream'],
+    'Dairy': ['Milk', 'Cheese', 'Curd & Yoghurt', 'Butter & Cream', 'Paneer'],
+    'Dairy & Eggs': ['Milk', 'Cheese', 'Curd & Yoghurt', 'Butter & Cream', 'Eggs', 'Paneer'],
     'Snacks': ['Chips', 'Cookies', 'Nuts & Dry Fruits', 'Chocolates'],
+    'Exotic Vegetables': ['Broccoli & Cauliflower', 'Bell Peppers', 'Zucchini', 'Asparagus', 'Mushrooms', 'Cherry Tomatoes'],
+    'Leafy Greens': ['Spinach', 'Lettuce', 'Cabbage', 'Kale', 'Mint & Coriander'],
+    'Root Vegetables': ['Carrots', 'Potatoes', 'Beetroot', 'Radish', 'Turnips'],
+    'Herbs & Spices': ['Coriander Leaves', 'Mint Leaves', 'Curry Leaves', 'Garlic', 'Ginger', 'Green Chillies'],
+    'Organic': ['Organic Fruits', 'Organic Vegetables', 'Organic Pulses', 'Organic Millets'],
   };
 
   static const List<ProductEntity> products = [
@@ -312,7 +320,14 @@ class FakeData {
 
   // Products the user has previously ordered
   static const List<String> orderedProductIds = [
-    'p1', 'p2', 'p5', 'p7', 'p8', 'p9', 'p11', 'p12',
+    'p1',
+    'p2',
+    'p5',
+    'p7',
+    'p8',
+    'p9',
+    'p11',
+    'p12',
   ];
 
   static const UserEntity currentUser = UserEntity(
@@ -325,4 +340,3 @@ class FakeData {
     address: '12, Vaishali Nagar, Jaipur, Rajasthan 302021',
   );
 }
-

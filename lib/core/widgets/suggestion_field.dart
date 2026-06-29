@@ -78,9 +78,10 @@ class _SuggestionFieldState extends State<SuggestionField>
       duration: const Duration(milliseconds: 200),
     );
     _fadeAnim = CurvedAnimation(parent: _animCtrl, curve: Curves.easeOut);
-    _slideAnim = Tween<double>(begin: -8, end: 0).animate(
-      CurvedAnimation(parent: _animCtrl, curve: Curves.easeOut),
-    );
+    _slideAnim = Tween<double>(
+      begin: -8,
+      end: 0,
+    ).animate(CurvedAnimation(parent: _animCtrl, curve: Curves.easeOut));
 
     _focusNode.addListener(() {
       if (!_focusNode.hasFocus) {
@@ -165,8 +166,10 @@ class _SuggestionFieldState extends State<SuggestionField>
             suffixIcon: widget.suffixWidget,
             filled: true,
             fillColor: _bg,
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
               borderSide: BorderSide(color: _border),
@@ -181,13 +184,16 @@ class _SuggestionFieldState extends State<SuggestionField>
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide:
-                  const BorderSide(color: Color.fromARGB(255, 13, 13, 13)),
+              borderSide: const BorderSide(
+                color: Color.fromARGB(255, 13, 13, 13),
+              ),
             ),
             focusedErrorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
               borderSide: const BorderSide(
-                  color: Color.fromARGB(255, 6, 6, 6), width: 1.8),
+                color: Color.fromARGB(255, 6, 6, 6),
+                width: 1.8,
+              ),
             ),
           ),
         ),
@@ -209,12 +215,10 @@ class _SuggestionFieldState extends State<SuggestionField>
               decoration: BoxDecoration(
                 color: _dropBg,
                 borderRadius: BorderRadius.circular(14),
-                border: Border.all(
-                  color: _focusBorder.withOpacity(0.25),
-                ),
+                border: Border.all(color: _focusBorder.withValues(alpha: 0.25)),
                 boxShadow: [
                   BoxShadow(
-                    color: _focusBorder.withOpacity(0.12),
+                    color: _focusBorder.withValues(alpha: 0.12),
                     blurRadius: 20,
                     offset: const Offset(0, 6),
                   ),
@@ -229,7 +233,7 @@ class _SuggestionFieldState extends State<SuggestionField>
                   itemCount: _filtered.length,
                   separatorBuilder: (_, __) => Divider(
                     height: 1,
-                    color: _focusBorder.withOpacity(0.1),
+                    color: _focusBorder.withValues(alpha: 0.1),
                   ),
                   itemBuilder: (context, i) {
                     final item = _filtered[i];
@@ -304,12 +308,10 @@ class _SuggestionTileState extends State<_SuggestionTile> {
             children: [
               Icon(widget.icon, color: widget.iconColor, size: 16),
               const SizedBox(width: 12),
-              Expanded(
-                child: _buildHighlightedText(),
-              ),
+              Expanded(child: _buildHighlightedText()),
               Icon(
                 Icons.north_west_rounded,
-                color: widget.iconColor.withOpacity(0.5),
+                color: widget.iconColor.withValues(alpha: 0.5),
                 size: 14,
               ),
             ],
