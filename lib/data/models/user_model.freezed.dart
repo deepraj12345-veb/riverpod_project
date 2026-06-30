@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserModel {
 
- String get id; String get name; String get email; String get phone; String get avatarUrl; String get address; String? get token;
+@JsonKey(name: '_id', readValue: readId) String get id;@JsonKey(readValue: _readString) String get name;@JsonKey(readValue: _readString) String get email;@JsonKey(name: 'mobile_no', readValue: _readString) String get phone;@JsonKey(name: 'profile_image', readValue: _readString) String get avatarUrl;@JsonKey(readValue: _readString) String get address; String? get token;
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -49,7 +49,7 @@ abstract mixin class $UserModelCopyWith<$Res>  {
   factory $UserModelCopyWith(UserModel value, $Res Function(UserModel) _then) = _$UserModelCopyWithImpl;
 @useResult
 $Res call({
- String id, String name, String email, String phone, String avatarUrl, String address, String? token
+@JsonKey(name: '_id', readValue: readId) String id,@JsonKey(readValue: _readString) String name,@JsonKey(readValue: _readString) String email,@JsonKey(name: 'mobile_no', readValue: _readString) String phone,@JsonKey(name: 'profile_image', readValue: _readString) String avatarUrl,@JsonKey(readValue: _readString) String address, String? token
 });
 
 
@@ -160,7 +160,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  String email,  String phone,  String avatarUrl,  String address,  String? token)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: '_id', readValue: readId)  String id, @JsonKey(readValue: _readString)  String name, @JsonKey(readValue: _readString)  String email, @JsonKey(name: 'mobile_no', readValue: _readString)  String phone, @JsonKey(name: 'profile_image', readValue: _readString)  String avatarUrl, @JsonKey(readValue: _readString)  String address,  String? token)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserModel() when $default != null:
 return $default(_that.id,_that.name,_that.email,_that.phone,_that.avatarUrl,_that.address,_that.token);case _:
@@ -181,7 +181,7 @@ return $default(_that.id,_that.name,_that.email,_that.phone,_that.avatarUrl,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  String email,  String phone,  String avatarUrl,  String address,  String? token)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: '_id', readValue: readId)  String id, @JsonKey(readValue: _readString)  String name, @JsonKey(readValue: _readString)  String email, @JsonKey(name: 'mobile_no', readValue: _readString)  String phone, @JsonKey(name: 'profile_image', readValue: _readString)  String avatarUrl, @JsonKey(readValue: _readString)  String address,  String? token)  $default,) {final _that = this;
 switch (_that) {
 case _UserModel():
 return $default(_that.id,_that.name,_that.email,_that.phone,_that.avatarUrl,_that.address,_that.token);case _:
@@ -201,7 +201,7 @@ return $default(_that.id,_that.name,_that.email,_that.phone,_that.avatarUrl,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  String email,  String phone,  String avatarUrl,  String address,  String? token)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: '_id', readValue: readId)  String id, @JsonKey(readValue: _readString)  String name, @JsonKey(readValue: _readString)  String email, @JsonKey(name: 'mobile_no', readValue: _readString)  String phone, @JsonKey(name: 'profile_image', readValue: _readString)  String avatarUrl, @JsonKey(readValue: _readString)  String address,  String? token)?  $default,) {final _that = this;
 switch (_that) {
 case _UserModel() when $default != null:
 return $default(_that.id,_that.name,_that.email,_that.phone,_that.avatarUrl,_that.address,_that.token);case _:
@@ -216,15 +216,15 @@ return $default(_that.id,_that.name,_that.email,_that.phone,_that.avatarUrl,_tha
 @JsonSerializable()
 
 class _UserModel implements UserModel {
-  const _UserModel({required this.id, required this.name, required this.email, required this.phone, required this.avatarUrl, required this.address, this.token});
+  const _UserModel({@JsonKey(name: '_id', readValue: readId) required this.id, @JsonKey(readValue: _readString) required this.name, @JsonKey(readValue: _readString) required this.email, @JsonKey(name: 'mobile_no', readValue: _readString) required this.phone, @JsonKey(name: 'profile_image', readValue: _readString) required this.avatarUrl, @JsonKey(readValue: _readString) required this.address, this.token});
   factory _UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
 
-@override final  String id;
-@override final  String name;
-@override final  String email;
-@override final  String phone;
-@override final  String avatarUrl;
-@override final  String address;
+@override@JsonKey(name: '_id', readValue: readId) final  String id;
+@override@JsonKey(readValue: _readString) final  String name;
+@override@JsonKey(readValue: _readString) final  String email;
+@override@JsonKey(name: 'mobile_no', readValue: _readString) final  String phone;
+@override@JsonKey(name: 'profile_image', readValue: _readString) final  String avatarUrl;
+@override@JsonKey(readValue: _readString) final  String address;
 @override final  String? token;
 
 /// Create a copy of UserModel
@@ -260,7 +260,7 @@ abstract mixin class _$UserModelCopyWith<$Res> implements $UserModelCopyWith<$Re
   factory _$UserModelCopyWith(_UserModel value, $Res Function(_UserModel) _then) = __$UserModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name, String email, String phone, String avatarUrl, String address, String? token
+@JsonKey(name: '_id', readValue: readId) String id,@JsonKey(readValue: _readString) String name,@JsonKey(readValue: _readString) String email,@JsonKey(name: 'mobile_no', readValue: _readString) String phone,@JsonKey(name: 'profile_image', readValue: _readString) String avatarUrl,@JsonKey(readValue: _readString) String address, String? token
 });
 
 

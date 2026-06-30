@@ -27,14 +27,14 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
   @override
   Future<List<CartItemEntity>> toggleCartItem(String productId, String status) async {
     try {
-      final response = await dio.post(
+      await dio.post(
         ApiConfig.cartToggle,
         data: {
           "product_id": productId,
           "status": status, // "add" or "remove"
         },
       );
-      return _parseCartResponse(response.data);
+      return await getCart();
     } catch (e) {
       throw Exception('Failed to toggle cart item: $e');
     }
@@ -53,23 +53,50 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
   List<CartItemEntity> _parseCartResponse(dynamic data) {
     if (data == null) return [];
     
-    // Check if the response wraps the data in a "data" or "cart" field
-    dynamic cartData = data['data'] ?? data['cart'] ?? data;
-    
-    if (cartData == null) return [];
-    
-    // Usually a cart response contains an array of items. 
-    // It might be under `cartData['items']` or just be a list directly.
     List<dynamic> items = [];
-    if (cartData is List) {
-      items = cartData;
-    } else if (cartData['items'] is List) {
-      items = cartData['items'];
+
+    if (data is List) {
+      items = data;
+    } else if (data is Map) {
+      if (data['items'] is List) {
+        items = data['items'];
+      } else if (data['products'] is List) {
+        items = data['products'];
+      } else if (data['cart'] is Map && data['cart']['items'] is List) {
+        items = data['cart']['items'];
+      } else if (data['cart'] is Map && data['cart']['products'] is List) {
+        items = data['cart']['products'];
+      } else if (data['cart'] is List) {
+        items = data['cart'];
+      } else if (data['data'] is Map) {
+        final innerData = data['data'];
+        if (innerData['items'] is List) {
+          items = innerData['items'];
+        } else if (innerData['products'] is List) {
+          items = innerData['products'];
+        } else if (innerData['cart'] is Map && innerData['cart']['items'] is List) {
+          items = innerData['cart']['items'];
+        } else if (innerData['cart'] is Map && innerData['cart']['products'] is List) {
+          items = innerData['cart']['products'];
+        } else if (innerData['cart'] is List) {
+          items = innerData['cart'];
+        } else if (innerData is List) {
+          items = innerData;
+        }
+      }
+    }
+    
+    if (items.isEmpty) {
+      // If we got success: false or couldn't parse the cart, we shouldn't return empty list
+      // which would clear the cart. We should throw so it falls back to local cart if needed.
+      if (data is Map && data['success'] == false) {
+        throw Exception(data['message'] ?? 'Failed to update cart');
+      }
     }
 
     return items.map((e) {
       final productJson = e['product'] ?? e; // fallback if product is flattened
-      final qty = e['qty'] ?? e['quantity'] ?? 1;
+      final qty = e['cart_count'] ?? e['qty'] ?? e['quantity'] ?? 1;
 
       return CartItemEntity(
         product: _parseProduct(productJson),
@@ -80,17 +107,17 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
 
   ProductEntity _parseProduct(Map<String, dynamic> json) {
     return ProductEntity(
-      id: json['_id'] ?? json['id'] ?? '',
-      name: json['name'] ?? '',
+      id: json['product_id'] ?? json['_id'] ?? json['id'] ?? '',
+      name: json['product_name'] ?? json['name'] ?? '',
       description: json['description'] ?? '',
-      price: (json['price'] ?? 0).toDouble(),
-      originalPrice: (json['original_price'] ?? json['originalPrice'] ?? (json['price'] ?? 0)).toDouble(),
-      imageUrl: json['image'] ?? json['imageUrl'] ?? '',
+      price: (json['selling_price'] ?? json['price'] ?? 0).toDouble(),
+      originalPrice: (json['mrp'] ?? json['original_price'] ?? json['originalPrice'] ?? json['price'] ?? 0).toDouble(),
+      imageUrl: json['product_image'] ?? json['image'] ?? json['imageUrl'] ?? '',
       category: json['category'] ?? '',
       rating: (json['rating'] ?? 0).toDouble(),
       reviewCount: json['review_count'] ?? json['reviewCount'] ?? 0,
       inStock: json['in_stock'] ?? json['inStock'] ?? true,
-      unit: json['unit'] ?? '1 piece',
+      unit: json['quantity_unit'] ?? json['unit'] ?? '1 piece',
     );
   }
 }

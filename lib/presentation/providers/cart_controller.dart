@@ -57,23 +57,76 @@ class CartNotifier extends StateNotifier<List<CartItemEntity>> {
        super([]);
 
   Future<void> addToCart(ProductEntity product) async {
-    state = await _addToCartUseCase.execute(product);
+    // Optimistic update
+    final existingIndex = state.indexWhere((i) => i.product.id == product.id);
+    if (existingIndex >= 0) {
+      final item = state[existingIndex];
+      state = [
+        ...state.sublist(0, existingIndex),
+        item.copyWith(quantity: item.quantity + 1),
+        ...state.sublist(existingIndex + 1),
+      ];
+    } else {
+      state = [...state, CartItemEntity(product: product, quantity: 1)];
+    }
+
+    try {
+      state = await _addToCartUseCase.execute(product);
+    } catch (_) {}
   }
 
   Future<void> removeFromCart(String productId) async {
-    state = await _removeFromCartUseCase.execute(productId);
+    // Optimistic update
+    state = state.where((item) => item.product.id != productId).toList();
+
+    try {
+      state = await _removeFromCartUseCase.execute(productId);
+    } catch (_) {}
   }
 
   Future<void> incrementQuantity(String productId) async {
-    state = await _updateQuantityUseCase.execute(productId, true);
+    // Optimistic update
+    final existingIndex = state.indexWhere((i) => i.product.id == productId);
+    if (existingIndex >= 0) {
+      final item = state[existingIndex];
+      state = [
+        ...state.sublist(0, existingIndex),
+        item.copyWith(quantity: item.quantity + 1),
+        ...state.sublist(existingIndex + 1),
+      ];
+    }
+
+    try {
+      state = await _updateQuantityUseCase.execute(productId, true);
+    } catch (_) {}
   }
 
   Future<void> decrementQuantity(String productId) async {
-    state = await _updateQuantityUseCase.execute(productId, false);
+    // Optimistic update
+    final existingIndex = state.indexWhere((i) => i.product.id == productId);
+    if (existingIndex >= 0) {
+      final item = state[existingIndex];
+      if (item.quantity > 1) {
+        state = [
+          ...state.sublist(0, existingIndex),
+          item.copyWith(quantity: item.quantity - 1),
+          ...state.sublist(existingIndex + 1),
+        ];
+      } else {
+        state = state.where((i) => i.product.id != productId).toList();
+      }
+    }
+
+    try {
+      state = await _updateQuantityUseCase.execute(productId, false);
+    } catch (_) {}
   }
 
   Future<void> clearCart() async {
-    state = await _clearCartUseCase.execute();
+    state = [];
+    try {
+      state = await _clearCartUseCase.execute();
+    } catch (_) {}
   }
 }
 

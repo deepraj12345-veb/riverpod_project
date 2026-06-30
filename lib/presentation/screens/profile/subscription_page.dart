@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:veggie_mart/core/theme/app_theme.dart';
 import 'package:veggie_mart/core/providers/app_providers.dart';
 import 'package:veggie_mart/core/widgets/custom_text.dart';
-import 'package:veggie_mart/core/data/fake_data.dart';
+import 'package:veggie_mart/core/constants/fake_data.dart';
 
 class SubscriptionPage extends ConsumerWidget {
   const SubscriptionPage({super.key});

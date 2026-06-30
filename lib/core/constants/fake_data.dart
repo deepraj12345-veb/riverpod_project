@@ -1,6 +1,6 @@
 import 'package:veggie_mart/domain/entities/product_entity.dart';
 import 'package:veggie_mart/domain/entities/user_entity.dart';
-import 'package:veggie_mart/core/models/models.dart';
+import 'package:veggie_mart/core/constants/data/models/models.dart';
 
 class BannerModel {
   final String id;
@@ -94,8 +94,18 @@ class FakeData {
       'New Arrivals',
       'Premium',
     ],
-    'Fruits': ['Berries & Other', 'Tropical Fruits', 'Apples & Pears', 'Citrus Fruits'],
-    'Vegetables': ['Roots, Herbs & Other', 'Basic Vegetables', 'Gourds', 'Onion & Potato'],
+    'Fruits': [
+      'Berries & Other',
+      'Tropical Fruits',
+      'Apples & Pears',
+      'Citrus Fruits',
+    ],
+    'Vegetables': [
+      'Roots, Herbs & Other',
+      'Basic Vegetables',
+      'Gourds',
+      'Onion & Potato',
+    ],
     'Groceries': [
       'Atta, Rice, Dal & More',
       'Cold Drink, Energy Drinks & Juice',
@@ -120,13 +130,45 @@ class FakeData {
       'Electronics',
     ],
     'Dairy': ['Milk', 'Cheese', 'Curd & Yoghurt', 'Butter & Cream', 'Paneer'],
-    'Dairy & Eggs': ['Milk', 'Cheese', 'Curd & Yoghurt', 'Butter & Cream', 'Eggs', 'Paneer'],
+    'Dairy & Eggs': [
+      'Milk',
+      'Cheese',
+      'Curd & Yoghurt',
+      'Butter & Cream',
+      'Eggs',
+      'Paneer',
+    ],
     'Snacks': ['Chips', 'Cookies', 'Nuts & Dry Fruits', 'Chocolates'],
-    'Exotic Vegetables': ['Broccoli & Cauliflower', 'Bell Peppers', 'Zucchini', 'Asparagus', 'Mushrooms', 'Cherry Tomatoes'],
-    'Leafy Greens': ['Spinach', 'Lettuce', 'Cabbage', 'Kale', 'Mint & Coriander'],
+    'Exotic Vegetables': [
+      'Broccoli & Cauliflower',
+      'Bell Peppers',
+      'Zucchini',
+      'Asparagus',
+      'Mushrooms',
+      'Cherry Tomatoes',
+    ],
+    'Leafy Greens': [
+      'Spinach',
+      'Lettuce',
+      'Cabbage',
+      'Kale',
+      'Mint & Coriander',
+    ],
     'Root Vegetables': ['Carrots', 'Potatoes', 'Beetroot', 'Radish', 'Turnips'],
-    'Herbs & Spices': ['Coriander Leaves', 'Mint Leaves', 'Curry Leaves', 'Garlic', 'Ginger', 'Green Chillies'],
-    'Organic': ['Organic Fruits', 'Organic Vegetables', 'Organic Pulses', 'Organic Millets'],
+    'Herbs & Spices': [
+      'Coriander Leaves',
+      'Mint Leaves',
+      'Curry Leaves',
+      'Garlic',
+      'Ginger',
+      'Green Chillies',
+    ],
+    'Organic': [
+      'Organic Fruits',
+      'Organic Vegetables',
+      'Organic Pulses',
+      'Organic Millets',
+    ],
   };
 
   static const List<ProductEntity> products = [

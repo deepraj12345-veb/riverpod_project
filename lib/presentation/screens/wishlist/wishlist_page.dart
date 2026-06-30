@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:veggie_mart/core/theme/app_theme.dart';
 import 'package:veggie_mart/core/widgets/product_card_widget.dart';
-import 'package:veggie_mart/presentation/providers/home_controller.dart';
+import 'package:veggie_mart/presentation/providers/wishlist_controller.dart';
 import 'package:veggie_mart/core/widgets/custom_text.dart';
 
 class WishlistPage extends ConsumerWidget {
@@ -11,8 +11,7 @@ class WishlistPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final allProducts = ref.watch(productsProvider);
-    final wishlist = allProducts.where((p) => p.isFavorite).toList();
+    final wishlist = ref.watch(wishlistProvider);
 
     final cardWidth = (MediaQuery.of(context).size.width - 48) / 3;
 

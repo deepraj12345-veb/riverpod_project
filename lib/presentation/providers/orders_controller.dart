@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:veggie_mart/core/network/dio_client.dart';
 import 'package:veggie_mart/domain/entities/order_entity.dart';
@@ -24,7 +25,7 @@ class OrdersNotifier extends StateNotifier<List<OrderEntity>> {
       final orders = await _repository.getOrders();
       state = orders;
     } catch (e) {
-      print('Error loading orders: $e');
+      debugPrint('Error loading orders: $e');
     }
   }
 
@@ -54,7 +55,7 @@ class OrdersNotifier extends StateNotifier<List<OrderEntity>> {
       final newOrder = await _repository.placeOrder(orderData);
       state = [newOrder, ...state];
     } catch (e) {
-      print('Error placing order: $e');
+      debugPrint('Error placing order: $e');
       rethrow;
     }
   }
@@ -64,7 +65,7 @@ class OrdersNotifier extends StateNotifier<List<OrderEntity>> {
       final updatedOrder = await _repository.cancelOrder(orderId, reason);
       state = state.map((e) => e.id == orderId ? updatedOrder : e).toList();
     } catch (e) {
-      print('Error cancelling order: $e');
+      debugPrint('Error cancelling order: $e');
       rethrow;
     }
   }

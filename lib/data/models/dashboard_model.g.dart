@@ -8,14 +8,44 @@ part of 'dashboard_model.dart';
 
 DashboardModel _$DashboardModelFromJson(Map<String, dynamic> json) =>
     DashboardModel(
-      totalOrders: (json['total_orders'] as num?)?.toInt() ?? 0,
-      walletBalance: (json['wallet_balance'] as num?)?.toDouble() ?? 0.0,
-      savedAddresses: (json['saved_addresses'] as num?)?.toInt() ?? 0,
+      user: json['user'] == null
+          ? null
+          : UserModel.fromJson(json['user'] as Map<String, dynamic>),
+      banners:
+          (json['banners'] as List<dynamic>?)
+              ?.map((e) => BannerModel.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
+      categoryTypes:
+          (json['category_types'] as List<dynamic>?)
+              ?.map((e) => CategoryModel.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
+      categories:
+          (json['categories'] as List<dynamic>?)
+              ?.map((e) => CategoryModel.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
+      bestsellers:
+          (json['bestsellers'] as List<dynamic>?)
+              ?.map((e) => ProductModel.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
+      trendingNearYou:
+          (json['trending_near_you'] as List<dynamic>?)
+              ?.map((e) => ProductModel.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
+      walletBalance: (json['walletBalance'] as num?)?.toDouble() ?? 0.0,
     );
 
 Map<String, dynamic> _$DashboardModelToJson(DashboardModel instance) =>
     <String, dynamic>{
-      'total_orders': instance.totalOrders,
-      'wallet_balance': instance.walletBalance,
-      'saved_addresses': instance.savedAddresses,
+      'user': instance.user,
+      'banners': instance.banners,
+      'category_types': instance.categoryTypes,
+      'categories': instance.categories,
+      'bestsellers': instance.bestsellers,
+      'trending_near_you': instance.trendingNearYou,
+      'walletBalance': instance.walletBalance,
     };

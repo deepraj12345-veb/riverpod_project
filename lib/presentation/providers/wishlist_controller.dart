@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:veggie_mart/core/network/dio_client.dart';
 import 'package:veggie_mart/domain/entities/product_entity.dart';
@@ -23,27 +24,33 @@ class WishlistNotifier extends StateNotifier<List<ProductEntity>> {
       final items = await _repository.getWishlist();
       state = items;
     } catch (e) {
-      print('Error loading wishlist: $e');
+      debugPrint('Error loading wishlist: $e');
     }
   }
 
   Future<void> addToWishlist(ProductEntity product) async {
+    final previousState = state;
+    if (!state.any((e) => e.id == product.id)) {
+      state = [...state, product];
+    }
     try {
       final items = await _repository.addToWishlist(product.id);
       state = items;
     } catch (e) {
-      print('Error adding to wishlist: $e');
-      rethrow;
+      state = previousState;
+      debugPrint('Error adding to wishlist: $e');
     }
   }
 
   Future<void> removeFromWishlist(String productId) async {
+    final previousState = state;
+    state = state.where((e) => e.id != productId).toList();
     try {
       final items = await _repository.removeFromWishlist(productId);
       state = items;
     } catch (e) {
-      print('Error removing from wishlist: $e');
-      rethrow;
+      state = previousState;
+      debugPrint('Error removing from wishlist: $e');
     }
   }
 

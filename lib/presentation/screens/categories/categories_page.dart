@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:veggie_mart/core/data/fake_data.dart';
 import 'package:veggie_mart/core/theme/app_theme.dart';
 import 'package:veggie_mart/core/widgets/custom_network_image.dart';
-import 'package:veggie_mart/domain/entities/category_entity.dart';
-import 'package:veggie_mart/domain/entities/subcategory_entity.dart';
-import 'package:veggie_mart/presentation/providers/category_provider.dart';
+import 'package:veggie_mart/presentation/providers/dashboard_provider.dart';
 import 'package:veggie_mart/presentation/providers/home_controller.dart';
 import 'package:veggie_mart/core/widgets/custom_text.dart';
-import 'package:veggie_mart/core/widgets/custom_network_image.dart';
 
 class CategoriesPage extends ConsumerWidget {
   const CategoriesPage({super.key});
@@ -68,8 +64,7 @@ class CategoriesPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final categoriesAsync = ref.watch(categoriesProvider);
-    final subcategoriesAsync = ref.watch(subcategoriesProvider);
+    final dashboardAsync = ref.watch(dashboardProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -93,57 +88,81 @@ class CategoriesPage extends ConsumerWidget {
           ),
         ],
       ),
-      body: categoriesAsync.when(
+      body: dashboardAsync.when(
         loading: () => const Center(
           child: CircularProgressIndicator(color: AppTheme.primaryGreen),
         ),
         error: (err, _) => Center(child: Text(err.toString())),
-        data: (categories) {
-          final filteredCategories = categories
-              .where((c) => c.name != 'All')
-              .toList();
-          final allSubcats = subcategoriesAsync.maybeWhen(
-            data: (subs) => subs,
-            orElse: () => <SubcategoryEntity>[],
-          );
+        data: (dashboard) {
+          final allCategories = dashboard.categories;
 
-          return ListView.separated(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
-            itemCount: filteredCategories.length,
-            separatorBuilder: (_, __) =>
-                const Divider(height: 36, color: AppTheme.borderColor),
+          if (allCategories.isEmpty) {
+            return const Center(child: Text("No categories found."));
+          }
+
+          return GridView.builder(
+            padding: const EdgeInsets.all(16),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+              childAspectRatio: 0.8,
+            ),
+            itemCount: allCategories.length,
             itemBuilder: (ctx, i) {
-              final cat = filteredCategories[i];
-              var subs = allSubcats
-                  .where((s) => s.categoryId == cat.id)
-                  .toList();
-
-              if (subs.isEmpty) {
-                final fakeNames = FakeData.subcategories[cat.name] ?? [];
-                subs = fakeNames
-                    .map(
-                      (name) => SubcategoryEntity(
-                        id: name,
-                        name: name,
-                        categoryId: cat.id,
-                      ),
-                    )
-                    .toList();
-              }
-
+              final cat = allCategories[i];
               final color = _catColor[cat.name] ?? AppTheme.cardMint;
+              final emoji = _subEmoji[cat.name] ?? '📦';
 
-              return _CategorySection(
-                category: cat,
-                subcategories: subs,
-                color: color,
-                subEmojiMap: _subEmoji,
-                onSeeAll: () {
-                  context.push('/subcategory', extra: cat.name);
-                },
-                onSubTap: (sub) {
-                  context.push('/subcategory', extra: cat.name);
-                },
+              return GestureDetector(
+                onTap: () => context.push('/subcategory', extra: cat.name),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: color,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: color.withValues(alpha: 0.4),
+                          ),
+                        ),
+                        child: Center(
+                          child:
+                              cat.imageUrl != null && cat.imageUrl!.isNotEmpty
+                              ? Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: CustomNetworkImage(
+                                    imageUrl: cat.imageUrl!,
+                                    fit: BoxFit.contain,
+                                    placeholder: CustomText(
+                                      emoji,
+                                      style: const TextStyle(fontSize: 32),
+                                    ),
+                                  ),
+                                )
+                              : CustomText(
+                                  emoji,
+                                  style: const TextStyle(fontSize: 32),
+                                ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    CustomText(
+                      cat.name,
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: AppTheme.textDark,
+                        height: 1.2,
+                      ),
+                    ),
+                  ],
+                ),
               );
             },
           );
@@ -153,138 +172,4 @@ class CategoriesPage extends ConsumerWidget {
   }
 }
 
-class _CategorySection extends StatelessWidget {
-  final CategoryEntity category;
-  final List<SubcategoryEntity> subcategories;
-  final Color color;
-  final Map<String, String> subEmojiMap;
-  final VoidCallback onSeeAll;
-  final ValueChanged<SubcategoryEntity> onSubTap;
-
-  const _CategorySection({
-    required this.category,
-    required this.subcategories,
-    required this.color,
-    required this.subEmojiMap,
-    required this.onSeeAll,
-    required this.onSubTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    // Show max 8 subcategories, link to see all if more
-    final visible = subcategories.length > 8
-        ? subcategories.sublist(0, 8)
-        : subcategories;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            CustomText(
-              category.name,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-                color: AppTheme.textDark,
-              ),
-            ),
-            const Spacer(),
-            GestureDetector(
-              onTap: onSeeAll,
-              child: const CustomText(
-                'See all →',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: AppTheme.primaryGreen,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 4,
-            crossAxisSpacing: 8,
-            mainAxisSpacing: 12,
-            childAspectRatio: 0.78,
-          ),
-          itemCount: visible.length,
-          itemBuilder: (ctx, i) {
-            final sub = visible[i];
-            final emoji = subEmojiMap[sub.name] ?? '📦';
-            return GestureDetector(
-              onTap: () => onSubTap(sub),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: color,
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: color.withOpacity(0.4)),
-                      ),
-                      child: Center(
-                        child: sub.imageUrl != null && sub.imageUrl!.isNotEmpty
-                            ? Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: CustomNetworkImage(
-                                  imageUrl: sub.imageUrl!.startsWith('http')
-                                      ? sub.imageUrl!
-                                      : 'https://vegimart-backend.vercel.app${sub.imageUrl}',
-                                  fit: BoxFit.contain,
-                                  placeholder: CustomText(
-                                    emoji,
-                                    style: const TextStyle(fontSize: 26),
-                                  ),
-                                ),
-                              )
-                            : CustomText(
-                                emoji,
-                                style: const TextStyle(fontSize: 26),
-                              ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  CustomText(
-                    sub.name,
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 10,
-                      color: AppTheme.textDark,
-                      height: 1.25,
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
-        ),
-        if (subcategories.length > 8) ...[
-          const SizedBox(height: 10),
-          GestureDetector(
-            onTap: onSeeAll,
-            child: Center(
-              child: CustomText(
-                'View all ${subcategories.length} subcategories →',
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: AppTheme.primaryGreen,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ],
-    );
-  }
-}
+// Removed _CategorySection since it's a flat structure now

@@ -20,15 +20,14 @@ class ApiConfig {
   static const String categoryTypes = '/category-types';
   static const String categories = '/categories';
   static const String subcategories = '/subcategories';
-  
+
   // Cart
   static const String cart = '/cart';
   static const String cartToggle = '/cart/toggle';
   static const String cartClear = '/cart/clear';
 
-  // Orders
   static const String orders = '/orders';
-  
+
   // Wishlist
   static const String wishlist = '/wishlist';
   static const String wishlistAdd = '/wishlist/add';

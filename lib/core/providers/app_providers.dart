@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:veggie_mart/core/data/fake_data.dart';
-import 'package:veggie_mart/core/models/models.dart';
+import 'package:veggie_mart/core/constants/fake_data.dart';
+import 'package:veggie_mart/core/constants/data/models/models.dart';
 
 // Auth Provider moved to lib/features/auth/presentation/providers/auth_provider.dart
 
@@ -26,8 +26,8 @@ class ProductsNotifier extends StateNotifier<List<ProductModel>> {
 
 final productsProvider =
     StateNotifierProvider<ProductsNotifier, List<ProductModel>>(
-  (ref) => ProductsNotifier(),
-);
+      (ref) => ProductsNotifier(),
+    );
 
 // ─── Selected Category ──────────────────────────────────────────────────────────
 

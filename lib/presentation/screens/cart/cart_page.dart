@@ -7,8 +7,8 @@ import 'package:veggie_mart/core/widgets/custom_text.dart';
 import 'package:veggie_mart/core/widgets/suggestion_field.dart';
 import 'package:veggie_mart/presentation/providers/cart_controller.dart';
 import 'package:veggie_mart/presentation/providers/orders_controller.dart';
-import 'package:veggie_mart/core/data/fake_data.dart';
-import 'package:veggie_mart/core/models/models.dart';
+import 'package:veggie_mart/core/constants/fake_data.dart';
+import 'package:veggie_mart/core/constants/data/models/models.dart';
 import 'package:veggie_mart/core/providers/app_providers.dart'
     hide cartProvider, cartTotalProvider;
 
@@ -1027,8 +1027,8 @@ class _EmptyCartView extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            width: 140,
-            height: 140,
+            width: 120,
+            height: 120,
             decoration: BoxDecoration(
               color: AppTheme.primaryGreen.withValues(alpha: 0.1),
               shape: BoxShape.circle,

@@ -26,11 +26,8 @@ class WishlistRemoteDataSourceImpl implements WishlistRemoteDataSource {
   @override
   Future<List<ProductEntity>> addToWishlist(String productId) async {
     try {
-      final response = await dio.post(
-        ApiConfig.wishlistAdd,
-        data: {'product_id': productId},
-      );
-      return _parseWishlist(response.data);
+      await dio.post(ApiConfig.wishlistAdd, data: {'product_id': productId});
+      return await getWishlist();
     } catch (e) {
       throw Exception('Failed to add to wishlist: $e');
     }
@@ -39,8 +36,8 @@ class WishlistRemoteDataSourceImpl implements WishlistRemoteDataSource {
   @override
   Future<List<ProductEntity>> removeFromWishlist(String productId) async {
     try {
-      final response = await dio.delete('${ApiConfig.wishlist}/$productId');
-      return _parseWishlist(response.data);
+      await dio.delete('${ApiConfig.wishlist}/$productId');
+      return await getWishlist();
     } catch (e) {
       throw Exception('Failed to remove from wishlist: $e');
     }
@@ -50,7 +47,7 @@ class WishlistRemoteDataSourceImpl implements WishlistRemoteDataSource {
     if (data == null) return [];
     dynamic wishlistData = data['data'] ?? data['wishlist'] ?? data;
     if (wishlistData == null) return [];
-    
+
     List<dynamic> items = [];
     if (wishlistData is List) {
       items = wishlistData;
@@ -59,7 +56,7 @@ class WishlistRemoteDataSourceImpl implements WishlistRemoteDataSource {
     }
 
     return items.map((e) {
-      final productJson = e['product'] ?? e;
+      final productJson = e['product'] ?? e['product_id'] ?? e;
       return _parseProduct(productJson);
     }).toList();
   }
@@ -67,16 +64,29 @@ class WishlistRemoteDataSourceImpl implements WishlistRemoteDataSource {
   ProductEntity _parseProduct(Map<String, dynamic> json) {
     return ProductEntity(
       id: json['_id'] ?? json['id'] ?? '',
-      name: json['name'] ?? '',
+      name: json['name'] ?? json['product_name'] ?? '',
       description: json['description'] ?? '',
-      price: (json['price'] ?? 0).toDouble(),
-      originalPrice: (json['original_price'] ?? json['originalPrice'] ?? (json['price'] ?? 0)).toDouble(),
-      imageUrl: json['image'] ?? json['imageUrl'] ?? '',
+      price: (json['price'] ?? json['selling_price'] ?? 0).toDouble(),
+      originalPrice:
+          (json['original_price'] ??
+                  json['originalPrice'] ??
+                  json['mrp'] ??
+                  json['price'] ??
+                  json['selling_price'] ??
+                  0)
+              .toDouble(),
+      imageUrl:
+          json['image'] ?? json['imageUrl'] ?? json['product_image'] ?? '',
       category: json['category'] ?? '',
       rating: (json['rating'] ?? 0).toDouble(),
       reviewCount: json['review_count'] ?? json['reviewCount'] ?? 0,
-      inStock: json['in_stock'] ?? json['inStock'] ?? true,
-      unit: json['unit'] ?? '1 piece',
+      inStock:
+          json['in_stock'] ??
+          json['inStock'] ??
+          (json['stock_status'] != null
+              ? (json['stock_status'] as num) > 0
+              : true),
+      unit: json['unit'] ?? json['quantity'] ?? '1 piece',
       isFavorite: true,
     );
   }

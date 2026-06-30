@@ -25,6 +25,8 @@ class ApiException implements Exception {
           dioException.response?.statusCode,
           dioException.response?.data,
         );
+      case DioExceptionType.transformTimeout:
+        return ApiException("Transform timeout in connection with API server");
       case DioExceptionType.unknown:
         if (dioException.message?.contains("SocketException") ?? false) {
           return ApiException('No Internet connection');

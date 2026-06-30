@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:veggie_mart/core/theme/app_theme.dart';
 import 'package:veggie_mart/core/widgets/custom_text.dart';
-import 'package:veggie_mart/core/data/fake_data.dart';
-import 'package:veggie_mart/core/models/models.dart';
+import 'package:veggie_mart/core/constants/fake_data.dart';
+import 'package:veggie_mart/core/constants/data/models/models.dart';
 import 'package:veggie_mart/presentation/providers/cart_controller.dart';
 import 'package:veggie_mart/presentation/providers/orders_controller.dart';
 

@@ -14,14 +14,21 @@ class CategoryRowWidget extends StatelessWidget {
     required this.onSelect,
   });
 
-  static const Map<String, String> _emojis = {
-    'All': '🛒',
-    'Fruits': '🍎',
-    'Vegetables': '🥦',
-    'Groceries': '🛍️',
-    'Dairy': '🥛',
-    'Snacks': '🍿',
-  };
+  String _getEmojiForCategory(String category) {
+    if (category == 'All') return '🛒';
+
+    final lower = category.toLowerCase();
+    if (lower.contains('veg')) return '🥦';
+    if (lower.contains('fruit')) return '🍎';
+    if (lower.contains('dair') || lower.contains('milk')) return '🥛';
+    if (lower.contains('groc')) return '🛍️';
+    if (lower.contains('snack')) return '🍿';
+    if (lower.contains('meat') || lower.contains('chicken')) return '🥩';
+    if (lower.contains('bread') || lower.contains('bakery')) return '🍞';
+    if (lower.contains('drink') || lower.contains('beverage')) return '🥤';
+
+    return '🍽️';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +42,7 @@ class CategoryRowWidget extends StatelessWidget {
         itemBuilder: (ctx, i) {
           final cat = categories[i];
           final isSelected = cat == selected;
-          final emoji = _emojis[cat] ?? '🍽️';
+          final emoji = _getEmojiForCategory(cat);
 
           return GestureDetector(
             onTap: () => onSelect(cat),

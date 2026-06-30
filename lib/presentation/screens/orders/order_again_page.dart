@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:veggie_mart/core/data/fake_data.dart';
+import 'package:veggie_mart/core/constants/fake_data.dart';
 import 'package:veggie_mart/core/theme/app_theme.dart';
 import 'package:veggie_mart/core/widgets/product_card_widget.dart';
 import 'package:veggie_mart/presentation/providers/home_controller.dart';

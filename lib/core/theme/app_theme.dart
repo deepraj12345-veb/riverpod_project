@@ -11,7 +11,7 @@ class AppTheme {
   // Semantic aliases used across screens
   static const Color priceOrange = Color(0xFF15803D);
   static const Color buyBlack = Color(0xFF166534);
-  static const Color textDark = Color(0xFF14532D);
+  static const Color textDark = Color.fromARGB(255, 0, 0, 0);
   static const Color textGrey = Color(0xFF6B7280);
   static const Color bgWhite = Color(0xFFF0FDF4);
   static const Color cardWhite = Color(0xFFFFFFFF);

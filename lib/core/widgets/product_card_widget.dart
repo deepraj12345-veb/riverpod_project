@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:veggie_mart/core/widgets/custom_network_image.dart';
 import 'package:veggie_mart/core/theme/app_theme.dart';
 import 'package:veggie_mart/domain/entities/product_entity.dart';
-import 'package:veggie_mart/presentation/providers/home_controller.dart';
+import 'package:veggie_mart/presentation/providers/wishlist_controller.dart';
 import 'package:veggie_mart/core/widgets/add_to_cart_button.dart';
 import 'package:veggie_mart/core/widgets/custom_text.dart';
 
@@ -112,30 +112,40 @@ class ProductCardWidget extends ConsumerWidget {
 
                   // Bookmark / Favorite Icon
                   if (showFavoriteButton)
-                    Positioned(
-                      top: 6,
-                      right: 6,
-                      child: GestureDetector(
-                        onTap: () => ref
-                            .read(productsProvider.notifier)
-                            .toggleFavorite(product.id),
-                        child: Icon(
-                          product.isFavorite
-                              ? Icons.favorite_rounded
-                              : Icons.favorite_border_rounded,
-                          color: product.isFavorite
-                              ? AppTheme.primaryColor
-                              : Colors.black38,
-                          size: 20,
-                          shadows: [
-                            if (!product.isFavorite)
-                              const Shadow(
-                                color: Colors.white70,
-                                blurRadius: 2,
-                              ),
-                          ],
-                        ),
-                      ),
+                    Consumer(
+                      builder: (context, ref, child) {
+                        final wishlist = ref.watch(wishlistProvider);
+                        final isFavorite = wishlist.any((p) => p.id == product.id);
+                        return Positioned(
+                          top: 6,
+                          right: 6,
+                          child: GestureDetector(
+                            onTap: () {
+                              if (isFavorite) {
+                                ref.read(wishlistProvider.notifier).removeFromWishlist(product.id);
+                              } else {
+                                ref.read(wishlistProvider.notifier).addToWishlist(product);
+                              }
+                            },
+                            child: Icon(
+                              isFavorite
+                                  ? Icons.favorite_rounded
+                                  : Icons.favorite_border_rounded,
+                              color: isFavorite
+                                  ? AppTheme.primaryColor
+                                  : Colors.black38,
+                              size: 20,
+                              shadows: [
+                                if (!isFavorite)
+                                  const Shadow(
+                                    color: Colors.white70,
+                                    blurRadius: 2,
+                                  ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }
                     ),
 
                   if (showAddButton)
@@ -253,7 +263,7 @@ class ProductCardWidget extends ConsumerWidget {
     );
 
     return GestureDetector(
-      onTap: onTap ?? () => context.push('/product/${product.id}'),
+      onTap: onTap ?? () => context.push('/product/${product.id}', extra: product),
       child: cardContent,
     );
   }

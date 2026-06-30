@@ -25,7 +25,7 @@ class _FloatingCartBarState extends ConsumerState<FloatingCartBar>
     _chevronCtrl = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1000),
-    )..repeat(reverse: true);
+    ); // Removed repeat to prevent continuous log print
     _chevronAnim = Tween<double>(begin: 0.0, end: 3.0).animate(
       CurvedAnimation(parent: _chevronCtrl, curve: Curves.easeInOut),
     );
@@ -84,14 +84,14 @@ class _FloatingCartBarState extends ConsumerState<FloatingCartBar>
           end: Alignment.bottomRight,
         ),
         border: Border.all(
-          color: Colors.white.withOpacity(0.12),
+          color: Colors.white.withValues(alpha: 0.12),
           width: 1.0,
         ),
         borderRadius: BorderRadius.circular(14),
         boxShadow: showCartBar
             ? [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.22),
+                  color: Colors.black.withValues(alpha: 0.22),
                   blurRadius: 10,
                   offset: const Offset(0, 3),
                 ),
@@ -102,8 +102,12 @@ class _FloatingCartBarState extends ConsumerState<FloatingCartBar>
           ? InkWell(
               onTap: () => context.go('/cart'),
               borderRadius: BorderRadius.circular(14),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: SingleChildScrollView(
+                physics: const NeverScrollableScrollPhysics(),
+                child: SizedBox(
+                  height: 62, // Fixed inner height to prevent overflow during shrink animation
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   // Top section: thumbnails, pricing details, View Cart capsule
                   Row(
@@ -177,7 +181,7 @@ class _FloatingCartBarState extends ConsumerState<FloatingCartBar>
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 5, vertical: 1.5),
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.16),
+                                    color: Colors.white.withValues(alpha: 0.16),
                                     borderRadius: BorderRadius.circular(4),
                                   ),
                                   child: Row(
@@ -213,7 +217,7 @@ class _FloatingCartBarState extends ConsumerState<FloatingCartBar>
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.08),
+                              color: Colors.black.withValues(alpha: 0.08),
                               blurRadius: 3,
                               offset: const Offset(0, 1),
                             ),
@@ -273,7 +277,7 @@ class _FloatingCartBarState extends ConsumerState<FloatingCartBar>
                               style: TextStyle(
                                 color: isFreeDelivery
                                     ? Colors.white
-                                    : Colors.white.withOpacity(0.85),
+                                    : Colors.white.withValues(alpha: 0.85),
                                 fontSize: 8.5,
                                 fontWeight: isFreeDelivery
                                     ? FontWeight.w700
@@ -289,7 +293,7 @@ class _FloatingCartBarState extends ConsumerState<FloatingCartBar>
                         child: LinearProgressIndicator(
                           value: progress,
                           minHeight: 2,
-                          backgroundColor: Colors.white.withOpacity(0.15),
+                          backgroundColor: Colors.white.withValues(alpha: 0.15),
                           valueColor: const AlwaysStoppedAnimation<Color>(
                               Color(0xFF86EFAC)),
                         ),
@@ -298,7 +302,9 @@ class _FloatingCartBarState extends ConsumerState<FloatingCartBar>
                   ),
                 ],
               ),
-            )
+            ),
+          ),
+        )
           : const SizedBox.shrink(),
     );
   }
@@ -328,7 +334,7 @@ class _FloatingCartBarState extends ConsumerState<FloatingCartBar>
                   border: Border.all(color: Colors.white, width: 1.2),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.15),
+                      color: Colors.black.withValues(alpha: 0.15),
                       blurRadius: 3,
                       offset: const Offset(0, 1),
                     ),
@@ -354,7 +360,7 @@ class _FloatingCartBarState extends ConsumerState<FloatingCartBar>
                   border: Border.all(color: Colors.white, width: 1.2),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.15),
+                      color: Colors.black.withValues(alpha: 0.15),
                       blurRadius: 3,
                       offset: const Offset(0, 1),
                     ),
@@ -489,7 +495,7 @@ class _FlyingImageWidgetState extends State<_FlyingImageWidget>
                     border: Border.all(color: Colors.white, width: 1.5),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
+                        color: Colors.black.withValues(alpha: 0.2),
                         blurRadius: 6,
                         offset: const Offset(0, 2),
                       ),

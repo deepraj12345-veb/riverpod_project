@@ -1,29 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:veggie_mart/domain/entities/product_entity.dart';
 import 'package:veggie_mart/core/widgets/custom_network_image.dart';
 import 'package:veggie_mart/core/theme/app_theme.dart';
 import 'package:veggie_mart/presentation/providers/home_controller.dart';
+import 'package:veggie_mart/presentation/providers/wishlist_controller.dart';
 import 'package:veggie_mart/core/widgets/add_to_cart_button.dart';
 import 'package:veggie_mart/core/widgets/product_card_widget.dart';
 import 'package:veggie_mart/core/widgets/custom_text.dart';
 
 class ProductDetailPage extends ConsumerWidget {
   final String productId;
-  const ProductDetailPage({super.key, required this.productId});
+  final ProductEntity? product;
+  const ProductDetailPage({super.key, required this.productId, this.product});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final products = ref.watch(productsProvider);
-    final product = products.firstWhere(
+    final displayProduct = product ?? products.firstWhere(
       (p) => p.id == productId,
       orElse: () => products.first,
     );
-    final discount = product.discountPercent.toInt();
+    final discount = displayProduct.discountPercent.toInt();
 
     // Fetch similar products
     final similarProducts = products
-        .where((p) => p.category == product.category && p.id != product.id)
+        .where((p) => p.category == displayProduct.category && p.id != displayProduct.id)
         .toList();
 
     final screenW = MediaQuery.of(context).size.width;
@@ -67,16 +70,16 @@ class ProductDetailPage extends ConsumerWidget {
                   ],
                   flexibleSpace: FlexibleSpaceBar(
                     background: Container(
-                      color: product.inStock
+                      color: displayProduct.inStock
                           ? Colors.white
                           : const Color(0xFFF3F4F6),
                       child: Stack(
                         fit: StackFit.expand,
                         children: [
                           // Product image
-                          product.inStock
+                          displayProduct.inStock
                               ? CustomNetworkImage(
-                                  imageUrl: product.imageUrl,
+                                  imageUrl: displayProduct.imageUrl,
                                   fit: BoxFit.cover,
                                   errorWidget: const Icon(
                                     Icons.image_outlined,
@@ -108,7 +111,7 @@ class ProductDetailPage extends ConsumerWidget {
                                     0,
                                   ]),
                                   child: CustomNetworkImage(
-                                    imageUrl: product.imageUrl,
+                                    imageUrl: displayProduct.imageUrl,
                                     fit: BoxFit.cover,
                                     placeholder: const SizedBox(),
                                     errorWidget: const Icon(
@@ -119,7 +122,7 @@ class ProductDetailPage extends ConsumerWidget {
                                   ),
                                 ),
                           // Discount badge
-                          if (discount > 0 && product.inStock)
+                          if (discount > 0 && displayProduct.inStock)
                             Positioned(
                               bottom: 20,
                               left: 20,
@@ -143,7 +146,7 @@ class ProductDetailPage extends ConsumerWidget {
                               ),
                             ),
                           // Out of stock overlay label
-                          if (!product.inStock)
+                          if (!displayProduct.inStock)
                             Positioned(
                               bottom: 0,
                               left: 0,
@@ -171,35 +174,45 @@ class ProductDetailPage extends ConsumerWidget {
                           Positioned(
                             bottom: 20,
                             right: 20,
-                            child: GestureDetector(
-                              onTap: () => ref
-                                  .read(productsProvider.notifier)
-                                  .toggleFavorite(product.id),
-                              child: Container(
-                                width: 44,
-                                height: 44,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  shape: BoxShape.circle,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withValues(
-                                        alpha: 0.1,
-                                      ),
-                                      blurRadius: 8,
+                            child: Consumer(
+                              builder: (context, ref, child) {
+                                final wishlist = ref.watch(wishlistProvider);
+                                final isFavorite = wishlist.any((p) => p.id == displayProduct.id);
+                                return GestureDetector(
+                                  onTap: () {
+                                    if (isFavorite) {
+                                      ref.read(wishlistProvider.notifier).removeFromWishlist(displayProduct.id);
+                                    } else {
+                                      ref.read(wishlistProvider.notifier).addToWishlist(displayProduct);
+                                    }
+                                  },
+                                  child: Container(
+                                    width: 44,
+                                    height: 44,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withValues(
+                                            alpha: 0.1,
+                                          ),
+                                          blurRadius: 8,
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                                child: Icon(
-                                  product.isFavorite
-                                      ? Icons.favorite_rounded
-                                      : Icons.favorite_border_rounded,
-                                  color: product.isFavorite
-                                      ? AppTheme.accentRed
-                                      : AppTheme.textGrey,
-                                  size: 22,
-                                ),
-                              ),
+                                    child: Icon(
+                                      isFavorite
+                                          ? Icons.favorite_rounded
+                                          : Icons.favorite_border_rounded,
+                                      color: isFavorite
+                                          ? AppTheme.accentRed
+                                          : AppTheme.textGrey,
+                                      size: 22,
+                                    ),
+                                  ),
+                                );
+                              }
                             ),
                           ),
                         ],
@@ -225,7 +238,7 @@ class ProductDetailPage extends ConsumerWidget {
                               children: [
                                 Expanded(
                                   child: CustomText(
-                                    product.name,
+                                    displayProduct.name,
                                     style: const TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.w700,
@@ -241,19 +254,19 @@ class ProductDetailPage extends ConsumerWidget {
                                     vertical: 5,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: product.inStock
+                                    color: displayProduct.inStock
                                         ? const Color(0xFFECFDF5)
                                         : const Color(0xFFFEF2F2),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: CustomText(
-                                    product.inStock
+                                    displayProduct.inStock
                                         ? 'In Stock'
                                         : 'Out of Stock',
                                     style: TextStyle(
                                       fontSize: 11,
                                       fontWeight: FontWeight.w600,
-                                      color: product.inStock
+                                      color: displayProduct.inStock
                                           ? AppTheme.primaryGreen
                                           : AppTheme.accentRed,
                                     ),
@@ -264,7 +277,7 @@ class ProductDetailPage extends ConsumerWidget {
 
                             const SizedBox(height: 0),
                             CustomText(
-                              product.unit,
+                              displayProduct.unit,
                               style: const TextStyle(
                                 fontSize: 14,
                                 color: AppTheme.textGrey,
@@ -278,7 +291,7 @@ class ProductDetailPage extends ConsumerWidget {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 CustomText(
-                                  'Rs ${product.price.toStringAsFixed(0)}',
+                                  'Rs ${displayProduct.price.toStringAsFixed(0)}',
                                   style: const TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.w800,
@@ -289,7 +302,7 @@ class ProductDetailPage extends ConsumerWidget {
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 4),
                                   child: CustomText(
-                                    'MRP Rs ${product.originalPrice.toStringAsFixed(0)}',
+                                    'MRP Rs ${displayProduct.originalPrice.toStringAsFixed(0)}',
                                     style: const TextStyle(
                                       fontSize: 14,
                                       color: AppTheme.textGrey,
@@ -298,7 +311,7 @@ class ProductDetailPage extends ConsumerWidget {
                                   ),
                                 ),
                                 const Spacer(),
-                                if (discount > 0 && product.inStock)
+                                if (discount > 0 && displayProduct.inStock)
                                   Container(
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: 10,
@@ -366,7 +379,7 @@ class ProductDetailPage extends ConsumerWidget {
                             ),
                             const SizedBox(height: 8),
                             CustomText(
-                              product.description,
+                              displayProduct.description,
                               style: const TextStyle(
                                 fontSize: 13,
                                 color: AppTheme.textGrey,
@@ -514,7 +527,7 @@ class ProductDetailPage extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CustomText(
-                          'Rs ${product.price.toStringAsFixed(0)}',
+                          'Rs ${displayProduct.price.toStringAsFixed(0)}',
                           style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w800,
@@ -522,7 +535,7 @@ class ProductDetailPage extends ConsumerWidget {
                           ),
                         ),
                         CustomText(
-                          'MRP Rs ${product.originalPrice.toStringAsFixed(0)}',
+                          'MRP Rs ${displayProduct.originalPrice.toStringAsFixed(0)}',
                           style: const TextStyle(
                             fontSize: 12,
                             color: AppTheme.textGrey,
@@ -534,7 +547,7 @@ class ProductDetailPage extends ConsumerWidget {
                   ),
 
                   // Counter
-                  if (!product.inStock)
+                  if (!displayProduct.inStock)
                     Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 20,
@@ -566,7 +579,7 @@ class ProductDetailPage extends ConsumerWidget {
                     )
                   else
                     AddToCartButton(
-                      product: product,
+                      product: displayProduct,
                       width: 80,
                       height: 38.0,
                       borderRadius: 12.0,

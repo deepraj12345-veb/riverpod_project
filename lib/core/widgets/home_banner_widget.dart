@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:veggie_mart/core/widgets/custom_network_image.dart';
-import 'package:veggie_mart/core/data/fake_data.dart';
+import 'package:veggie_mart/domain/entities/banner_entity.dart';
 import 'package:veggie_mart/core/theme/app_theme.dart';
 import 'package:veggie_mart/core/widgets/custom_text.dart';
 
 class HomeBannerWidget extends StatefulWidget {
-  final List<BannerModel> banners;
+  final List<BannerEntity> banners;
   final double bannerHeight;
   const HomeBannerWidget({
     super.key,
@@ -82,7 +82,7 @@ class _HomeBannerWidgetState extends State<HomeBannerWidget> {
 }
 
 class _BannerCard extends StatelessWidget {
-  final BannerModel banner;
+  final BannerEntity banner;
   const _BannerCard({required this.banner});
 
   @override
@@ -101,13 +101,22 @@ class _BannerCard extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          // Background image with dark overlay
+          // Background image
           CustomNetworkImage(
-            imageUrl: banner.imageUrl,
+            imageUrl: banner.imageUrl.isNotEmpty 
+                ? banner.imageUrl 
+                : 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&auto=format&fit=crop&q=80',
             fit: BoxFit.cover,
-            color: Colors.black.withValues(alpha: 0.35),
-            colorBlendMode: BlendMode.darken,
-            errorWidget: const SizedBox(),
+            errorWidget: Image.network(
+              'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&auto=format&fit=crop&q=80',
+              fit: BoxFit.cover,
+            ),
+          ),
+          // Dark overlay
+          Positioned.fill(
+            child: Container(
+              color: Colors.black.withValues(alpha: 0.35),
+            ),
           ),
           // Content
           Padding(

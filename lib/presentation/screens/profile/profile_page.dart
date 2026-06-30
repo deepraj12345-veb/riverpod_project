@@ -5,13 +5,13 @@ import 'package:veggie_mart/core/widgets/custom_network_image.dart';
 import 'package:veggie_mart/core/theme/app_theme.dart';
 import 'package:veggie_mart/presentation/providers/auth_provider.dart';
 import 'package:veggie_mart/presentation/providers/cart_controller.dart';
-import 'package:veggie_mart/presentation/providers/home_controller.dart';
 import 'package:veggie_mart/presentation/providers/profile_controller.dart';
 import 'package:veggie_mart/presentation/providers/orders_controller.dart';
 import 'package:veggie_mart/presentation/providers/dashboard_provider.dart';
 import 'package:veggie_mart/core/widgets/custom_text.dart';
 import 'package:veggie_mart/core/providers/app_providers.dart'
     hide cartItemCountProvider, productsProvider;
+import 'package:veggie_mart/presentation/providers/wishlist_controller.dart';
 
 class ProfilePage extends ConsumerWidget {
   const ProfilePage({super.key});
@@ -21,10 +21,7 @@ class ProfilePage extends ConsumerWidget {
     final user = ref.watch(userProvider);
     final isPremium = ref.watch(isPremiumUserProvider);
     final cartCount = ref.watch(cartItemCountProvider);
-    final wishlistCount = ref
-        .watch(productsProvider)
-        .where((p) => p.isFavorite)
-        .length;
+    final wishlistCount = ref.watch(wishlistProvider).length;
     final dashboardAsync = ref.watch(dashboardProvider);
     final ordersCount = dashboardAsync.maybeWhen(
       data: (d) => d.totalOrders,
@@ -284,7 +281,7 @@ class ProfilePage extends ConsumerWidget {
                           value: '₹${walletBalance.toStringAsFixed(0)}',
                           subtitle: 'available',
                           bgColor: AppTheme.cardLavender,
-                          iconColor: Color(0xFF7C3AED),
+                          iconColor: const Color(0xFF7C3AED),
                           onTap: () {},
                         ),
                       ),

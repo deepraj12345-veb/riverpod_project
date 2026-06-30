@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:veggie_mart/domain/entities/product_entity.dart';
 import 'package:veggie_mart/presentation/providers/auth_provider.dart';
 import 'package:veggie_mart/presentation/providers/auth_state.dart';
 import 'package:veggie_mart/presentation/screens/auth/login_page.dart';
@@ -25,7 +26,7 @@ import 'package:flutter/foundation.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   final routerNotifier = ValueNotifier<int>(0);
-  
+
   ref.listen(authProvider, (previous, next) {
     if (previous != next) {
       routerNotifier.value++;
@@ -44,7 +45,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         authenticated: (_) => true,
         orElse: () => false,
       );
-      
+
       final isAuthRoute =
           state.matchedLocation.startsWith('/login') ||
           state.matchedLocation.startsWith('/signup') ||
@@ -79,7 +80,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             path: '/product/:id',
             builder: (ctx, state) {
               final id = state.pathParameters['id']!;
-              return ProductDetailPage(productId: id);
+              final extraProduct = state.extra as ProductEntity?;
+              return ProductDetailPage(productId: id, product: extraProduct);
             },
           ),
           GoRoute(path: '/cart', builder: (ctx, state) => const CartPage()),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:veggie_mart/core/theme/app_theme.dart';
-
 class CustomNetworkImage extends StatelessWidget {
   final String imageUrl;
   final double? width;
@@ -27,29 +26,30 @@ class CustomNetworkImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (imageUrl.isEmpty) {
-      return _buildErrorWidget(context);
+      return errorWidget ?? _buildErrorWidget(context);
     }
 
-    return CachedNetworkImage(
-      imageUrl: imageUrl,
+    final finalUrl = imageUrl.startsWith('http')
+        ? imageUrl
+        : 'https://vegimart-backend.vercel.app$imageUrl';
+
+    return Image.network(
+      finalUrl,
       width: width,
       height: height,
       fit: fit,
       color: color,
       colorBlendMode: colorBlendMode,
-      placeholder: (context, url) =>
-          placeholder ??
-          const Center(
-            child: SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 1.5,
-                color: AppTheme.primaryGreen,
-              ),
-            ),
-          ),
-      errorWidget: (context, url, error) =>
+      loadingBuilder: (context, child, loadingProgress) {
+        if (loadingProgress == null) return child;
+        return placeholder ??
+            Shimmer.fromColors(
+              baseColor: Colors.grey.shade200,
+              highlightColor: Colors.grey.shade50,
+              child: Container(color: Colors.white),
+            );
+      },
+      errorBuilder: (context, error, stackTrace) =>
           errorWidget ?? _buildErrorWidget(context),
     );
   }
