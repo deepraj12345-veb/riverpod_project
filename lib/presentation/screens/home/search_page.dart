@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:veggie_mart/core/constants/fake_data.dart';
 import 'package:veggie_mart/core/theme/app_theme.dart';
 import 'package:veggie_mart/core/widgets/custom_text.dart';
 import 'package:veggie_mart/core/widgets/product_card_widget.dart';
 import 'package:veggie_mart/presentation/providers/home_controller.dart';
-import 'package:veggie_mart/core/widgets/suggestion_field.dart';
 
 class SearchPage extends ConsumerStatefulWidget {
   const SearchPage({super.key});
@@ -19,13 +17,16 @@ class _SearchPageState extends ConsumerState<SearchPage> {
   late TextEditingController _searchCtrl;
   final FocusNode _focusNode = FocusNode();
 
+  // Debounce
+  String _debouncedQuery = '';
+
   @override
   void initState() {
     super.initState();
     final initialQuery = ref.read(searchQueryProvider);
     _searchCtrl = TextEditingController(text: initialQuery);
+    _debouncedQuery = initialQuery;
 
-    // Auto focus on load
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
     });
@@ -38,20 +39,32 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     super.dispose();
   }
 
+  void _onSearchChanged(String value) {
+    ref.read(searchQueryProvider.notifier).state = value;
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (mounted && value == ref.read(searchQueryProvider)) {
+        setState(() => _debouncedQuery = value);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final searchedProducts = ref.watch(searchedProductsProvider);
     final searchQuery = ref.watch(searchQueryProvider);
+    final searchAsync = ref.watch(searchedProductsProvider(_debouncedQuery));
 
-    final productSuggestions = FakeData.products.map((p) => p.name).toList()
-      ..addAll(FakeData.categories.where((c) => c != 'All'))
-      ..addAll(FakeData.products.expand((p) => p.tags).toSet());
+    final screenW = MediaQuery.of(context).size.width;
+    final cardW =
+        (screenW - 16 - 16 - 8 - 8) /
+        3; // 3 columns, 16 padding each side, 8 spacing x2
 
     return Scaffold(
       backgroundColor: AppTheme.bgLight,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        scrolledUnderElevation: 0,
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back_ios_new_rounded,
@@ -63,77 +76,120 @@ class _SearchPageState extends ConsumerState<SearchPage> {
             context.pop();
           },
         ),
-        title: SuggestionField(
+        title: TextField(
           controller: _searchCtrl,
           focusNode: _focusNode,
-          label: '',
-          hint: 'Search products, brands, tags...',
-          icon: Icons.search_rounded,
-          suggestions: productSuggestions,
-          onChanged: (v) => ref.read(searchQueryProvider.notifier).state = v,
-          onSelected: (v) => ref.read(searchQueryProvider.notifier).state = v,
+          onChanged: _onSearchChanged,
+          textInputAction: TextInputAction.search,
+          cursorColor: AppTheme.primaryGreen,
+          style: const TextStyle(fontSize: 15, color: AppTheme.textDark),
+          decoration: InputDecoration(
+            hintText: 'Search products, brands...',
+            hintStyle: const TextStyle(fontSize: 14, color: AppTheme.textGrey),
+            border: InputBorder.none,
+            enabledBorder: InputBorder.none,
+            focusedBorder: InputBorder.none,
+            fillColor: Colors.transparent,
+
+            prefixIcon: const Icon(
+              Icons.search_rounded,
+              color: AppTheme.primaryGreen,
+              size: 22,
+            ),
+            suffixIcon: searchQuery.isNotEmpty
+                ? IconButton(
+                    icon: const Icon(
+                      Icons.clear_rounded,
+                      size: 20,
+                      color: AppTheme.textGrey,
+                    ),
+                    onPressed: () {
+                      _searchCtrl.clear();
+                      _onSearchChanged('');
+                    },
+                  )
+                : null,
+          ),
         ),
         titleSpacing: 0,
-        actions: const [SizedBox(width: 16)],
+        actions: const [SizedBox(width: 8)],
       ),
       body: Column(
         children: [
-          if (searchQuery.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-              child: Row(
-                children: [
-                  CustomText(
-                    'Results for "$searchQuery"',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: AppTheme.textDark,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 3,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppTheme.primaryGreen.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: CustomText(
-                      '${searchedProducts.length} items',
+          // Results header
+          if (_debouncedQuery.isNotEmpty)
+            searchAsync.when(
+              loading: () => const SizedBox.shrink(),
+              error: (_, __) => const SizedBox.shrink(),
+              data: (products) => Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                child: Row(
+                  children: [
+                    CustomText(
+                      'Results for "$_debouncedQuery"',
                       style: const TextStyle(
-                        fontSize: 12,
-                        color: AppTheme.primaryGreen,
-                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: AppTheme.textDark,
                       ),
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: CustomText(
+                        '${products.length} items',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AppTheme.primaryGreen,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
+
+          // Body
           Expanded(
-            child: searchQuery.isEmpty
+            child: _debouncedQuery.isEmpty
                 ? const _EmptySearchState()
-                : searchedProducts.isEmpty
-                ? const _NoResultsState()
-                : GridView.builder(
-                    padding: const EdgeInsets.all(16),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
-                      childAspectRatio:
-                          ((MediaQuery.of(context).size.width - 44) / 2) /
-                          (((MediaQuery.of(context).size.width - 44) / 2) /
-                                  0.82 +
-                              108.0),
+                : searchAsync.when(
+                    loading: () => const Center(
+                      child: CircularProgressIndicator(
+                        color: AppTheme.primaryGreen,
+                      ),
                     ),
-                    itemCount: searchedProducts.length,
-                    itemBuilder: (ctx, i) {
-                      return ProductCardWidget(product: searchedProducts[i]);
-                    },
+                    error: (e, _) => const Center(
+                      child: CustomText(
+                        'Something went wrong!\nTry again.',
+                        style: TextStyle(color: AppTheme.textGrey),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    data: (products) => products.isEmpty
+                        ? const _NoResultsState()
+                        : GridView.builder(
+                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3,
+                                  crossAxisSpacing: 8,
+                                  mainAxisSpacing: 8,
+                                  childAspectRatio:
+                                      cardW / (cardW / 0.82 + 108.0),
+                                ),
+                            itemCount: products.length,
+                            itemBuilder: (ctx, i) =>
+                                ProductCardWidget(product: products[i]),
+                          ),
                   ),
           ),
         ],

@@ -14,7 +14,7 @@ class BannerModel extends BannerEntity {
     @JsonKey(name: '_id', readValue: readId) required super.id,
     @JsonKey(defaultValue: '') required super.title,
     @JsonKey(defaultValue: '') required super.subtitle,
-    @JsonKey(name: 'image_url', defaultValue: '') required super.imageUrl,
+    @JsonKey(name: 'image', defaultValue: '') required super.imageUrl,
     @JsonKey(defaultValue: '') required super.link,
     @JsonKey(name: 'is_active', readValue: readIsActive) required super.isActive,
     @JsonKey(name: 'sort_order', defaultValue: 0) required super.sortOrder,

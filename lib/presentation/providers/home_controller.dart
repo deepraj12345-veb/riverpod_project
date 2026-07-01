@@ -1,5 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:veggie_mart/core/network/api_config.dart';
+import 'package:veggie_mart/core/network/dio_client.dart';
 import 'package:veggie_mart/data/datasources/product_remote_data_source.dart';
+import 'package:veggie_mart/data/models/product_model.dart';
 import 'package:veggie_mart/data/repositories/product_repository_impl.dart';
 import 'package:veggie_mart/domain/repositories/product_repository.dart';
 import 'package:veggie_mart/domain/entities/product_entity.dart';
@@ -62,15 +65,22 @@ final filteredProductsProvider = Provider<List<ProductEntity>>((ref) {
 
 final searchQueryProvider = StateProvider<String>((ref) => '');
 
-final searchedProductsProvider = Provider<List<ProductEntity>>((ref) {
-  final products = ref.watch(productsProvider);
-  final query = ref.watch(searchQueryProvider);
-  if (query.isEmpty) return products;
-  return products
-      .where(
-        (p) =>
-            p.name.toLowerCase().contains(query.toLowerCase()) ||
-            p.category.toLowerCase().contains(query.toLowerCase()),
-      )
-      .toList();
-});
+// Live API search provider — calls /products?search=query
+final searchedProductsProvider =
+    FutureProvider.family<List<ProductEntity>, String>((ref, query) async {
+      if (query.trim().isEmpty) return [];
+      final dio = ref.watch(dioClientProvider);
+      final response = await dio.get(
+        ApiConfig.products,
+        queryParameters: {'search': query.trim(), 'page': 1, 'limit': 20},
+      );
+      final raw = response.data;
+      final List list = raw is Map && raw.containsKey('data')
+          ? (raw['data'] is List
+                ? raw['data'] as List
+                : (raw['data']['products'] ?? []) as List)
+          : (raw is List ? raw : []);
+      return list
+          .map((e) => ProductModel.fromJson(e as Map<String, dynamic>))
+          .toList();
+    });

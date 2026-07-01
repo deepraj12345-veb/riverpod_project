@@ -79,6 +79,7 @@ class AppTheme {
       textTheme: GoogleFonts.poppinsTextTheme(ThemeData.light().textTheme),
       appBarTheme: const AppBarTheme(
         backgroundColor: bgWhite,
+        surfaceTintColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
         centerTitle: false,
@@ -165,7 +166,9 @@ class AppTheme {
       textTheme: GoogleFonts.poppinsTextTheme(ThemeData.dark().textTheme),
       appBarTheme: const AppBarTheme(
         backgroundColor: darkBg,
+        surfaceTintColor: Colors.transparent,
         elevation: 0,
+        scrolledUnderElevation: 0,
         centerTitle: true,
         iconTheme: IconThemeData(color: textPrimary),
         titleTextStyle: TextStyle(

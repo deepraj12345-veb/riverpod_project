@@ -3,7 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:veggie_mart/core/theme/app_theme.dart';
 import 'package:veggie_mart/core/widgets/custom_network_image.dart';
-import 'package:veggie_mart/presentation/providers/dashboard_provider.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:veggie_mart/presentation/providers/category_provider.dart';
 import 'package:veggie_mart/presentation/providers/home_controller.dart';
 import 'package:veggie_mart/core/widgets/custom_text.dart';
 
@@ -64,7 +65,7 @@ class CategoriesPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dashboardAsync = ref.watch(dashboardProvider);
+    final categoryTypesAsync = ref.watch(categoryTypesProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -88,81 +89,175 @@ class CategoriesPage extends ConsumerWidget {
           ),
         ],
       ),
-      body: dashboardAsync.when(
-        loading: () => const Center(
-          child: CircularProgressIndicator(color: AppTheme.primaryGreen),
+      body: categoryTypesAsync.when(
+        loading: () => Shimmer.fromColors(
+          baseColor: Colors.grey[300]!,
+          highlightColor: Colors.grey[100]!,
+          child: ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: 3,
+            itemBuilder: (ctx, index) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 150,
+                    height: 24,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 4,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 12,
+                          childAspectRatio: 0.68,
+                        ),
+                    itemCount: 6,
+                    itemBuilder: (ctx, i) {
+                      return Column(
+                        children: [
+                          AspectRatio(
+                            aspectRatio: 1.0,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Container(
+                            width: 60,
+                            height: 12,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Container(
+                            width: 40,
+                            height: 12,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                ],
+              );
+            },
+          ),
         ),
         error: (err, _) => Center(child: Text(err.toString())),
-        data: (dashboard) {
-          final allCategories = dashboard.categories;
-
-          if (allCategories.isEmpty) {
+        data: (categoryTypes) {
+          if (categoryTypes.isEmpty) {
             return const Center(child: Text("No categories found."));
           }
 
-          return GridView.builder(
+          return ListView.builder(
             padding: const EdgeInsets.all(16),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
-              childAspectRatio: 0.8,
-            ),
-            itemCount: allCategories.length,
-            itemBuilder: (ctx, i) {
-              final cat = allCategories[i];
-              final color = _catColor[cat.name] ?? AppTheme.cardMint;
-              final emoji = _subEmoji[cat.name] ?? '📦';
-
-              return GestureDetector(
-                onTap: () => context.push('/subcategory', extra: cat.name),
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: color,
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                            color: color.withValues(alpha: 0.4),
-                          ),
-                        ),
-                        child: Center(
-                          child:
-                              cat.imageUrl != null && cat.imageUrl!.isNotEmpty
-                              ? Padding(
-                                  padding: const EdgeInsets.all(12.0),
-                                  child: CustomNetworkImage(
-                                    imageUrl: cat.imageUrl!,
-                                    fit: BoxFit.contain,
-                                    placeholder: CustomText(
-                                      emoji,
-                                      style: const TextStyle(fontSize: 32),
-                                    ),
-                                  ),
-                                )
-                              : CustomText(
-                                  emoji,
-                                  style: const TextStyle(fontSize: 32),
-                                ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    CustomText(
-                      cat.name,
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+            itemCount: categoryTypes.length,
+            itemBuilder: (ctx, index) {
+              final type = categoryTypes[index];
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 12.0),
+                    child: CustomText(
+                      type.name,
                       style: const TextStyle(
-                        fontSize: 13,
+                        fontSize: 15,
                         fontWeight: FontWeight.w600,
                         color: AppTheme.textDark,
-                        height: 1.2,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                  GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 4,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 12,
+                          childAspectRatio: 0.68,
+                        ),
+                    itemCount: type.categories.length,
+                    itemBuilder: (ctx, i) {
+                      final cat = type.categories[i];
+                      final emoji = _subEmoji[cat.name] ?? '📦';
+
+                      return GestureDetector(
+                        onTap: () =>
+                            context.push('/subcategory', extra: cat.name),
+                        child: Column(
+                          children: [
+                            AspectRatio(
+                              aspectRatio: 1.0,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[100],
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child:
+                                    cat.imageUrl != null &&
+                                        cat.imageUrl!.isNotEmpty
+                                    ? ClipRRect(
+                                        borderRadius: BorderRadius.circular(12),
+                                        child: CustomNetworkImage(
+                                          imageUrl: cat.imageUrl!,
+                                          fit: BoxFit.cover,
+                                          placeholder: Center(
+                                            child: CustomText(
+                                              emoji,
+                                              style: const TextStyle(
+                                                fontSize: 24,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    : Center(
+                                        child: CustomText(
+                                          emoji,
+                                          style: const TextStyle(fontSize: 24),
+                                        ),
+                                      ),
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            CustomText(
+                              cat.name,
+                              textAlign: TextAlign.center,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 11.5,
+                                fontWeight: FontWeight.w600,
+                                color: AppTheme.textDark,
+                                height: 1.15,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                ],
               );
             },
           );
@@ -171,5 +266,3 @@ class CategoriesPage extends ConsumerWidget {
     );
   }
 }
-
-// Removed _CategorySection since it's a flat structure now

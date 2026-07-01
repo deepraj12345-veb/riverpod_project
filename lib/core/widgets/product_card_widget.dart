@@ -115,16 +115,22 @@ class ProductCardWidget extends ConsumerWidget {
                     Consumer(
                       builder: (context, ref, child) {
                         final wishlist = ref.watch(wishlistProvider);
-                        final isFavorite = wishlist.any((p) => p.id == product.id);
+                        final isFavorite = wishlist.any(
+                          (p) => p.id == product.id,
+                        );
                         return Positioned(
                           top: 6,
                           right: 6,
                           child: GestureDetector(
                             onTap: () {
                               if (isFavorite) {
-                                ref.read(wishlistProvider.notifier).removeFromWishlist(product.id);
+                                ref
+                                    .read(wishlistProvider.notifier)
+                                    .removeFromWishlist(product.id);
                               } else {
-                                ref.read(wishlistProvider.notifier).addToWishlist(product);
+                                ref
+                                    .read(wishlistProvider.notifier)
+                                    .addToWishlist(product);
                               }
                             },
                             child: Icon(
@@ -145,7 +151,7 @@ class ProductCardWidget extends ConsumerWidget {
                             ),
                           ),
                         );
-                      }
+                      },
                     ),
 
                   if (showAddButton)
@@ -182,7 +188,7 @@ class ProductCardWidget extends ConsumerWidget {
               child: SingleChildScrollView(
                 physics: const NeverScrollableScrollPhysics(),
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+                  padding: const EdgeInsets.fromLTRB(8.0, 6.0, 8.0, 8.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -192,11 +198,11 @@ class ProductCardWidget extends ConsumerWidget {
                         style: const TextStyle(
                           fontSize: 10,
                           color: AppTheme.textGrey,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w500,
                           letterSpacing: 0.5,
                         ),
                       ),
-                      const SizedBox(height: 2),
+                      const SizedBox(height: 1),
 
                       // Product Name
                       CustomText(
@@ -205,14 +211,14 @@ class ProductCardWidget extends ConsumerWidget {
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontSize: 14,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w500,
                           color: isOutOfStock
                               ? AppTheme.textGrey
                               : AppTheme.textDark,
-                          height: 1.2,
+                          height: 1.15,
                         ),
                       ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: 3),
 
                       // Discount
                       if (discount > 0)
@@ -221,10 +227,10 @@ class ProductCardWidget extends ConsumerWidget {
                           style: const TextStyle(
                             color: AppTheme.primaryColor,
                             fontSize: 12,
-                            fontWeight: FontWeight.w800,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
-                      const SizedBox(height: 2),
+                      const SizedBox(height: 1),
 
                       // Price row
                       Row(
@@ -234,7 +240,7 @@ class ProductCardWidget extends ConsumerWidget {
                             '₹${product.price.toStringAsFixed(0)}',
                             style: TextStyle(
                               fontSize: 14,
-                              fontWeight: FontWeight.w800,
+                              fontWeight: FontWeight.w700,
                               color: isOutOfStock
                                   ? AppTheme.textGrey
                                   : AppTheme.textDark,
@@ -263,7 +269,8 @@ class ProductCardWidget extends ConsumerWidget {
     );
 
     return GestureDetector(
-      onTap: onTap ?? () => context.push('/product/${product.id}', extra: product),
+      onTap:
+          onTap ?? () => context.push('/product/${product.id}', extra: product),
       child: cardContent,
     );
   }

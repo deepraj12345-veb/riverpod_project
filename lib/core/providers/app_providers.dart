@@ -42,22 +42,6 @@ final filteredProductsProvider = Provider<List<ProductModel>>((ref) {
   return products.where((p) => p.category == category).toList();
 });
 
-// ─── Search Provider ────────────────────────────────────────────────────────────
-
-final searchQueryProvider = StateProvider<String>((ref) => '');
-
-final searchedProductsProvider = Provider<List<ProductModel>>((ref) {
-  final products = ref.watch(productsProvider);
-  final query = ref.watch(searchQueryProvider);
-  if (query.isEmpty) return products;
-  return products
-      .where(
-        (p) =>
-            p.name.toLowerCase().contains(query.toLowerCase()) ||
-            p.category.toLowerCase().contains(query.toLowerCase()),
-      )
-      .toList();
-});
 
 // ─── Cart Provider ──────────────────────────────────────────────────────────────
 
