@@ -11,14 +11,6 @@ import 'package:veggie_mart/core/widgets/custom_text.dart';
 class CategoriesPage extends ConsumerWidget {
   const CategoriesPage({super.key});
 
-  static const Map<String, Color> _catColor = {
-    'Fruits': Color(0xFFFFF3CD),
-    'Vegetables': Color(0xFFDCFCE7),
-    'Groceries': Color(0xFFEDE9FE),
-    'Dairy': Color(0xFFE0F2FE),
-    'Snacks': Color(0xFFFEE2E2),
-  };
-
   static const Map<String, String> _subEmoji = {
     'Organic': '🌿',
     'On Sale': '🔥',
