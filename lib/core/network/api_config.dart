@@ -33,4 +33,13 @@ class ApiConfig {
   // Wishlist
   static const String wishlist = '/wishlist';
   static const String wishlistAdd = '/wishlist/add';
+
+  // Profile
+  static const String profile = '/user/profile';
+  static const String wallet = '/user/wallet';
+
+  // Addresses
+  static const String addresses = '/addresses';
+  static String addressById(String id) => '/addresses/$id';
+  static String addressDefault(String id) => '/addresses/$id/default';
 }

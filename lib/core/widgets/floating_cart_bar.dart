@@ -26,9 +26,10 @@ class _FloatingCartBarState extends ConsumerState<FloatingCartBar>
       vsync: this,
       duration: const Duration(milliseconds: 1000),
     ); // Removed repeat to prevent continuous log print
-    _chevronAnim = Tween<double>(begin: 0.0, end: 3.0).animate(
-      CurvedAnimation(parent: _chevronCtrl, curve: Curves.easeInOut),
-    );
+    _chevronAnim = Tween<double>(
+      begin: 0.0,
+      end: 3.0,
+    ).animate(CurvedAnimation(parent: _chevronCtrl, curve: Curves.easeInOut));
   }
 
   @override
@@ -45,7 +46,8 @@ class _FloatingCartBarState extends ConsumerState<FloatingCartBar>
 
     final loc = GoRouterState.of(context).matchedLocation;
     // Do not show on cart, checkout, profile, or subscription screens
-    final showCartBar = cartCount > 0 &&
+    final showCartBar =
+        cartCount > 0 &&
         loc != '/cart' &&
         loc != '/checkout' &&
         !loc.startsWith('/profile') &&
@@ -67,12 +69,9 @@ class _FloatingCartBarState extends ConsumerState<FloatingCartBar>
       duration: const Duration(milliseconds: 300),
       curve: Curves.fastOutSlowIn,
       clipBehavior: Clip.hardEdge,
-      height: showCartBar ? 82.0 : 0.0,
+      height: showCartBar ? null : 0.0,
       margin: showCartBar
           ? const EdgeInsets.fromLTRB(14, 6, 14, 10)
-          : EdgeInsets.zero,
-      padding: showCartBar
-          ? const EdgeInsets.symmetric(horizontal: 14, vertical: 10)
           : EdgeInsets.zero,
       decoration: BoxDecoration(
         gradient: const LinearGradient(
@@ -102,209 +101,219 @@ class _FloatingCartBarState extends ConsumerState<FloatingCartBar>
           ? InkWell(
               onTap: () => context.go('/cart'),
               borderRadius: BorderRadius.circular(14),
-              child: SingleChildScrollView(
-                physics: const NeverScrollableScrollPhysics(),
-                child: SizedBox(
-                  height: 62, // Fixed inner height to prevent overflow during shrink animation
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Top section: thumbnails, pricing details, View Cart capsule
-                  Row(
-                    children: [
-                      // Animated overlapping product thumbnails
-                      AnimatedSwitcher(
-                        key: FloatingCartBar.cartKey,
-                        duration: const Duration(milliseconds: 300),
-                        transitionBuilder: (child, animation) {
-                          return ScaleTransition(
-                            scale: animation,
-                            child: child,
-                          );
-                        },
-                        child: _buildThumbnails(cartItems),
-                      ),
-                      const SizedBox(width: 10),
-                      // Pricing and item info
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            FittedBox(
-                              fit: BoxFit.scaleDown,
-                              alignment: Alignment.centerLeft,
-                              child: Row(
-                                children: [
-                                  CustomText(
-                                    '$cartCount item${cartCount > 1 ? 's' : ''}',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 5),
-                                  const Text(
-                                    '|',
-                                    style: TextStyle(
-                                        color: Colors.white38, fontSize: 11),
-                                  ),
-                                  const SizedBox(width: 5),
-                                  CustomText(
-                                    '₹${cartTotal.toStringAsFixed(0)}',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w800,
-                                    ),
-                                  ),
-                                  if (cartSavings > 0) ...[
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      '₹${totalOriginalPrice.toStringAsFixed(0)}',
+                  // ── Main content row ──────────────────────────────────
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(14, 10, 14, 0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // Animated overlapping product thumbnails
+                        AnimatedSwitcher(
+                          key: FloatingCartBar.cartKey,
+                          duration: const Duration(milliseconds: 300),
+                          transitionBuilder: (child, animation) {
+                            return ScaleTransition(
+                              scale: animation,
+                              child: child,
+                            );
+                          },
+                          child: _buildThumbnails(cartItems),
+                        ),
+                        const SizedBox(width: 10),
+                        // Pricing and item info
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              FittedBox(
+                                fit: BoxFit.scaleDown,
+                                alignment: Alignment.centerLeft,
+                                child: Row(
+                                  children: [
+                                    CustomText(
+                                      '$cartCount item${cartCount > 1 ? 's' : ''}',
                                       style: const TextStyle(
-                                        color: Colors.white38,
-                                        fontSize: 10.5,
-                                        decoration: TextDecoration.lineThrough,
-                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white,
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w600,
                                       ),
                                     ),
-                                  ],
-                                ],
-                              ),
-                            ),
-                            if (cartSavings > 0)
-                              Padding(
-                                padding: const EdgeInsets.only(top: 2.0),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 5, vertical: 1.5),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white.withValues(alpha: 0.16),
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      const Icon(
-                                        Icons.local_offer_rounded,
-                                        color: Color(0xFF86EFAC),
-                                        size: 8,
+                                    const SizedBox(width: 5),
+                                    const Text(
+                                      '|',
+                                      style: TextStyle(
+                                        color: Colors.white38,
+                                        fontSize: 11,
                                       ),
-                                      const SizedBox(width: 3),
-                                      CustomText(
-                                        'Saved ₹${cartSavings.toStringAsFixed(0)}!',
+                                    ),
+                                    const SizedBox(width: 5),
+                                    CustomText(
+                                      '₹${cartTotal.toStringAsFixed(0)}',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                    ),
+                                    if (cartSavings > 0) ...[
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        '₹${totalOriginalPrice.toStringAsFixed(0)}',
                                         style: const TextStyle(
-                                          color: Color(0xFF86EFAC),
-                                          fontSize: 8.5,
-                                          fontWeight: FontWeight.w800,
+                                          color: Colors.white38,
+                                          fontSize: 10.5,
+                                          decoration:
+                                              TextDecoration.lineThrough,
+                                          fontWeight: FontWeight.w500,
                                         ),
                                       ),
                                     ],
-                                  ),
+                                  ],
                                 ),
                               ),
-                          ],
+                              if (cartSavings > 0)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 2.0),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 5,
+                                      vertical: 1.5,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.16,
+                                      ),
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Icon(
+                                          Icons.local_offer_rounded,
+                                          color: Color(0xFF86EFAC),
+                                          size: 8,
+                                        ),
+                                        const SizedBox(width: 3),
+                                        CustomText(
+                                          'Saved ₹${cartSavings.toStringAsFixed(0)}!',
+                                          style: const TextStyle(
+                                            color: Color(0xFF86EFAC),
+                                            fontSize: 8.5,
+                                            fontWeight: FontWeight.w800,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
                         ),
-                      ),
-                      // View Cart white pill/capsule button
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.08),
-                              blurRadius: 3,
-                              offset: const Offset(0, 1),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const CustomText(
-                              'View Cart',
-                              style: TextStyle(
-                                color: Color(0xFF0C831F),
-                                fontSize: 11,
-                                fontWeight: FontWeight.w800,
+                        // View Cart pill button
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.08),
+                                blurRadius: 3,
+                                offset: const Offset(0, 1),
                               ),
-                            ),
-                            const SizedBox(width: 2),
-                            AnimatedBuilder(
-                              animation: _chevronAnim,
-                              builder: (ctx, child) {
-                                return Transform.translate(
-                                  offset: Offset(_chevronAnim.value, 0),
-                                  child: child,
-                                );
-                              },
-                              child: const Icon(
-                                Icons.keyboard_arrow_right_rounded,
-                                color: Color(0xFF0C831F),
-                                size: 16,
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const CustomText(
+                                'View Cart',
+                                style: TextStyle(
+                                  color: Color(0xFF0C831F),
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w800,
+                                ),
                               ),
-                            ),
-                          ],
+                              const SizedBox(width: 2),
+                              AnimatedBuilder(
+                                animation: _chevronAnim,
+                                builder: (ctx, child) {
+                                  return Transform.translate(
+                                    offset: Offset(_chevronAnim.value, 0),
+                                    child: child,
+                                  );
+                                },
+                                child: const Icon(
+                                  Icons.chevron_right_rounded,
+                                  color: Color(0xFF0C831F),
+                                  size: 16,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                  // Bottom section: Progress indicator towards Free Delivery
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(
+
+                  // ── Delivery text ─────────────────────────────────────
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(14, 6, 14, 4),
+                    child: Row(
+                      children: [
+                        Icon(
+                          isFreeDelivery
+                              ? Icons.check_circle_rounded
+                              : Icons.delivery_dining_rounded,
+                          color: Colors.white,
+                          size: 10,
+                        ),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: CustomText(
                             isFreeDelivery
-                                ? Icons.check_circle_rounded
-                                : Icons.delivery_dining_rounded,
-                            color: const Color.fromARGB(255, 255, 255, 255),
-                            size: 10.5,
-                          ),
-                          const SizedBox(width: 4),
-                          Expanded(
-                            child: CustomText(
-                              isFreeDelivery
-                                  ? 'FREE delivery applied to this order!'
-                                  : 'Add ₹${(199 - cartTotal).toStringAsFixed(0)} more for FREE delivery',
-                              style: TextStyle(
-                                color: isFreeDelivery
-                                    ? Colors.white
-                                    : Colors.white.withValues(alpha: 0.85),
-                                fontSize: 8.5,
-                                fontWeight: isFreeDelivery
-                                    ? FontWeight.w700
-                                    : FontWeight.w500,
-                              ),
+                                ? 'FREE delivery applied!'
+                                : 'Add ₹${(199 - cartTotal).toStringAsFixed(0)} more for FREE delivery',
+                            style: TextStyle(
+                              color: isFreeDelivery
+                                  ? Colors.white
+                                  : Colors.white.withValues(alpha: 0.85),
+                              fontSize: 8.5,
+                              fontWeight: isFreeDelivery
+                                  ? FontWeight.w700
+                                  : FontWeight.w500,
                             ),
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(1),
-                        child: LinearProgressIndicator(
-                          value: progress,
-                          minHeight: 2,
-                          backgroundColor: Colors.white.withValues(alpha: 0.15),
-                          valueColor: const AlwaysStoppedAnimation<Color>(
-                              Color(0xFF86EFAC)),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // ── Progress bar — with padding ──
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(14, 0, 14, 8),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: LinearProgressIndicator(
+                        value: progress,
+                        minHeight: 3,
+                        backgroundColor: Colors.white.withValues(alpha: 0.25),
+                        valueColor: const AlwaysStoppedAnimation<Color>(
+                          Color.fromRGBO(255, 255, 255, 1),
                         ),
                       ),
-                    ],
+                    ),
                   ),
                 ],
               ),
-            ),
-          ),
-        )
+            )
           : const SizedBox.shrink(),
     );
   }

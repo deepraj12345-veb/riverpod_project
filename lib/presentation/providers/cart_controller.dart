@@ -40,21 +40,32 @@ final clearCartUseCaseProvider = Provider<ClearCartUseCase>((ref) {
 });
 
 class CartNotifier extends StateNotifier<List<CartItemEntity>> {
+  final GetCartItemsUseCase _getCartItemsUseCase;
   final AddToCartUseCase _addToCartUseCase;
   final RemoveFromCartUseCase _removeFromCartUseCase;
   final UpdateQuantityUseCase _updateQuantityUseCase;
   final ClearCartUseCase _clearCartUseCase;
 
   CartNotifier({
+    required GetCartItemsUseCase getCartItemsUseCase,
     required AddToCartUseCase addToCartUseCase,
     required RemoveFromCartUseCase removeFromCartUseCase,
     required UpdateQuantityUseCase updateQuantityUseCase,
     required ClearCartUseCase clearCartUseCase,
-  }) : _addToCartUseCase = addToCartUseCase,
+  }) : _getCartItemsUseCase = getCartItemsUseCase,
+       _addToCartUseCase = addToCartUseCase,
        _removeFromCartUseCase = removeFromCartUseCase,
        _updateQuantityUseCase = updateQuantityUseCase,
        _clearCartUseCase = clearCartUseCase,
-       super([]);
+       super([]) {
+    _loadCart();
+  }
+
+  Future<void> _loadCart() async {
+    try {
+      state = await _getCartItemsUseCase.execute();
+    } catch (_) {}
+  }
 
   Future<void> addToCart(ProductEntity product) async {
     // Optimistic update
@@ -134,6 +145,7 @@ final cartProvider = StateNotifierProvider<CartNotifier, List<CartItemEntity>>((
   ref,
 ) {
   return CartNotifier(
+    getCartItemsUseCase: ref.watch(getCartItemsUseCaseProvider),
     addToCartUseCase: ref.watch(addToCartUseCaseProvider),
     removeFromCartUseCase: ref.watch(removeFromCartUseCaseProvider),
     updateQuantityUseCase: ref.watch(updateQuantityUseCaseProvider),

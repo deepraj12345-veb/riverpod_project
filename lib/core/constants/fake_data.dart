@@ -376,7 +376,7 @@ class FakeData {
     id: 'u1',
     name: 'veggie mart user',
     email: 'veggiemartuser@email.com',
-    phone: '+91 98765 43210',
+    mobileNo: '9876543210',
     avatarUrl:
         'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200',
     address: '12, Vaishali Nagar, Jaipur, Rajasthan 302021',

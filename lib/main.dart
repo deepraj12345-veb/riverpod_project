@@ -18,7 +18,7 @@ Future<void> main() async {
   final prefs = await SharedPreferences.getInstance();
   await prefs.setString(
     'auth_token',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhM2Y5NTgxZDgxZDJmODg2YmRhYjcwMCIsIm1vYmlsZV9ubyI6IjkxMjU4NTk2NTAiLCJleHAiOjE3ODI5NzQ1ODd9.sojaxUmlNsnr6ml8ByaEtwcY9vwd2lCl4ozVH2wE2GU',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhM2Y5NTgxZDgxZDJmODg2YmRhYjcwMCIsIm1vYmlsZV9ubyI6IjkxMjU4NTk2NTAiLCJleHAiOjE3ODMwNjIxMTV9.ABlBqWbG7UYRzRfNBnN-sG8POWRVNkwBLkH_bN71hdU',
   );
 
   runApp(const ProviderScope(child: MyApp()));
