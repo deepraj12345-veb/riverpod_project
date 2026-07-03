@@ -155,19 +155,20 @@ class _HomePageState extends ConsumerState<HomePage> {
                   ),
                 ),
 
-                // ── Category row ────────────────────────────────────
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    child: CategoryRowWidget(
-                      categories: apiCategories,
-                      selected: selectedCategory,
-                      onSelect: (cat) =>
-                          ref.read(selectedCategoryProvider.notifier).state =
-                              cat,
-                    ),
-                  ),
-                ),
+                // // ── Category row ────────────────────────────────────
+                // SliverToBoxAdapter(
+                //   child: Padding(
+                //     padding: const EdgeInsets.symmetric(vertical: 14),
+                //     child: CategoryRowWidget(
+                //       categories: apiCategories,
+                //       selected: selectedCategory,
+                //       onSelect: (cat) =>
+                //           ref.read(selectedCategoryProvider.notifier).state =
+                //               cat,
+                //     ),
+                //   ),
+                // ),
+                const SliverToBoxAdapter(child: SizedBox(height: 14)),
 
                 // ── Default view (no filter / search) ───────────────
                 if (showDefault) ...[

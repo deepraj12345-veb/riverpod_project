@@ -27,7 +27,7 @@ class AddressesPage extends ConsumerWidget {
           onPressed: () => context.pop(),
         ),
         title: const Text(
-          'My Addresses',
+          'Addresses',
           style: TextStyle(
             fontSize: 17,
             fontWeight: FontWeight.w700,
@@ -135,7 +135,11 @@ class AddressesPage extends ConsumerWidget {
             ),
             child: const Text(
               'Cancel',
-              style: TextStyle(color: AppTheme.textGrey, fontSize: 13, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                color: AppTheme.textGrey,
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
           TextButton(
@@ -157,7 +161,11 @@ class AddressesPage extends ConsumerWidget {
             ),
             child: const Text(
               'Delete',
-              style: TextStyle(color: Color(0xFFEF4444), fontSize: 13, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                color: Color(0xFFEF4444),
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],

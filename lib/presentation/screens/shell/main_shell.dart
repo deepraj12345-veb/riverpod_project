@@ -108,26 +108,33 @@ class _MainShellState extends ConsumerState<MainShell>
 
   @override
   Widget build(BuildContext context) {
-    // Sync current index with router location (for deep links / back button)
-    final routerIndex = _indexFromLocation(context);
-    if (routerIndex != _currentTabIndex) {
-      // Schedule so we don't setState during build
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) setState(() => _currentTabIndex = routerIndex);
-      });
+    // Sync current index with router location immediately
+    final index = _indexFromLocation(context);
+    if (index != _currentTabIndex) {
+      _currentTabIndex = index;
+      _cachedPages[index] ??= _pageBuilders[index]();
     }
 
-    final index = _currentTabIndex;
     final cartCount = ref.watch(cartItemCountProvider);
 
     return PopScope(
       canPop: index == 0,
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, result) {
         if (!didPop && index != 0) {
-          _onTabTapped(0);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) _onTabTapped(0);
+          });
         }
       },
-      child: Scaffold(
+      child: BackButtonListener(
+        onBackButtonPressed: () async {
+          if (index != 0) {
+            _onTabTapped(0);
+            return true;
+          }
+          return false;
+        },
+        child: Scaffold(
         body: NotificationListener<UserScrollNotification>(
           onNotification: (notification) {
             if (notification.direction == ScrollDirection.reverse) {
@@ -150,15 +157,15 @@ class _MainShellState extends ConsumerState<MainShell>
             ),
           ),
         ),
-        bottomNavigationBar: SizeTransition(
-          sizeFactor: _hideAnimCtrl,
-          alignment: Alignment.topCenter,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const FloatingCartBar(),
-              BottomNavigationBar(
+        bottomNavigationBar: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (index != 1) const FloatingCartBar(),
+            SizeTransition(
+              sizeFactor: _hideAnimCtrl,
+              alignment: Alignment.topCenter,
+              child: BottomNavigationBar(
                 currentIndex: index,
                 backgroundColor: Colors.white,
                 selectedItemColor: AppTheme.primaryGreen,
@@ -215,12 +222,13 @@ class _MainShellState extends ConsumerState<MainShell>
                   );
                 }),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }
 
 class _Tab {

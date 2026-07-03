@@ -68,7 +68,7 @@ class CartNotifier extends StateNotifier<List<CartItemEntity>> {
   }
 
   Future<void> addToCart(ProductEntity product) async {
-    // Optimistic update
+    // Instant optimistic update
     final existingIndex = state.indexWhere((i) => i.product.id == product.id);
     if (existingIndex >= 0) {
       final item = state[existingIndex];
@@ -81,22 +81,20 @@ class CartNotifier extends StateNotifier<List<CartItemEntity>> {
       state = [...state, CartItemEntity(product: product, quantity: 1)];
     }
 
-    try {
-      state = await _addToCartUseCase.execute(product);
-    } catch (_) {}
+    // Background backend sync (does not overwrite UI state to prevent glitching)
+    _addToCartUseCase.execute(product).catchError((_) => state);
   }
 
   Future<void> removeFromCart(String productId) async {
-    // Optimistic update
+    // Instant optimistic update
     state = state.where((item) => item.product.id != productId).toList();
 
-    try {
-      state = await _removeFromCartUseCase.execute(productId);
-    } catch (_) {}
+    // Background backend sync
+    _removeFromCartUseCase.execute(productId).catchError((_) => state);
   }
 
   Future<void> incrementQuantity(String productId) async {
-    // Optimistic update
+    // Instant optimistic update
     final existingIndex = state.indexWhere((i) => i.product.id == productId);
     if (existingIndex >= 0) {
       final item = state[existingIndex];
@@ -107,13 +105,12 @@ class CartNotifier extends StateNotifier<List<CartItemEntity>> {
       ];
     }
 
-    try {
-      state = await _updateQuantityUseCase.execute(productId, true);
-    } catch (_) {}
+    // Background backend sync
+    _updateQuantityUseCase.execute(productId, true).catchError((_) => state);
   }
 
   Future<void> decrementQuantity(String productId) async {
-    // Optimistic update
+    // Instant optimistic update
     final existingIndex = state.indexWhere((i) => i.product.id == productId);
     if (existingIndex >= 0) {
       final item = state[existingIndex];
@@ -128,16 +125,13 @@ class CartNotifier extends StateNotifier<List<CartItemEntity>> {
       }
     }
 
-    try {
-      state = await _updateQuantityUseCase.execute(productId, false);
-    } catch (_) {}
+    // Background backend sync
+    _updateQuantityUseCase.execute(productId, false).catchError((_) => state);
   }
 
   Future<void> clearCart() async {
     state = [];
-    try {
-      state = await _clearCartUseCase.execute();
-    } catch (_) {}
+    _clearCartUseCase.execute().catchError((_) => state);
   }
 }
 

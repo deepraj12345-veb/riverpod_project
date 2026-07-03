@@ -35,6 +35,7 @@ class AddToCartButton extends ConsumerWidget {
 
     if (cartQty == 0) {
       return GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: () {
           _triggerFlyAnimation(context);
           ref.read(cartProvider.notifier).addToCart(product);
@@ -65,65 +66,71 @@ class AddToCartButton extends ConsumerWidget {
       );
     }
 
-    return Container(
-      width: width,
-      height: height,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(borderRadius),
-        border: Border.all(color: AppTheme.primaryColor, width: 1.2),
-        boxShadow: [
-          BoxShadow(
-            color: AppTheme.primaryColor.withValues(alpha: 0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          GestureDetector(
-            onTap: () =>
-                ref.read(cartProvider.notifier).decrementQuantity(product.id),
-            child: SizedBox(
-              width: width != null ? (width! / 3.27) : height,
-              height: height,
-              child: Icon(
-                Icons.remove,
-                size: iconSize + 4,
-                color: AppTheme.primaryColor,
-              ),
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {}, // Absorb taps inside the box so they don't trigger parent card navigation
+      child: Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(borderRadius),
+          border: Border.all(color: AppTheme.primaryColor, width: 1.2),
+          boxShadow: [
+            BoxShadow(
+              color: AppTheme.primaryColor.withValues(alpha: 0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
             ),
-          ),
-          Expanded(
-            child: Center(
-              child: CustomText(
-                '$cartQty',
-                style: TextStyle(
+          ],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () =>
+                  ref.read(cartProvider.notifier).decrementQuantity(product.id),
+              child: SizedBox(
+                width: width != null ? (width! / 3.27) : height,
+                height: height,
+                child: Icon(
+                  Icons.remove,
+                  size: iconSize + 4,
                   color: AppTheme.primaryColor,
-                  fontWeight: FontWeight.w700,
-                  fontSize: fontSize + 2,
                 ),
               ),
             ),
-          ),
-          GestureDetector(
-            onTap: () {
-              _triggerFlyAnimation(context);
-              ref.read(cartProvider.notifier).incrementQuantity(product.id);
-            },
-            child: SizedBox(
-              width: width != null ? (width! / 3.27) : height,
-              height: height,
-              child: Icon(
-                Icons.add,
-                size: iconSize + 4,
-                color: AppTheme.primaryColor,
+            Expanded(
+              child: Center(
+                child: CustomText(
+                  '$cartQty',
+                  style: TextStyle(
+                    color: AppTheme.primaryColor,
+                    fontWeight: FontWeight.w700,
+                    fontSize: fontSize + 2,
+                  ),
+                ),
               ),
             ),
-          ),
-        ],
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                _triggerFlyAnimation(context);
+                ref.read(cartProvider.notifier).incrementQuantity(product.id);
+              },
+              child: SizedBox(
+                width: width != null ? (width! / 3.27) : height,
+                height: height,
+                child: Icon(
+                  Icons.add,
+                  size: iconSize + 4,
+                  color: AppTheme.primaryColor,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
