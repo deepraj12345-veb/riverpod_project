@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:veggie_mart/core/widgets/custom_network_image.dart';
+import 'package:veggie_mart/core/widgets/address_bottom_sheet.dart';
 import 'package:veggie_mart/core/theme/app_theme.dart';
 import 'package:veggie_mart/core/widgets/custom_text.dart';
-import 'package:veggie_mart/core/widgets/suggestion_field.dart';
 import 'package:veggie_mart/presentation/providers/cart_controller.dart';
 import 'package:veggie_mart/presentation/providers/orders_controller.dart';
 import 'package:veggie_mart/presentation/providers/address_controller.dart';
 import 'package:veggie_mart/domain/entities/address_entity.dart';
+import 'package:veggie_mart/domain/entities/coupon_entity.dart';
 import 'package:veggie_mart/core/constants/fake_data.dart';
-import 'package:veggie_mart/core/constants/data/models/models.dart';
 import 'package:veggie_mart/core/providers/app_providers.dart'
     hide cartProvider, cartTotalProvider;
-
+import 'package:veggie_mart/presentation/providers/coupon_provider.dart';
 import 'package:veggie_mart/domain/entities/cart_item_entity.dart';
 
 class CartPage extends ConsumerStatefulWidget {
@@ -24,31 +24,11 @@ class CartPage extends ConsumerStatefulWidget {
 }
 
 class _CartPageState extends ConsumerState<CartPage> {
-  final _promoCtrl = TextEditingController();
-  bool _promoApplied = false;
-  double _appliedDiscount = 0.0;
-
   AddressEntity? _selectedAddress;
   String? _selectedPayment;
 
   String _selectedDuration = 'One Time';
   DateTimeRange? _customDateRange;
-
-  Map<String, double> get _currentPromoDiscounts {
-    final isPremium = ref.read(isPremiumUserProvider);
-    if (isPremium) {
-      return {
-        'PREMIUM20': 0.20,
-        'PREMIUM50': 0.50,
-        'FRESH30': 0.30,
-        'VEGGIE15': 0.15,
-        'GREEN50': 0.50,
-        'VIPDELIGHT': 0.40,
-        'CASHBACK10': 0.10,
-      };
-    }
-    return {'SAVE10': 0.10, 'WELCOME': 0.10, 'NEWUSER': 0.20, 'LOYALTY5': 0.05};
-  }
 
   @override
   void initState() {
@@ -72,305 +52,72 @@ class _CartPageState extends ConsumerState<CartPage> {
     }
   }
 
-  @override
-  void dispose() {
-    _promoCtrl.dispose();
-    super.dispose();
-  }
-
-  void _applyPromo() {
-    final code = _promoCtrl.text.trim().toUpperCase();
-    final promos = _currentPromoDiscounts;
-    if (promos.containsKey(code)) {
-      final disc = promos[code] ?? 0.0;
-      setState(() {
-        _promoApplied = true;
-        _appliedDiscount = disc;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Code applied! ${(disc * 100).toInt()}% OFF'),
-          backgroundColor: AppTheme.primaryGreen,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Invalid promo code'),
-          backgroundColor: AppTheme.accentRed,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ),
-      );
-    }
-  }
-
   void _showAddressSheet() {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.white,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (ctx) {
-        // Use Consumer to watch addresses inside bottom sheet
-        return Consumer(
-          builder: (ctx, ref, _) {
-            final addressState = ref.watch(addressControllerProvider);
-            final addresses = addressState.addressesAsync.valueOrNull ?? [];
+    showAddressBottomSheet(
+      context,
+      ref,
+      selectedAddress: _selectedAddress,
+      onSelect: (address) {
+        setState(() => _selectedAddress = address);
+      },
+    );
+  }
 
-            return SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Handle bar
-                    Center(
-                      child: Container(
-                        width: 40,
-                        height: 4,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(2),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'Select Delivery Address',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
-                        color: AppTheme.textDark,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-
-                    // Empty state
-                    if (addresses.isEmpty) ...[
-                      const SizedBox(height: 12),
-                      Center(
-                        child: Column(
-                          children: [
-                            Icon(
-                              Icons.location_off_outlined,
-                              size: 52,
-                              color: Colors.grey[300],
-                            ),
-                            const SizedBox(height: 12),
-                            const Text(
-                              'No saved addresses',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 15,
-                                color: AppTheme.textDark,
-                              ),
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              'Add a delivery address to proceed',
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: Colors.grey[500],
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton.icon(
-                                onPressed: () {
-                                  Navigator.pop(ctx);
-                                  context.push('/add-edit-address');
-                                },
-                                icon: const Icon(
-                                  Icons.add_location_alt_rounded,
-                                ),
-                                label: const Text('Add New Address'),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppTheme.primaryGreen,
-                                  foregroundColor: Colors.white,
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 14,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  textStyle: const TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                    ]
-                    // Address list
-                    else ...[
-                      ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxHeight: MediaQuery.of(ctx).size.height * 0.55,
-                        ),
-                        child: ListView.separated(
-                          shrinkWrap: true,
-                          itemCount: addresses.length,
-                          separatorBuilder: (_, __) =>
-                              const SizedBox(height: 10),
-                          itemBuilder: (_, i) {
-                            final address = addresses[i];
-                            final isSelected =
-                                _selectedAddress?.id == address.id;
-                            return InkWell(
-                              onTap: () {
-                                setState(() => _selectedAddress = address);
-                                Navigator.pop(ctx);
-                              },
-                              borderRadius: BorderRadius.circular(12),
-                              child: Container(
-                                padding: const EdgeInsets.all(14),
-                                decoration: BoxDecoration(
-                                  color: isSelected
-                                      ? AppTheme.primaryGreen.withValues(
-                                          alpha: 0.05,
-                                        )
-                                      : Colors.white,
-                                  border: Border.all(
-                                    color: isSelected
-                                        ? AppTheme.primaryGreen
-                                        : AppTheme.borderColor,
-                                  ),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Icon(
-                                      isSelected
-                                          ? Icons.radio_button_checked
-                                          : Icons.radio_button_off,
-                                      color: isSelected
-                                          ? AppTheme.primaryGreen
-                                          : AppTheme.textGrey,
-                                      size: 20,
-                                    ),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Text(
-                                                address.label,
-                                                style: const TextStyle(
-                                                  fontWeight: FontWeight.w700,
-                                                  fontSize: 14,
-                                                  color: AppTheme.textDark,
-                                                ),
-                                              ),
-                                              if (address.isDefault) ...[
-                                                const SizedBox(width: 6),
-                                                Container(
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                        horizontal: 7,
-                                                        vertical: 2,
-                                                      ),
-                                                  decoration: BoxDecoration(
-                                                    color: AppTheme.primaryGreen
-                                                        .withValues(alpha: 0.1),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          20,
-                                                        ),
-                                                  ),
-                                                  child: Text(
-                                                    'Default',
-                                                    style: TextStyle(
-                                                      fontSize: 10,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      color:
-                                                          AppTheme.primaryGreen,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ],
-                                          ),
-                                          const SizedBox(height: 3),
-                                          Text(
-                                            address.name,
-                                            style: const TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w500,
-                                              color: AppTheme.textDark,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 2),
-                                          Text(
-                                            '${address.addressLine}, ${address.city}, ${address.state} - ${address.pincode}',
-                                            style: const TextStyle(
-                                              fontSize: 12,
-                                              color: AppTheme.textGrey,
-                                              height: 1.4,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      // Add new address button
-                      TextButton.icon(
-                        onPressed: () {
-                          Navigator.pop(ctx);
-                          context.push('/add-edit-address').then((_) {
-                            // Refresh addresses after returning
-                            ref
-                                .read(addressControllerProvider.notifier)
-                                .fetchAddresses();
-                          });
-                        },
-                        icon: const Icon(
-                          Icons.add_location_alt_outlined,
-                          size: 18,
-                        ),
-                        label: const Text('Add New Address'),
-                        style: TextButton.styleFrom(
-                          foregroundColor: AppTheme.primaryGreen,
-                          textStyle: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 13,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ],
+  Widget _buildCartSummaryBar(int itemCount) {
+    return Container(
+      height: 34,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: const BoxDecoration(color: Colors.transparent),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // Left: Item count
+          Row(
+            children: [
+              const Icon(
+                Icons.shopping_bag_outlined,
+                size: 16,
+                color: AppTheme.primaryGreen,
+              ),
+              const SizedBox(width: 6),
+              Text(
+                '$itemCount ${itemCount == 1 ? 'item' : 'items'}',
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: AppTheme.textDark,
                 ),
               ),
-            );
-          },
-        );
-      },
+            ],
+          ),
+          // Right: Clear all button
+          InkWell(
+            onTap: () => ref.read(cartProvider.notifier).clearCart(),
+            borderRadius: BorderRadius.circular(6),
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.delete_outline_rounded,
+                    size: 16,
+                    color: AppTheme.accentRed,
+                  ),
+                  SizedBox(width: 4),
+                  Text(
+                    'Clear all',
+                    style: TextStyle(
+                      color: AppTheme.accentRed,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -586,14 +333,53 @@ class _CartPageState extends ConsumerState<CartPage> {
     final cartItems = ref.watch(cartProvider);
     final isPremium = ref.watch(isPremiumUserProvider);
     final subtotal = ref.watch(cartTotalProvider);
-    final discount = subtotal * _appliedDiscount;
+    final appliedCoupon = ref.watch(appliedCouponProvider);
+    if (appliedCoupon != null && subtotal < appliedCoupon.minOrder) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (ref.read(appliedCouponProvider) != null) {
+          ref.read(appliedCouponProvider.notifier).state = null;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Coupon "${appliedCoupon.code}" removed as cart total is less than ₹${appliedCoupon.minOrder.toStringAsFixed(0)}',
+              ),
+              backgroundColor: AppTheme.accentRed,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          );
+        }
+      });
+    }
+    final discount =
+        (appliedCoupon != null && subtotal >= appliedCoupon.minOrder)
+        ? appliedCoupon.calculateDiscount(subtotal)
+        : 0.0;
     final tax = subtotal * 0.05;
 
-    final handlingFee = isPremium ? 0.0 : 10.0;
-    final freeDeliveryThreshold = isPremium ? 100.0 : 200.0;
+    final freeDeliveryThreshold = isPremium ? 100.0 : 199.0;
+    final handlingFee = (isPremium || subtotal >= freeDeliveryThreshold)
+        ? 0.0
+        : 10.0;
     final deliveryFee = subtotal >= freeDeliveryThreshold ? 0.0 : 40.0;
 
     final total = subtotal + tax - discount + handlingFee + deliveryFee;
+
+    final addresses =
+        ref.watch(addressControllerProvider).addressesAsync.valueOrNull ?? [];
+    final addr =
+        _selectedAddress ??
+        (addresses.isNotEmpty
+            ? addresses.firstWhere(
+                (a) => a.isDefault,
+                orElse: () => addresses.first,
+              )
+            : null);
+    final addressText = addr != null
+        ? '${addr.label}: ${addr.addressLine}, ${addr.city}'
+        : 'Select delivery address';
 
     if (cartItems.isEmpty) {
       return Scaffold(
@@ -624,29 +410,50 @@ class _CartPageState extends ConsumerState<CartPage> {
               'My Cart',
               style: TextStyle(
                 fontSize: 18,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w800,
                 color: AppTheme.textDark,
               ),
             ),
-            CustomText(
-              '${cartItems.length} ${cartItems.length == 1 ? 'item' : 'items'}',
-              style: const TextStyle(fontSize: 12, color: AppTheme.textGrey),
+            const SizedBox(height: 3),
+            InkWell(
+              onTap: _showAddressSheet,
+              borderRadius: BorderRadius.circular(6),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.location_on_rounded,
+                    size: 14,
+                    color: AppTheme.primaryGreen,
+                  ),
+                  const SizedBox(width: 4),
+                  Flexible(
+                    child: CustomText(
+                      addressText,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 2),
+                  const Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    size: 16,
+                    color: Colors.black,
+                  ),
+                ],
+              ),
             ),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => ref.read(cartProvider.notifier).clearCart(),
-            child: const CustomText(
-              'Clear all',
-              style: TextStyle(
-                color: AppTheme.accentRed,
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(44),
+          child: _buildCartSummaryBar(cartItems.length),
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -656,9 +463,9 @@ class _CartPageState extends ConsumerState<CartPage> {
             ListView.separated(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               itemCount: cartItems.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 12),
+              separatorBuilder: (_, __) => const SizedBox(height: 4),
               itemBuilder: (ctx, i) {
                 final item = cartItems[i];
                 final cardColor =
@@ -681,7 +488,7 @@ class _CartPageState extends ConsumerState<CartPage> {
                       .read(cartProvider.notifier)
                       .removeFromCart(item.product.id),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    padding: const EdgeInsets.symmetric(vertical: 4),
                     color: Colors.white,
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -692,10 +499,11 @@ class _CartPageState extends ConsumerState<CartPage> {
                             width: 50,
                             height: 50,
                             color: cardColor,
-                            child: CachedNetworkImage(
+                            child: CustomNetworkImage(
                               imageUrl: item.product.imageUrl,
                               fit: BoxFit.cover,
-                              placeholder: (ctx, url) => const SizedBox(),
+                              width: 50,
+                              height: 50,
                             ),
                           ),
                         ),
@@ -740,9 +548,23 @@ class _CartPageState extends ConsumerState<CartPage> {
                           onDecrement: () => ref
                               .read(cartProvider.notifier)
                               .decrementQuantity(item.product.id),
-                          onIncrement: () => ref
-                              .read(cartProvider.notifier)
-                              .incrementQuantity(item.product.id),
+                          onIncrement: () {
+                            if (item.quantity >= 10) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'Maximum 10 units allowed per item',
+                                  ),
+                                  duration: Duration(seconds: 2),
+                                  backgroundColor: Colors.redAccent,
+                                ),
+                              );
+                              return;
+                            }
+                            ref
+                                .read(cartProvider.notifier)
+                                .incrementQuantity(item.product.id);
+                          },
                         ),
                       ],
                     ),
@@ -751,172 +573,13 @@ class _CartPageState extends ConsumerState<CartPage> {
               },
             ),
 
-            // Delivery Address Card
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Builder(
-                builder: (context) {
-                  final addresses =
-                      ref
-                          .watch(addressControllerProvider)
-                          .addressesAsync
-                          .valueOrNull ??
-                      [];
-
-                  // Auto-select default if nothing selected yet
-                  if (_selectedAddress == null && addresses.isNotEmpty) {
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      if (mounted) {
-                        setState(() {
-                          _selectedAddress = addresses.firstWhere(
-                            (a) => a.isDefault,
-                            orElse: () => addresses.first,
-                          );
-                        });
-                      }
-                    });
-                  }
-
-                  return Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: AppTheme.borderColor),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const CustomText(
-                              'Deliver to',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w700,
-                                color: AppTheme.textDark,
-                              ),
-                            ),
-                            InkWell(
-                              onTap: _showAddressSheet,
-                              child: CustomText(
-                                addresses.isEmpty ? 'Add' : 'Change',
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppTheme.primaryGreen,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        // No address saved
-                        if (addresses.isEmpty) ...[
-                          const SizedBox(height: 10),
-                          InkWell(
-                            onTap: () => context.push('/add-edit-address'),
-                            borderRadius: BorderRadius.circular(10),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 10,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppTheme.primaryGreen.withValues(
-                                  alpha: 0.06,
-                                ),
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                  color: AppTheme.primaryGreen.withValues(
-                                    alpha: 0.3,
-                                  ),
-                                  style: BorderStyle.solid,
-                                ),
-                              ),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.add_location_alt_outlined,
-                                    color: AppTheme.primaryGreen,
-                                    size: 20,
-                                  ),
-                                  const SizedBox(width: 10),
-                                  const Text(
-                                    'Add delivery address',
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppTheme.primaryGreen,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ]
-                        // Address selected
-                        else if (_selectedAddress != null) ...[
-                          const SizedBox(height: 10),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(6),
-                                decoration: BoxDecoration(
-                                  color: AppTheme.primaryGreen.withValues(
-                                    alpha: 0.1,
-                                  ),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Icon(
-                                  Icons.location_on_rounded,
-                                  color: AppTheme.primaryGreen,
-                                  size: 18,
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      _selectedAddress!.label,
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w700,
-                                        color: AppTheme.textDark,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      '${_selectedAddress!.addressLine}, ${_selectedAddress!.city}, ${_selectedAddress!.state} - ${_selectedAddress!.pincode}',
-                                      style: const TextStyle(
-                                        fontSize: 10,
-                                        color: AppTheme.textGrey,
-                                        height: 1.4,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
             const SizedBox(height: 16),
             // Subscription Options
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Container(
                 margin: const EdgeInsets.only(bottom: 16),
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(9),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16),
@@ -929,13 +592,13 @@ class _CartPageState extends ConsumerState<CartPage> {
                       'Order Type & Delivery Schedule',
                       style: TextStyle(
                         fontSize: 14,
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w600,
                         color: AppTheme.textDark,
                       ),
                     ),
                     const SizedBox(height: 12),
                     Wrap(
-                      spacing: 8,
+                      spacing: 6,
                       runSpacing: 8,
                       children:
                           [
@@ -960,7 +623,7 @@ class _CartPageState extends ConsumerState<CartPage> {
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 12,
-                                  vertical: 8,
+                                  vertical: 4,
                                 ),
                                 decoration: BoxDecoration(
                                   color: isSelected
@@ -1016,10 +679,23 @@ class _CartPageState extends ConsumerState<CartPage> {
               ),
             ),
 
+            // Savings Corner Card (Above Bill Details)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: _buildSavingsCorner(
+                context,
+                appliedCoupon,
+                subtotal,
+                discount,
+              ),
+            ),
+            const SizedBox(height: 16),
+
             // Bill Details
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Container(
+                margin: const EdgeInsets.only(bottom: 16),
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -1037,51 +713,14 @@ class _CartPageState extends ConsumerState<CartPage> {
                         color: AppTheme.textDark,
                       ),
                     ),
-                    const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: SuggestionField(
-                            controller: _promoCtrl,
-                            label: 'Promo Code',
-                            hint: 'Try FRESH30...',
-                            icon: Icons.local_offer_outlined,
-                            suggestions: _currentPromoDiscounts.keys.toList(),
-                            onSelected: (code) => _promoCtrl.text = code,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        InkWell(
-                          onTap: _applyPromo,
-                          child: Container(
-                            height: 40,
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            decoration: BoxDecoration(
-                              color: AppTheme.primaryGreen,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Center(
-                              child: CustomText(
-                                _promoApplied ? 'Applied ✓' : 'Apply',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 12),
                     _SummaryRow(
                       label: 'Item Total',
                       value: '₹ ${subtotal.toStringAsFixed(0)}',
                     ),
-                    if (_promoApplied)
+                    if (appliedCoupon != null && discount > 0)
                       _SummaryRow(
-                        label: 'Discount',
+                        label: 'Discount (${appliedCoupon.code})',
                         value: '-₹ ${discount.toStringAsFixed(0)}',
                         valueColor: AppTheme.primaryGreen,
                       ),
@@ -1263,6 +902,129 @@ class _CartPageState extends ConsumerState<CartPage> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildSavingsCorner(
+    BuildContext context,
+    CouponEntity? appliedCoupon,
+    double subtotal,
+    double discount,
+  ) {
+    final isApplied =
+        appliedCoupon != null && subtotal >= appliedCoupon.minOrder;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+        color: isApplied ? AppTheme.cardLavender : AppTheme.cardWhite,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: isApplied
+              ? AppTheme.primaryGreen.withValues(alpha: 0.4)
+              : AppTheme.borderColor,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text(
+            'SAVINGS CORNER',
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 1.1,
+              color: AppTheme.textGrey,
+            ),
+          ),
+          const SizedBox(height: 6),
+          InkWell(
+            onTap: () => context.push('/coupons'),
+            borderRadius: BorderRadius.circular(10),
+            child: Row(
+              children: [
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: isApplied
+                        ? AppTheme.primaryGreen.withValues(alpha: 0.15)
+                        : AppTheme.primaryGreen.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(
+                    isApplied
+                        ? Icons.verified_rounded
+                        : Icons.local_offer_rounded,
+                    color: isApplied
+                        ? AppTheme.deepGreen
+                        : AppTheme.primaryGreen,
+                    size: 18,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: isApplied
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              '"${appliedCoupon.code}" Applied!',
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w800,
+                                color: AppTheme.deepGreen,
+                              ),
+                            ),
+                            Text(
+                              'You saved ₹${discount.toStringAsFixed(0)} on this order',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                                color: AppTheme.deepGreen.withValues(
+                                  alpha: 0.8,
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                      : const Text(
+                          'Apply Coupon',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: AppTheme.textDark,
+                          ),
+                        ),
+                ),
+                if (isApplied)
+                  InkWell(
+                    onTap: () {
+                      ref.read(appliedCouponProvider.notifier).state = null;
+                    },
+                    borderRadius: BorderRadius.circular(16),
+                    child: const Padding(
+                      padding: EdgeInsets.all(4),
+                      child: Icon(
+                        Icons.close_rounded,
+                        color: AppTheme.deepGreen,
+                        size: 18,
+                      ),
+                    ),
+                  )
+                else
+                  const Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: 14,
+                    color: AppTheme.textGrey,
+                  ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

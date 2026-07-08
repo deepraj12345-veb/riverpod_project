@@ -58,10 +58,18 @@ class CustomNetworkImage extends StatelessWidget {
     return Container(
       width: width,
       height: height,
-      color: AppTheme.bgLight,
-      child: const Center(
-        child: Icon(Icons.image_outlined, color: AppTheme.textGrey, size: 24),
+      decoration: BoxDecoration(
+        color: AppTheme.primaryGreen.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Center(
+        child: Icon(
+          Icons.shopping_bag_outlined,
+          color: AppTheme.primaryGreen.withValues(alpha: 0.4),
+          size: (width != null && width! < 40) ? 18 : 24,
+        ),
       ),
     );
   }
 }
+

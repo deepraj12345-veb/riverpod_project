@@ -116,6 +116,16 @@ class AddToCartButton extends ConsumerWidget {
             GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: () {
+                if (cartQty >= 10) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Maximum 10 units allowed per item'),
+                      duration: Duration(seconds: 2),
+                      backgroundColor: Colors.redAccent,
+                    ),
+                  );
+                  return;
+                }
                 _triggerFlyAnimation(context);
                 ref.read(cartProvider.notifier).incrementQuantity(product.id);
               },

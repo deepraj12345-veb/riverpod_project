@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:veggie_mart/core/theme/app_theme.dart';
 import 'package:veggie_mart/domain/entities/address_entity.dart';
 import 'package:veggie_mart/presentation/providers/address_controller.dart';
+import 'package:veggie_mart/core/utils/location_helper.dart';
 
 class AddEditAddressPage extends ConsumerStatefulWidget {
   final AddressEntity? address; // null = Add mode, non-null = Edit mode
@@ -27,9 +28,42 @@ class _AddEditAddressPageState extends ConsumerState<AddEditAddressPage> {
   late String _selectedLabel;
   late bool _isDefault;
 
-  bool get _isEdit => widget.address != null;
+  bool get _isEdit => widget.address != null && widget.address!.id.isNotEmpty;
+  bool _isDetectingLocation = false;
 
   static const List<String> _labels = ['Home', 'Work', 'Other'];
+
+  Future<void> _detectLocation() async {
+    setState(() => _isDetectingLocation = true);
+    try {
+      final loc = await LocationHelper.fetchCurrentLocation();
+      if (loc != null && mounted) {
+        setState(() {
+          _addressLineCtrl.text = loc.addressLine;
+          _cityCtrl.text = loc.city;
+          _stateCtrl.text = loc.state;
+          _pincodeCtrl.text = loc.pincode;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('📍 Location detected and fields auto-filled!'),
+            backgroundColor: AppTheme.primaryGreen,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString().replaceAll('Exception: ', '')),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isDetectingLocation = false);
+    }
+  }
 
   @override
   void initState() {
@@ -143,6 +177,55 @@ class _AddEditAddressPageState extends ConsumerState<AddEditAddressPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // ── Detect Location Button ───────────────────────────────────
+              InkWell(
+                onTap: _isDetectingLocation ? null : _detectLocation,
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 14,
+                    horizontal: 16,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.grey[300]!, width: 1),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (_isDetectingLocation)
+                        const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: AppTheme.primaryGreen,
+                          ),
+                        )
+                      else
+                        const Icon(
+                          Icons.my_location_rounded,
+                          color: AppTheme.primaryGreen,
+                          size: 22,
+                        ),
+                      const SizedBox(width: 12),
+                      Text(
+                        _isDetectingLocation
+                            ? 'Detecting Location...'
+                            : 'Use Current Location',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey[800],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
               // ── Label chips ──────────────────────────────────────────────
               const _SectionLabel('Address Label'),
               const SizedBox(height: 8),
@@ -408,6 +491,7 @@ class _Field extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
+      cursorColor: AppTheme.primaryGreen,
       keyboardType: keyboardType,
       inputFormatters: inputFormatters,
       maxLength: maxLength,

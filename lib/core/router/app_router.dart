@@ -18,6 +18,7 @@ import 'package:veggie_mart/presentation/screens/profile/subscription_page.dart'
 import 'package:veggie_mart/presentation/screens/profile/edit_profile_page.dart';
 import 'package:veggie_mart/presentation/screens/profile/addresses_page.dart';
 import 'package:veggie_mart/presentation/screens/profile/add_edit_address_page.dart';
+import 'package:veggie_mart/presentation/screens/profile/coupons_page.dart';
 import 'package:veggie_mart/presentation/screens/wishlist/wishlist_page.dart';
 import 'package:veggie_mart/presentation/screens/categories/categories_page.dart';
 import 'package:veggie_mart/presentation/screens/categories/subcategory_page.dart';
@@ -146,6 +147,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         },
       ),
       GoRoute(path: '/wishlist', builder: (ctx, state) => const WishlistPage()),
+      GoRoute(path: '/coupons', builder: (ctx, state) => const CouponsPage()),
     ],
   );
 });

@@ -49,16 +49,18 @@ class AddressesPage extends ConsumerWidget {
             ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.push('/add-edit-address'),
-        backgroundColor: AppTheme.primaryGreen,
-        foregroundColor: Colors.white,
-        icon: const Icon(Icons.add_location_alt_rounded),
-        label: const Text(
-          'Add Address',
-          style: TextStyle(fontWeight: FontWeight.w700),
-        ),
-      ),
+      floatingActionButton: state.addressesAsync.valueOrNull?.isEmpty == true
+          ? null
+          : FloatingActionButton.extended(
+              onPressed: () => context.push('/add-edit-address'),
+              backgroundColor: AppTheme.primaryGreen,
+              foregroundColor: Colors.white,
+              icon: const Icon(Icons.add_location_alt_rounded),
+              label: const Text(
+                'Add Address',
+                style: TextStyle(fontWeight: FontWeight.w700),
+              ),
+            ),
       body: state.addressesAsync.when(
         loading: () => const _AddressSkeleton(),
         error: (e, _) => Center(

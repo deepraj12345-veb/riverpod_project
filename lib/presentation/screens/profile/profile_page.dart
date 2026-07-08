@@ -63,10 +63,6 @@ class ProfilePage extends ConsumerWidget {
       data: (d) => d.totalOrders,
       orElse: () => ref.watch(ordersProvider).length,
     );
-    final savedAddresses = dashboardAsync.maybeWhen(
-      data: (d) => d.savedAddresses,
-      orElse: () => 0,
-    );
     // Wallet balance from profile API
     final walletBalance = profileState.userAsync.maybeWhen(
       data: (u) => u.walletBalance,
@@ -215,7 +211,7 @@ class ProfilePage extends ConsumerWidget {
                                     value: 'Gift',
                                     iconColor: _Palette.offersIcon,
                                     bgColor: _Palette.offersBg,
-                                    onTap: () {},
+                                    onTap: () => context.push('/coupons'),
                                   ),
                                 ),
                               ],
@@ -266,7 +262,15 @@ class ProfilePage extends ConsumerWidget {
                                 showDivider: true,
                                 onTap: () => context.push('/subscription'),
                               ),
-
+                              _MenuRow(
+                                icon: Icons.local_offer_outlined,
+                                title: 'Coupons & Offers',
+                                subtitle: 'Available promo codes & discounts',
+                                iconColor: _Palette.offersIcon,
+                                bgColor: _Palette.offersBg,
+                                showDivider: true,
+                                onTap: () => context.push('/coupons'),
+                              ),
                               _MenuRow(
                                 icon: Icons.location_on_outlined,
                                 title: 'My Addresses',

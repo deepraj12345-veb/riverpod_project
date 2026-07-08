@@ -25,7 +25,10 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
   }
 
   @override
-  Future<List<CartItemEntity>> toggleCartItem(String productId, String status) async {
+  Future<List<CartItemEntity>> toggleCartItem(
+    String productId,
+    String status,
+  ) async {
     try {
       await dio.post(
         ApiConfig.cartToggle,
@@ -52,7 +55,7 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
 
   List<CartItemEntity> _parseCartResponse(dynamic data) {
     if (data == null) return [];
-    
+
     List<dynamic> items = [];
 
     if (data is List) {
@@ -74,9 +77,11 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
           items = innerData['items'];
         } else if (innerData['products'] is List) {
           items = innerData['products'];
-        } else if (innerData['cart'] is Map && innerData['cart']['items'] is List) {
+        } else if (innerData['cart'] is Map &&
+            innerData['cart']['items'] is List) {
           items = innerData['cart']['items'];
-        } else if (innerData['cart'] is Map && innerData['cart']['products'] is List) {
+        } else if (innerData['cart'] is Map &&
+            innerData['cart']['products'] is List) {
           items = innerData['cart']['products'];
         } else if (innerData['cart'] is List) {
           items = innerData['cart'];
@@ -85,7 +90,7 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
         }
       }
     }
-    
+
     if (items.isEmpty) {
       // If we got success: false or couldn't parse the cart, we shouldn't return empty list
       // which would clear the cart. We should throw so it falls back to local cart if needed.
@@ -94,15 +99,31 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
       }
     }
 
-    return items.map((e) {
+    final parsedItems = items.map((e) {
       final productJson = e['product'] ?? e; // fallback if product is flattened
       final qty = e['cart_count'] ?? e['qty'] ?? e['quantity'] ?? 1;
 
-      return CartItemEntity(
-        product: _parseProduct(productJson),
-        quantity: qty,
-      );
+      return CartItemEntity(product: _parseProduct(productJson), quantity: qty);
     }).toList();
+
+    final Map<String, CartItemEntity> merged = {};
+    for (final item in parsedItems) {
+      final key = item.product.name.toLowerCase().trim().isNotEmpty
+          ? item.product.name.toLowerCase().trim()
+          : item.product.id;
+      if (merged.containsKey(key)) {
+        final existing = merged[key]!;
+        final newQty = existing.quantity + item.quantity;
+        merged[key] = existing.copyWith(
+          quantity: newQty > 10 ? 10 : newQty,
+        );
+      } else {
+        merged[key] = item.quantity > 10
+            ? item.copyWith(quantity: 10)
+            : item;
+      }
+    }
+    return merged.values.toList();
   }
 
   ProductEntity _parseProduct(Map<String, dynamic> json) {
@@ -111,8 +132,15 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
       name: json['product_name'] ?? json['name'] ?? '',
       description: json['description'] ?? '',
       price: (json['selling_price'] ?? json['price'] ?? 0).toDouble(),
-      originalPrice: (json['mrp'] ?? json['original_price'] ?? json['originalPrice'] ?? json['price'] ?? 0).toDouble(),
-      imageUrl: json['product_image'] ?? json['image'] ?? json['imageUrl'] ?? '',
+      originalPrice:
+          (json['mrp'] ??
+                  json['original_price'] ??
+                  json['originalPrice'] ??
+                  json['price'] ??
+                  0)
+              .toDouble(),
+      imageUrl:
+          json['product_image'] ?? json['image'] ?? json['imageUrl'] ?? '',
       category: json['category'] ?? '',
       rating: (json['rating'] ?? 0).toDouble(),
       reviewCount: json['review_count'] ?? json['reviewCount'] ?? 0,

@@ -61,33 +61,70 @@ class CartNotifier extends StateNotifier<List<CartItemEntity>> {
     _loadCart();
   }
 
+  bool _isSameProduct(CartItemEntity item, String idOrName) {
+    final clean = idOrName.toLowerCase().trim();
+    return item.product.id == idOrName ||
+        (item.product.name.isNotEmpty &&
+            item.product.name.toLowerCase().trim() == clean);
+  }
+
+  List<CartItemEntity> _mergeDuplicates(List<CartItemEntity> items) {
+    final Map<String, CartItemEntity> merged = {};
+    for (final item in items) {
+      final key = item.product.name.toLowerCase().trim().isNotEmpty
+          ? item.product.name.toLowerCase().trim()
+          : item.product.id;
+      if (merged.containsKey(key)) {
+        final existing = merged[key]!;
+        final newQty = existing.quantity + item.quantity;
+        merged[key] = existing.copyWith(
+          quantity: newQty > 10 ? 10 : newQty,
+        );
+      } else {
+        merged[key] = item.quantity > 10
+            ? item.copyWith(quantity: 10)
+            : item;
+      }
+    }
+    return merged.values.toList();
+  }
+
   Future<void> _loadCart() async {
     try {
-      state = await _getCartItemsUseCase.execute();
+      final items = await _getCartItemsUseCase.execute();
+      state = _mergeDuplicates(items);
     } catch (_) {}
   }
 
   Future<void> addToCart(ProductEntity product) async {
     // Instant optimistic update
-    final existingIndex = state.indexWhere((i) => i.product.id == product.id);
+    final existingIndex = state.indexWhere(
+      (i) => _isSameProduct(i, product.id) || _isSameProduct(i, product.name),
+    );
     if (existingIndex >= 0) {
       final item = state[existingIndex];
+      if (item.quantity >= 10) return; // Maximum 10 limit enforced
       state = [
         ...state.sublist(0, existingIndex),
         item.copyWith(quantity: item.quantity + 1),
         ...state.sublist(existingIndex + 1),
       ];
     } else {
-      state = [...state, CartItemEntity(product: product, quantity: 1)];
+      state = [
+        ...state,
+        CartItemEntity(product: product, quantity: 1),
+      ];
     }
+    state = _mergeDuplicates(state);
 
-    // Background backend sync (does not overwrite UI state to prevent glitching)
+    // Background backend sync
     _addToCartUseCase.execute(product).catchError((_) => state);
   }
 
   Future<void> removeFromCart(String productId) async {
     // Instant optimistic update
-    state = state.where((item) => item.product.id != productId).toList();
+    state = state.where((item) => !_isSameProduct(item, productId)).toList();
+    state = _mergeDuplicates(state);
 
     // Background backend sync
     _removeFromCartUseCase.execute(productId).catchError((_) => state);
@@ -95,15 +132,17 @@ class CartNotifier extends StateNotifier<List<CartItemEntity>> {
 
   Future<void> incrementQuantity(String productId) async {
     // Instant optimistic update
-    final existingIndex = state.indexWhere((i) => i.product.id == productId);
+    final existingIndex = state.indexWhere((i) => _isSameProduct(i, productId));
     if (existingIndex >= 0) {
       final item = state[existingIndex];
+      if (item.quantity >= 10) return; // Maximum 10 limit enforced
       state = [
         ...state.sublist(0, existingIndex),
         item.copyWith(quantity: item.quantity + 1),
         ...state.sublist(existingIndex + 1),
       ];
     }
+    state = _mergeDuplicates(state);
 
     // Background backend sync
     _updateQuantityUseCase.execute(productId, true).catchError((_) => state);
@@ -111,7 +150,7 @@ class CartNotifier extends StateNotifier<List<CartItemEntity>> {
 
   Future<void> decrementQuantity(String productId) async {
     // Instant optimistic update
-    final existingIndex = state.indexWhere((i) => i.product.id == productId);
+    final existingIndex = state.indexWhere((i) => _isSameProduct(i, productId));
     if (existingIndex >= 0) {
       final item = state[existingIndex];
       if (item.quantity > 1) {
@@ -121,9 +160,10 @@ class CartNotifier extends StateNotifier<List<CartItemEntity>> {
           ...state.sublist(existingIndex + 1),
         ];
       } else {
-        state = state.where((i) => i.product.id != productId).toList();
+        state = state.where((i) => !_isSameProduct(i, productId)).toList();
       }
     }
+    state = _mergeDuplicates(state);
 
     // Background backend sync
     _updateQuantityUseCase.execute(productId, false).catchError((_) => state);

@@ -210,7 +210,7 @@ class ProductCardWidget extends ConsumerWidget {
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 12,
                           fontWeight: FontWeight.w500,
                           color: isOutOfStock
                               ? AppTheme.textGrey
@@ -226,8 +226,8 @@ class ProductCardWidget extends ConsumerWidget {
                           '$discount% OFF',
                           style: const TextStyle(
                             color: AppTheme.primaryColor,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       const SizedBox(height: 1),
@@ -239,8 +239,8 @@ class ProductCardWidget extends ConsumerWidget {
                           CustomText(
                             '₹${product.price.toStringAsFixed(0)}',
                             style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
                               color: isOutOfStock
                                   ? AppTheme.textGrey
                                   : AppTheme.textDark,

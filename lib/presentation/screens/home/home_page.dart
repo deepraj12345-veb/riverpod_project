@@ -7,12 +7,13 @@ import 'package:veggie_mart/core/widgets/section_header_widget.dart';
 import 'package:veggie_mart/domain/entities/product_entity.dart';
 import 'package:veggie_mart/domain/entities/category_entity.dart';
 import 'package:veggie_mart/presentation/providers/home_controller.dart';
-import 'package:veggie_mart/core/widgets/category_row_widget.dart';
 import 'package:veggie_mart/core/widgets/home_banner_widget.dart';
 import 'package:veggie_mart/core/widgets/subcategory_chips_widget.dart';
 import 'package:veggie_mart/core/widgets/custom_text.dart';
 import 'package:veggie_mart/core/widgets/home_page_skeleton.dart';
 import 'package:veggie_mart/presentation/providers/dashboard_provider.dart';
+import 'package:veggie_mart/presentation/providers/address_controller.dart';
+import 'package:veggie_mart/core/widgets/address_bottom_sheet.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -95,11 +96,6 @@ class _HomePageState extends ConsumerState<HomePage> {
 
         final chefsPicks = dashboard.bestsellers;
         final trendingProducts = dashboard.trendingNearYou;
-
-        final apiCategories = [
-          'All',
-          ...dashboard.categoryTypes.map((c) => c.name),
-        ];
 
         // ── Responsive values ───────────────────────────────────────────────────────
         final screenW = MediaQuery.of(context).size.width;
@@ -269,7 +265,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                             selectedCategory,
                             style: const TextStyle(
                               fontSize: 16,
-                              fontWeight: FontWeight.w700,
+                              fontWeight: FontWeight.w500,
                               color: AppTheme.textDark,
                             ),
                           ),
@@ -338,95 +334,88 @@ class AppHeader extends ConsumerWidget {
   const AppHeader({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final addressState = ref.watch(addressControllerProvider);
+    final addresses = addressState.addressesAsync.valueOrNull ?? [];
+    final defaultAddress = addresses.isNotEmpty
+        ? addresses.firstWhere(
+            (a) => a.isDefault,
+            orElse: () => addresses.first,
+          )
+        : null;
+
+    final addressText = defaultAddress != null
+        ? '${defaultAddress.label}: ${defaultAddress.addressLine}, ${defaultAddress.city}'
+        : 'Select Delivery Address';
+
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
       decoration: const BoxDecoration(
         color: Colors.white,
         border: Border(bottom: BorderSide(color: Color(0xFFF0F0F0))),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          Row(
-            children: [
-              // Logo
-              ClipOval(
-                child: Image.asset(
-                  'assets/logo.png',
-                  width: 38,
-                  height: 38,
-                  fit: BoxFit.cover,
+          // Logo
+          ClipOval(
+            child: Image.asset(
+              'assets/logo.png',
+              width: 42,
+              height: 42,
+              fit: BoxFit.cover,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const CustomText(
+                  'Fresh Veggie Mart',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                    color: AppTheme.textDark,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 10),
-              const Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomText(
-                      'Fresh Veggie Mart',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
+                const SizedBox(height: 3),
+                InkWell(
+                  onTap: () => showAddressBottomSheet(context, ref),
+                  borderRadius: BorderRadius.circular(6),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.location_on_rounded,
+                        size: 14,
+                        color: AppTheme.primaryGreen,
+                      ),
+                      const SizedBox(width: 4),
+                      Flexible(
+                        child: CustomText(
+                          addressText,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                            color: AppTheme.textDark,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 2),
+                      const Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        size: 16,
                         color: AppTheme.textDark,
                       ),
-                    ),
-                    CustomText(
-                      'Fresh fruits & vegetables delivered',
-                      style: TextStyle(fontSize: 11, color: AppTheme.textGrey),
-                    ),
-                  ],
-                ),
-              ),
-              const HeaderIconBtn(icon: Icons.notifications_outlined),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              const Icon(
-                Icons.location_on_rounded,
-                size: 15,
-                color: AppTheme.primaryGreen,
-              ),
-              const SizedBox(width: 4),
-              const CustomText(
-                'Deliver to Jaipur',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: AppTheme.textDark,
-                ),
-              ),
-              const Icon(
-                Icons.keyboard_arrow_down_rounded,
-                size: 17,
-                color: AppTheme.textGrey,
-              ),
-              const Spacer(),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4,
-                ),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFECFDF5),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: AppTheme.primaryGreen.withValues(alpha: 0.3),
+                    ],
                   ),
                 ),
-                child: const CustomText(
-                  '⚡ 30 min delivery',
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: AppTheme.primaryGreen,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
+          const SizedBox(width: 8),
+          const HeaderIconBtn(icon: Icons.notifications_outlined),
         ],
       ),
     );
