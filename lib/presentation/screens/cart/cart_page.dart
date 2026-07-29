@@ -10,11 +10,14 @@ import 'package:veggie_mart/presentation/providers/orders_controller.dart';
 import 'package:veggie_mart/presentation/providers/address_controller.dart';
 import 'package:veggie_mart/domain/entities/address_entity.dart';
 import 'package:veggie_mart/domain/entities/coupon_entity.dart';
-import 'package:veggie_mart/core/constants/fake_data.dart';
+import 'package:veggie_mart/core/constants/app_constants.dart';
+import 'package:veggie_mart/presentation/providers/auth_provider.dart';
+import 'package:veggie_mart/presentation/providers/auth_state.dart';
 import 'package:veggie_mart/core/providers/app_providers.dart'
     hide cartProvider, cartTotalProvider;
 import 'package:veggie_mart/presentation/providers/coupon_provider.dart';
 import 'package:veggie_mart/domain/entities/cart_item_entity.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 class CartPage extends ConsumerStatefulWidget {
   const CartPage({super.key});
@@ -27,12 +30,24 @@ class _CartPageState extends ConsumerState<CartPage> {
   AddressEntity? _selectedAddress;
   String? _selectedPayment;
 
+  late Razorpay _razorpay;
+  double? _currentSubtotal;
+  double? _currentTax;
+  double? _currentDiscount;
+  double? _currentTotal;
+  List<CartItemEntity>? _currentCartItems;
+
   String _selectedDuration = 'One Time';
   DateTimeRange? _customDateRange;
 
   @override
   void initState() {
     super.initState();
+    _razorpay = Razorpay();
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+
     // Address is now loaded from real API via address_controller
     // We initialize after first frame when provider is available
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -47,9 +62,45 @@ class _CartPageState extends ConsumerState<CartPage> {
         });
       }
     });
-    if (FakeData.paymentMethods.isNotEmpty) {
-      _selectedPayment = FakeData.paymentMethods.first;
+    if (AppConstants.paymentMethods.isNotEmpty) {
+      _selectedPayment = AppConstants.paymentMethods.first;
     }
+  }
+
+  @override
+  void dispose() {
+    _razorpay.clear();
+    super.dispose();
+  }
+
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    if (_currentCartItems != null) {
+      _finalizeOrder(
+        _currentTotal ?? 0,
+        _currentTax ?? 0,
+        _currentDiscount ?? 0,
+        _currentSubtotal ?? 0,
+        _currentCartItems!,
+      );
+    }
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Payment Failed: ${response.message ?? "Unknown error"}'),
+        backgroundColor: AppTheme.accentRed,
+      ),
+    );
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('External Wallet Selected: ${response.walletName}'),
+        backgroundColor: AppTheme.primaryColor,
+      ),
+    );
   }
 
   void _showAddressSheet() {
@@ -145,7 +196,7 @@ class _CartPageState extends ConsumerState<CartPage> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                ...FakeData.paymentMethods.map((pm) {
+                ...AppConstants.paymentMethods.map((pm) {
                   final isSelected = _selectedPayment == pm;
                   return InkWell(
                     onTap: () {
@@ -251,6 +302,48 @@ class _CartPageState extends ConsumerState<CartPage> {
   ) {
     if (cartItems.isEmpty) return;
 
+    if (_selectedPayment == 'ONLINE') {
+      _currentTotal = total;
+      _currentTax = tax;
+      _currentDiscount = discount;
+      _currentSubtotal = subtotal;
+      _currentCartItems = cartItems;
+
+      final options = {
+        'key': 'rzp_test_SoxQMJgDxGdtA1',
+        'amount': (total * 100).toInt(),
+        'name': 'Veggie Mart',
+        'description': 'Order Payment',
+        'prefill': {
+          'contact': ref.read(authProvider).maybeWhen(
+                authenticated: (user) => user.mobileNo,
+                orElse: () => '',
+              ),
+          'email': ref.read(authProvider).maybeWhen(
+                authenticated: (user) => user.email,
+                orElse: () => '',
+              ),
+        },
+      };
+
+      try {
+        _razorpay.open(options);
+      } catch (e) {
+        debugPrint('Error opening Razorpay: $e');
+      }
+      return;
+    }
+
+    _finalizeOrder(total, tax, discount, subtotal, cartItems);
+  }
+
+  void _finalizeOrder(
+    double total,
+    double tax,
+    double discount,
+    double subtotal,
+    List<CartItemEntity> cartItems,
+  ) {
     ref
         .read(ordersProvider.notifier)
         .addOrder(
@@ -556,7 +649,7 @@ class _CartPageState extends ConsumerState<CartPage> {
                                     'Maximum 10 units allowed per item',
                                   ),
                                   duration: Duration(seconds: 2),
-                                  backgroundColor: Colors.redAccent,
+                                  backgroundColor: AppTheme.primaryColor,
                                 ),
                               );
                               return;

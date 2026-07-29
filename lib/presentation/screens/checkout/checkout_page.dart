@@ -3,8 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:veggie_mart/core/theme/app_theme.dart';
 import 'package:veggie_mart/core/widgets/custom_text.dart';
-import 'package:veggie_mart/core/constants/fake_data.dart';
-import 'package:veggie_mart/core/constants/data/models/models.dart';
+import 'package:veggie_mart/core/constants/app_constants.dart';
+import 'package:veggie_mart/domain/entities/address_entity.dart';
+import 'package:veggie_mart/presentation/providers/address_controller.dart';
 import 'package:veggie_mart/presentation/providers/cart_controller.dart';
 import 'package:veggie_mart/presentation/providers/orders_controller.dart';
 
@@ -18,42 +19,72 @@ class CheckoutPage extends ConsumerStatefulWidget {
 }
 
 class _CheckoutPageState extends ConsumerState<CheckoutPage> {
-  AddressModel? _selectedAddress;
+  AddressEntity? _selectedAddress;
   String? _selectedPayment;
 
   @override
   void initState() {
     super.initState();
-    if (FakeData.addresses.isNotEmpty) {
-      _selectedAddress = FakeData.addresses.firstWhere(
-        (a) => a.isDefault,
-        orElse: () => FakeData.addresses.first,
-      );
-    }
-    if (FakeData.paymentMethods.isNotEmpty) {
-      _selectedPayment = FakeData.paymentMethods.first;
+    if (AppConstants.paymentMethods.isNotEmpty) {
+      _selectedPayment = AppConstants.paymentMethods.first;
     }
   }
 
-  void _showOrderSuccess() {
+  Future<void> _showOrderSuccess(AddressEntity? currentAddress) async {
+    if (currentAddress == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please add an address to place order')),
+      );
+      return;
+    }
+
     final cartItems = ref.read(cartProvider);
     final subtotal = ref.read(cartTotalProvider);
     final discount = subtotal * widget.appliedDiscount;
     final tax = subtotal * 0.05;
     final total = subtotal + tax - discount;
 
-    ref
-        .read(ordersProvider.notifier)
-        .addOrder(
-          cartItems,
-          subtotal,
-          tax,
-          discount,
-          total,
-          _selectedPayment ?? 'Unknown',
-          _selectedAddress?.id ?? '',
-        );
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => const Center(
+        child: CircularProgressIndicator(color: AppTheme.primaryGreen),
+      ),
+    );
 
+    try {
+      String backendPaymentMethod = 'COD';
+      final pm = _selectedPayment ?? '';
+      if (pm.contains('COD')) { backendPaymentMethod = 'COD'; }
+      else if (pm.contains('ONLINE')) { backendPaymentMethod = 'ONLINE'; }
+
+      await ref
+          .read(ordersProvider.notifier)
+          .addOrder(
+            cartItems,
+            subtotal,
+            tax,
+            discount,
+            total,
+            backendPaymentMethod,
+            currentAddress.id,
+          );
+
+      if (mounted) {
+        Navigator.pop(context); // pop loading
+        _showSuccessDialog();
+      }
+    } catch (e) {
+      if (mounted) {
+        Navigator.pop(context); // pop loading
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to place order: $e')),
+        );
+      }
+    }
+  }
+
+  void _showSuccessDialog() {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -126,6 +157,17 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
     final tax = subtotal * 0.05;
     final total = subtotal + tax - discount;
 
+    final addressState = ref.watch(addressControllerProvider);
+    final addresses = addressState.addressesAsync.valueOrNull ?? [];
+
+    AddressEntity? currentAddress = _selectedAddress;
+    if (currentAddress == null && addresses.isNotEmpty) {
+      currentAddress = addresses.firstWhere(
+        (a) => a.isDefault,
+        orElse: () => addresses.first,
+      );
+    }
+
     return Scaffold(
       backgroundColor: AppTheme.bgLight,
       appBar: AppBar(
@@ -158,9 +200,14 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  ...FakeData.addresses.map(
-                    (address) => _buildAddressTile(address),
-                  ),
+                  if (addressState.addressesAsync.isLoading)
+                    const Center(child: CircularProgressIndicator())
+                  else if (addresses.isEmpty)
+                    const CustomText('No addresses found. Please add one.', style: TextStyle(color: AppTheme.textGrey))
+                  else
+                    ...addresses.map(
+                      (address) => _buildAddressTile(address, currentAddress),
+                    ),
                   const SizedBox(height: 24),
                   const CustomText(
                     'Payment Method',
@@ -171,7 +218,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  ...FakeData.paymentMethods.map((pm) => _buildPaymentTile(pm)),
+                  ...AppConstants.paymentMethods.map((pm) => _buildPaymentTile(pm)),
                   const SizedBox(height: 24),
                   const CustomText(
                     'Order Summary',
@@ -267,7 +314,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
                 const SizedBox(width: 20),
                 Expanded(
                   child: GestureDetector(
-                    onTap: _showOrderSuccess,
+                    onTap: () => _showOrderSuccess(currentAddress),
                     child: Container(
                       height: 54,
                       decoration: BoxDecoration(
@@ -295,8 +342,8 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
     );
   }
 
-  Widget _buildAddressTile(AddressModel address) {
-    final isSelected = _selectedAddress?.id == address.id;
+  Widget _buildAddressTile(AddressEntity address, AddressEntity? currentAddress) {
+    final isSelected = currentAddress?.id == address.id;
     return GestureDetector(
       onTap: () => setState(() => _selectedAddress = address),
       child: AnimatedContainer(
@@ -329,7 +376,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
                   Row(
                     children: [
                       CustomText(
-                        address.title,
+                        address.label,
                         style: const TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w700,
@@ -361,7 +408,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
                   ),
                   const SizedBox(height: 4),
                   CustomText(
-                    address.fullAddress,
+                    '${address.addressLine}, ${address.city}, ${address.state} - ${address.pincode}',
                     style: const TextStyle(
                       fontSize: 13,
                       color: AppTheme.textGrey,

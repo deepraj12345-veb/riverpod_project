@@ -44,5 +44,4 @@ class ApiConfig {
   static String addressDefault(String id) => '/addresses/$id/default';
 
   // Coupons
-  static const String coupons = '/coupons';
 }

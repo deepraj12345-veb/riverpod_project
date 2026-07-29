@@ -32,20 +32,33 @@ class OrdersListPage extends ConsumerWidget {
             size: 18,
             color: AppTheme.textDark,
           ),
-          onPressed: () => context.pop(),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/home');
+            }
+          },
         ),
       ),
-      body: orders.isEmpty
-          ? const _EmptyOrdersView()
-          : ListView.separated(
-              padding: const EdgeInsets.all(16),
-              itemCount: orders.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 12),
-              itemBuilder: (ctx, i) {
-                final order = orders[i];
-                return _OrderCard(order: order);
-              },
-            ),
+      body: RefreshIndicator(
+        color: AppTheme.primaryGreen,
+        onRefresh: () async {
+          await ref.read(ordersProvider.notifier).loadOrders();
+        },
+        child: orders.isEmpty
+            ? const _EmptyOrdersView()
+            : ListView.separated(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.all(16),
+                itemCount: orders.length,
+                separatorBuilder: (_, __) => const SizedBox(height: 12),
+                itemBuilder: (ctx, i) {
+                  final order = orders[i];
+                  return _OrderCard(order: order);
+                },
+              ),
+      ),
     );
   }
 }
@@ -57,23 +70,30 @@ class _OrderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final totalItems = order.items.fold(0, (sum, item) => sum + item.quantity);
-
     Color statusColor;
     Color statusBgColor;
 
-    switch (order.status) {
-      case 'Delivered':
+    switch (order.status.toLowerCase()) {
+      case 'delivered':
         statusColor = AppTheme.primaryGreen;
         statusBgColor = const Color(0xFFECFDF5);
         break;
-      case 'On the way':
+      case 'completed':
+        statusColor = AppTheme.primaryGreen;
+        statusBgColor = const Color(0xFFECFDF5);
+        break;
+      case 'on the way':
         statusColor = const Color(0xFF3B82F6);
         statusBgColor = const Color(0xFFEFF6FF);
         break;
-      case 'Processing':
+      case 'processing':
         statusColor = const Color(0xFFF59E0B);
         statusBgColor = const Color(0xFFFFFBEB);
+        break;
+      case 'failed':
+      case 'cancelled':
+        statusColor = const Color(0xFFEF4444);
+        statusBgColor = const Color(0xFFFEF2F2);
         break;
       default:
         statusColor = AppTheme.textGrey;
@@ -83,7 +103,7 @@ class _OrderCard extends StatelessWidget {
     return GestureDetector(
       onTap: () => context.go('/order/${order.id}'),
       child: Container(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
@@ -99,103 +119,140 @@ class _OrderCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Order ID & Status Badge
+            // Header: Order No & Status
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CustomText(
-                  order.id,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: AppTheme.textDark,
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: statusBgColor,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: CustomText(
-                    order.status,
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: statusColor,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 5),
-            // Date & Payment
-            CustomText(
-              '${_formatDate(order.date)}  •  ${order.paymentMethod}',
-              style: const TextStyle(fontSize: 10, color: AppTheme.textGrey),
-            ),
-            const SizedBox(height: 10),
-            const Divider(height: 1, color: AppTheme.borderColor),
-            const SizedBox(height: 10),
-            // Item thumbnails & Summary Info
-            Row(
-              children: [
-                // Thumbnails
-                Expanded(
-                  child: SizedBox(
-                    height: 40,
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: order.items.length > 3
-                          ? 3
-                          : order.items.length,
-                      separatorBuilder: (_, __) => const SizedBox(width: 8),
-                      itemBuilder: (ctx, idx) {
-                        final item = order.items[idx];
-                        return ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Container(
-                            width: 40,
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(
-                                color: AppTheme.borderColor,
-                                width: 0.8,
-                              ),
-                            ),
-                            child: CustomNetworkImage(
-                              imageUrl: item.product.imageUrl,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-                // Price Details
                 Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomText(
-                      '₹ ${order.totalAmount.toStringAsFixed(0)}',
+                      order.orderNumber ?? 'Order #${order.id.substring(0, 8)}',
                       style: const TextStyle(
-                        fontSize: 16,
+                        fontSize: 14,
                         fontWeight: FontWeight.w800,
                         color: AppTheme.textDark,
                       ),
                     ),
                     const SizedBox(height: 2),
                     CustomText(
-                      '$totalItems ${totalItems == 1 ? "item" : "items"}',
+                      _formatDate(order.date),
                       style: const TextStyle(
                         fontSize: 11,
                         color: AppTheme.textGrey,
+                      ),
+                    ),
+                  ],
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: statusBgColor,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: CustomText(
+                    order.status.toUpperCase(),
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w800,
+                      color: statusColor,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            const Divider(height: 1, color: AppTheme.borderColor),
+            const SizedBox(height: 16),
+            // Details: Address, City, Total
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (order.items.isNotEmpty) ...[
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Icon(
+                              Icons.shopping_bag_outlined,
+                              size: 14,
+                              color: AppTheme.primaryGreen,
+                            ),
+                            const SizedBox(width: 6),
+                            Expanded(
+                              child: CustomText(
+                                order.items
+                                    .map(
+                                      (e) => '${e.quantity}x ${e.product.name}',
+                                    )
+                                    .join(', '),
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: AppTheme.textDark,
+                                  height: 1.4,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                      ],
+                      Row(
+                        children: [
+                          Icon(
+                            order.paymentMethod == 'ONLINE'
+                                ? Icons.credit_card
+                                : Icons.money,
+                            size: 14,
+                            color: AppTheme.textGrey,
+                          ),
+                          const SizedBox(width: 4),
+                          CustomText(
+                            '${order.paymentMethod} • ${order.paymentStatus?.toUpperCase() ?? 'PENDING'}',
+                            style: const TextStyle(
+                              fontSize: 11,
+                              color: AppTheme.textGrey,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  height: 60,
+                  width: 1,
+                  color: AppTheme.borderColor,
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CustomText(
+                      '₹ ${order.totalAmount.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                        color: AppTheme.primaryGreen,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    CustomText(
+                      '${order.items.length} ${order.items.length == 1 ? "Item" : "Items"}',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: AppTheme.textGrey,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ],
@@ -237,58 +294,66 @@ class _EmptyOrdersView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 110,
-            height: 110,
-            decoration: const BoxDecoration(
-              color: AppTheme.cardMint,
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.receipt_long_rounded,
-              size: 50,
-              color: AppTheme.primaryGreen,
-            ),
-          ),
-          const SizedBox(height: 24),
-          const CustomText(
-            'No orders yet',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-              color: AppTheme.textDark,
-            ),
-          ),
-          const SizedBox(height: 8),
-          const CustomText(
-            'Place your first order to see it here',
-            style: TextStyle(fontSize: 14, color: AppTheme.textGrey),
-          ),
-          const SizedBox(height: 32),
-          GestureDetector(
-            onTap: () => context.go('/home'),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
-              decoration: BoxDecoration(
-                color: AppTheme.primaryGreen,
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: const CustomText(
-                'Browse Products',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 15,
+    return CustomScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      slivers: [
+        SliverFillRemaining(
+          hasScrollBody: false,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 110,
+                  height: 110,
+                  decoration: const BoxDecoration(
+                    color: AppTheme.cardMint,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.receipt_long_rounded,
+                    size: 50,
+                    color: AppTheme.primaryGreen,
+                  ),
                 ),
-              ),
+                const SizedBox(height: 24),
+                const CustomText(
+                  'No orders yet',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                    color: AppTheme.textDark,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const CustomText(
+                  'Place your first order to see it here',
+                  style: TextStyle(fontSize: 14, color: AppTheme.textGrey),
+                ),
+                const SizedBox(height: 32),
+                GestureDetector(
+                  onTap: () => context.go('/home'),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
+                    decoration: BoxDecoration(
+                      color: AppTheme.primaryGreen,
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: const CustomText(
+                      'Browse Products',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 15,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

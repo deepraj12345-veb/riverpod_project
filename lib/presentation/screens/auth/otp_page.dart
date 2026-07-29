@@ -159,7 +159,10 @@ class _OtpPageState extends ConsumerState<OtpPage>
                     height: 70,
                     decoration: const BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [Color(0xFF6C63FF), Color(0xFFFF6584)],
+                        colors: [
+                          Color.fromARGB(255, 1, 139, 29),
+                          Color.fromARGB(255, 0, 43, 27),
+                        ],
                       ),
                       shape: BoxShape.circle,
                       // Removed shadow for clean design
@@ -172,7 +175,7 @@ class _OtpPageState extends ConsumerState<OtpPage>
                   ),
                   const SizedBox(height: 16),
                   const CustomText(
-                    'Verify Your Phone 📱',
+                    'Verify Your Phone ',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
@@ -181,7 +184,7 @@ class _OtpPageState extends ConsumerState<OtpPage>
                   ),
                   const SizedBox(height: 8),
                   CustomText(
-                    'We sent a 6-digit code to\n${widget.phone.isEmpty ? '+1 *** *** 5678' : widget.phone}',
+                    'We sent a 4-digit code to\n${widget.phone.isEmpty ? '+1 *** *** 5678' : widget.phone}',
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       fontSize: 13,
@@ -189,31 +192,8 @@ class _OtpPageState extends ConsumerState<OtpPage>
                       height: 1.6,
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  // Hint box
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 10,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppTheme.primaryColor.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: AppTheme.primaryColor.withValues(alpha: 0.3),
-                      ),
-                    ),
-                    child: const CustomText(
-                      '💡 Demo OTP: 1234',
-                      style: TextStyle(
-                        color: AppTheme.primaryColor,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 13,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  // OTP Input
+                  const SizedBox(height: 15),
+
                   AnimatedBuilder(
                     animation: _shakeAnim,
                     builder: (context, child) {

@@ -51,21 +51,21 @@ class OrderDetailPage extends ConsumerWidget {
             // ── Tracker Section ──────────────────────────────────
             _OrderTracker(status: order.status),
 
-            // ── Delivery Information ─────────────────────────────
-            _InfoSection(
-              title: 'Delivery Address',
-              icon: Icons.location_on_outlined,
-              iconColor: AppTheme.primaryGreen,
-              bgColor: AppTheme.cardMint,
-              child: CustomText(
-                order.deliveryAddress,
-                style: const TextStyle(
-                  fontSize: 13,
-                  color: AppTheme.textMedium,
-                  height: 1.5,
+            if (order.deliveryAddress.isNotEmpty)
+              _InfoSection(
+                title: 'Delivery Address',
+                icon: Icons.location_on_outlined,
+                iconColor: AppTheme.primaryGreen,
+                bgColor: AppTheme.cardMint,
+                child: CustomText(
+                  order.deliveryAddress,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: AppTheme.textMedium,
+                    height: 1.5,
+                  ),
                 ),
               ),
-            ),
 
             _InfoSection(
               title: 'Payment Details',
@@ -169,10 +169,67 @@ class _OrderTracker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final lowerStatus = status.toLowerCase();
+    final isCancelled = lowerStatus == 'cancelled' || lowerStatus == 'failed';
+
+    if (isCancelled) {
+      return Container(
+        margin: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppTheme.borderColor, width: 0.8),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const CustomText(
+              'Order Status',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+                color: AppTheme.textDark,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Color(0xFFFEF2F2),
+                  ),
+                  child: const Center(
+                    child: Icon(
+                      Icons.cancel_rounded,
+                      size: 20,
+                      color: Color(0xFFEF4444),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                CustomText(
+                  status.toUpperCase(),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w800,
+                    color: Color(0xFFEF4444),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    }
+
     int currentStep = 0;
-    if (status == 'Processing') currentStep = 1;
-    if (status == 'On the way') currentStep = 2;
-    if (status == 'Delivered') currentStep = 3;
+    if (lowerStatus == 'processing') currentStep = 1;
+    if (lowerStatus == 'on the way') currentStep = 2;
+    if (lowerStatus == 'delivered' || lowerStatus == 'completed') currentStep = 3;
 
     final steps = ['Placed', 'Processing', 'On the way', 'Delivered'];
 
@@ -379,10 +436,12 @@ class _ItemsListSection extends StatelessWidget {
                         ),
                       ),
                       padding: const EdgeInsets.all(6),
-                      child: CustomNetworkImage(
-                        imageUrl: item.product.imageUrl,
-                        fit: BoxFit.contain,
-                      ),
+                      child: item.product.imageUrl.isNotEmpty
+                          ? CustomNetworkImage(
+                              imageUrl: item.product.imageUrl,
+                              fit: BoxFit.contain,
+                            )
+                          : const Icon(Icons.fastfood, color: AppTheme.textGrey),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -456,26 +515,22 @@ class _BillSummarySection extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          _SummaryRow(
-            label: 'Item Subtotal',
-            value: '₹ ${order.subtotal.toStringAsFixed(0)}',
-          ),
+          if (order.subtotal > 0)
+            _SummaryRow(
+              label: 'Item Subtotal',
+              value: '₹ ${order.subtotal.toStringAsFixed(0)}',
+            ),
           if (order.discount > 0)
             _SummaryRow(
               label: 'Promo Discount',
               value: '-₹ ${order.discount.toStringAsFixed(0)}',
               valueColor: AppTheme.primaryGreen,
             ),
-          _SummaryRow(
-            label: 'GST (5%)',
-            value: '₹ ${order.tax.toStringAsFixed(0)}',
-          ),
-          const _SummaryRow(
-            label: 'Delivery Fee',
-            value: 'FREE',
-            valueColor: AppTheme.primaryGreen,
-          ),
-          const Divider(color: AppTheme.borderColor),
+          if (order.tax > 0)
+            _SummaryRow(
+              label: 'Delivery Fee',
+              value: '₹ ${order.tax.toStringAsFixed(0)}',
+            ),
           const SizedBox(height: 6),
           _SummaryRow(
             label: 'Grand Total',

@@ -9,7 +9,9 @@ import 'package:veggie_mart/data/datasources/order_remote_data_source.dart';
 
 final orderRepositoryProvider = Provider<OrderRepository>((ref) {
   return OrderRepositoryImpl(
-    remoteDataSource: OrderRemoteDataSourceImpl(dio: ref.watch(dioClientProvider)),
+    remoteDataSource: OrderRemoteDataSourceImpl(
+      dio: ref.watch(dioClientProvider),
+    ),
   );
 });
 
@@ -17,10 +19,10 @@ class OrdersNotifier extends StateNotifier<List<OrderEntity>> {
   final OrderRepository _repository;
 
   OrdersNotifier(this._repository) : super([]) {
-    _loadOrders();
+    loadOrders();
   }
 
-  Future<void> _loadOrders() async {
+  Future<void> loadOrders() async {
     try {
       final orders = await _repository.getOrders();
       state = orders;
@@ -43,15 +45,19 @@ class OrdersNotifier extends StateNotifier<List<OrderEntity>> {
         "address_id": addressId,
         "payment_method": paymentMethod,
         "coupon_code": "",
-        "items": cartItems.map((e) => {
-          "product_id": e.product.id,
-          "qty": e.quantity,
-          "price": e.product.price,
-        }).toList(),
+        "items": cartItems
+            .map(
+              (e) => {
+                "product_id": e.product.id,
+                "qty": e.quantity,
+                "price": e.product.price,
+              },
+            )
+            .toList(),
         "delivery_charge": tax,
         "total_amount": total,
       };
-      
+
       final newOrder = await _repository.placeOrder(orderData);
       state = [newOrder, ...state];
     } catch (e) {
@@ -76,4 +82,3 @@ final ordersProvider = StateNotifierProvider<OrdersNotifier, List<OrderEntity>>(
     return OrdersNotifier(ref.watch(orderRepositoryProvider));
   },
 );
-

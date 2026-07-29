@@ -15,15 +15,15 @@ class CouponRemoteDataSourceImpl implements CouponRemoteDataSource {
   @override
   Future<List<CouponModel>> getCoupons() async {
     try {
-      final response = await dio.get(ApiConfig.coupons);
+      final response = await dio.get('/coupons');
       final raw = response.data;
 
       final List<dynamic> list =
           raw is Map<String, dynamic> &&
-                  raw.containsKey('data') &&
-                  raw['data'] is List
-              ? raw['data'] as List<dynamic>
-              : (raw is List ? raw : []);
+              raw.containsKey('data') &&
+              raw['data'] is List
+          ? raw['data'] as List<dynamic>
+          : (raw is List ? raw : []);
 
       return list
           .map((e) => CouponModel.fromJson(e as Map<String, dynamic>))

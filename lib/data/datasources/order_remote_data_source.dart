@@ -72,6 +72,24 @@ class OrderRemoteDataSourceImpl implements OrderRemoteDataSource {
   OrderEntity _parseOrder(Map<String, dynamic> json) {
     List<dynamic> itemsJson = json['items'] ?? [];
     List<OrderItemEntity> items = itemsJson.map((e) {
+      if (e is String) {
+        return OrderItemEntity(
+          product: ProductEntity(
+            id: e,
+            name: 'Product',
+            description: '',
+            price: 0,
+            originalPrice: 0,
+            imageUrl: 'https://via.placeholder.com/150',
+            category: '',
+            rating: 0,
+            reviewCount: 0,
+            inStock: true,
+            unit: '1 item',
+          ),
+          quantity: 1,
+        );
+      }
       final productJson = e['product'] ?? e;
       return OrderItemEntity(
         product: _parseProduct(productJson),
@@ -79,14 +97,32 @@ class OrderRemoteDataSourceImpl implements OrderRemoteDataSource {
       );
     }).toList();
 
+    String parsedStatus = 'Processing';
+    if (json['status'] is int) {
+      switch (json['status']) {
+        case 0: parsedStatus = 'Pending'; break;
+        case 1: parsedStatus = 'Processing'; break;
+        case 2: parsedStatus = 'Delivered'; break;
+        case 4: parsedStatus = 'Cancelled'; break;
+        case 5: parsedStatus = 'Failed'; break;
+        default: parsedStatus = 'Processing';
+      }
+    } else {
+      parsedStatus = json['status']?.toString() ?? 'Processing';
+    }
+
     return OrderEntity(
       id: json['_id'] ?? json['id'] ?? '',
-      date: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : DateTime.now(),
+      orderNumber: json['order_number'],
+      customerMobile: json['customer_mobile'],
+      paymentStatus: json['payment_status'],
+      city: json['city'],
+      date: json['created_at'] != null ? DateTime.parse(json['created_at']) : (json['createdAt'] != null ? DateTime.parse(json['createdAt']) : DateTime.now()),
       totalAmount: (json['total_amount'] ?? json['totalAmount'] ?? 0).toDouble(),
       subtotal: (json['subtotal'] ?? 0).toDouble(),
       tax: (json['tax'] ?? json['delivery_charge'] ?? 0).toDouble(),
       discount: (json['discount'] ?? 0).toDouble(),
-      status: json['status'] ?? 'Processing',
+      status: parsedStatus,
       deliveryAddress: json['delivery_address'] ?? json['address'] ?? '',
       paymentMethod: json['payment_method'] ?? json['paymentMethod'] ?? 'COD',
       items: items,
@@ -95,8 +131,8 @@ class OrderRemoteDataSourceImpl implements OrderRemoteDataSource {
 
   ProductEntity _parseProduct(Map<String, dynamic> json) {
     return ProductEntity(
-      id: json['_id'] ?? json['id'] ?? '',
-      name: json['name'] ?? '',
+      id: json['product_id'] ?? json['_id'] ?? json['id'] ?? '',
+      name: json['product_name'] ?? json['name'] ?? 'Unknown Product',
       description: json['description'] ?? '',
       price: (json['price'] ?? 0).toDouble(),
       originalPrice: (json['original_price'] ?? json['originalPrice'] ?? (json['price'] ?? 0)).toDouble(),

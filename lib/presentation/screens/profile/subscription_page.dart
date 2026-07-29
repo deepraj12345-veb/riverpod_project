@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:veggie_mart/core/theme/app_theme.dart';
 import 'package:veggie_mart/core/providers/app_providers.dart';
 import 'package:veggie_mart/core/widgets/custom_text.dart';
-import 'package:veggie_mart/core/constants/fake_data.dart';
+import 'package:veggie_mart/core/constants/app_constants.dart';
 
 class SubscriptionPage extends ConsumerWidget {
   const SubscriptionPage({super.key});
@@ -147,7 +147,7 @@ class SubscriptionPage extends ConsumerWidget {
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (ctx) {
-        String? selectedPayment = FakeData.paymentMethods.first;
+        String? selectedPayment = AppConstants.paymentMethods.first;
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return SafeArea(
@@ -166,7 +166,7 @@ class SubscriptionPage extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    ...FakeData.paymentMethods.map((pm) {
+                    ...AppConstants.paymentMethods.map((pm) {
                       final isSelected = selectedPayment == pm;
                       return InkWell(
                         onTap: () {

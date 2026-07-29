@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:veggie_mart/core/constants/fake_data.dart';
+
 import 'package:veggie_mart/core/constants/data/models/models.dart';
 
 // Auth Provider moved to lib/features/auth/presentation/providers/auth_provider.dart
@@ -12,7 +12,7 @@ final activeSubscriptionPlanProvider = StateProvider<String?>((ref) => null);
 // ─── Products Provider ──────────────────────────────────────────────────────────
 
 class ProductsNotifier extends StateNotifier<List<ProductModel>> {
-  ProductsNotifier() : super(List.from(FakeData.products));
+  ProductsNotifier() : super([]);
 
   void toggleFavorite(String productId) {
     state = state.map((p) {

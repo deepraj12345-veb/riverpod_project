@@ -16,10 +16,14 @@ class OrderEntity {
   final double subtotal;
   final double tax;
   final double discount;
-  final String status; // 'Processing', 'On the way', 'Delivered', 'Cancelled'
+  final String status; // 'Pending', 'Processing', 'On the way', 'Delivered', 'Cancelled', 'Failed'
   final String deliveryAddress;
   final String paymentMethod;
   final List<OrderItemEntity> items;
+  final String? orderNumber;
+  final String? paymentStatus;
+  final String? customerMobile;
+  final String? city;
 
   const OrderEntity({
     required this.id,
@@ -32,6 +36,10 @@ class OrderEntity {
     required this.deliveryAddress,
     required this.paymentMethod,
     required this.items,
+    this.orderNumber,
+    this.paymentStatus,
+    this.customerMobile,
+    this.city,
   });
 
   OrderEntity copyWith({
@@ -45,6 +53,10 @@ class OrderEntity {
     String? deliveryAddress,
     String? paymentMethod,
     List<OrderItemEntity>? items,
+    String? orderNumber,
+    String? paymentStatus,
+    String? customerMobile,
+    String? city,
   }) {
     return OrderEntity(
       id: id ?? this.id,
@@ -57,6 +69,10 @@ class OrderEntity {
       deliveryAddress: deliveryAddress ?? this.deliveryAddress,
       paymentMethod: paymentMethod ?? this.paymentMethod,
       items: items ?? this.items,
+      orderNumber: orderNumber ?? this.orderNumber,
+      paymentStatus: paymentStatus ?? this.paymentStatus,
+      customerMobile: customerMobile ?? this.customerMobile,
+      city: city ?? this.city,
     );
   }
 }

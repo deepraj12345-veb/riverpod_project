@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:veggie_mart/core/constants/fake_data.dart';
 import 'package:veggie_mart/core/theme/app_theme.dart';
 import 'package:veggie_mart/core/widgets/product_card_widget.dart';
 import 'package:veggie_mart/presentation/providers/home_controller.dart';
+import 'package:veggie_mart/presentation/providers/orders_controller.dart';
 import 'package:veggie_mart/core/widgets/custom_text.dart';
 
 class OrderAgainPage extends ConsumerWidget {
@@ -11,9 +11,11 @@ class OrderAgainPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final orders = ref.watch(ordersProvider);
+    final orderedProductIds = orders.expand((o) => o.items.map((i) => i.product.id)).toSet();
     final allProducts = ref.watch(productsProvider);
     final ordered = allProducts
-        .where((p) => FakeData.orderedProductIds.contains(p.id))
+        .where((p) => orderedProductIds.contains(p.id))
         .toList();
 
     final cardWidth = (MediaQuery.of(context).size.width - 48) / 3;
