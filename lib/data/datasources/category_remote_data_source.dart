@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
-import 'package:veggie_mart/core/network/api_config.dart';
-import 'package:veggie_mart/core/network/api_exceptions.dart';
-import 'package:veggie_mart/data/models/category_model.dart';
-import 'package:veggie_mart/data/models/subcategory_model.dart';
+import 'package:veg_king/core/network/api_config.dart';
+import 'package:veg_king/core/network/api_exceptions.dart';
+import 'package:veg_king/data/models/category_model.dart';
+import 'package:veg_king/data/models/subcategory_model.dart';
 
 abstract class CategoryRemoteDataSource {
   Future<List<CategoryModel>> getCategories();

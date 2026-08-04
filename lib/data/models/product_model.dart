@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:veggie_mart/domain/entities/product_entity.dart';
-import 'package:veggie_mart/core/utils/json_utils.dart';
+import 'package:veg_king/domain/entities/product_entity.dart';
+import 'package:veg_king/core/utils/json_utils.dart';
 
 part 'product_model.g.dart';
 

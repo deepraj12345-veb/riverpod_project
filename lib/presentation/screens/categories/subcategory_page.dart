@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:veggie_mart/core/theme/app_theme.dart';
-import 'package:veggie_mart/core/widgets/custom_network_image.dart';
-import 'package:veggie_mart/core/widgets/custom_text.dart';
-import 'package:veggie_mart/core/widgets/product_card_widget.dart';
-import 'package:veggie_mart/core/widgets/floating_cart_bar.dart';
-import 'package:veggie_mart/domain/entities/product_entity.dart';
-import 'package:veggie_mart/presentation/providers/dashboard_provider.dart';
+import 'package:veg_king/core/theme/app_theme.dart';
+import 'package:veg_king/core/widgets/custom_network_image.dart';
+import 'package:veg_king/core/widgets/custom_text.dart';
+import 'package:veg_king/core/widgets/product_card_widget.dart';
+import 'package:veg_king/core/widgets/floating_cart_bar.dart';
+import 'package:veg_king/domain/entities/product_entity.dart';
+import 'package:veg_king/presentation/providers/dashboard_provider.dart';
 
 class SubcategoryPage extends ConsumerStatefulWidget {
   final String categoryName;

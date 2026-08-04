@@ -1,7 +1,7 @@
-import 'package:veggie_mart/data/datasources/auth_remote_data_source.dart';
-import 'package:veggie_mart/data/datasources/auth_local_data_source.dart';
-import 'package:veggie_mart/domain/repositories/auth_repository.dart';
-import 'package:veggie_mart/data/models/user_model.dart';
+import 'package:veg_king/data/datasources/auth_remote_data_source.dart';
+import 'package:veg_king/data/datasources/auth_local_data_source.dart';
+import 'package:veg_king/domain/repositories/auth_repository.dart';
+import 'package:veg_king/data/models/user_model.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;

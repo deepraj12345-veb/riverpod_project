@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:veggie_mart/core/theme/app_theme.dart';
-import 'package:veggie_mart/core/widgets/suggestion_field.dart';
-import 'package:veggie_mart/core/widgets/auth_widgets.dart';
-import 'package:veggie_mart/core/widgets/custom_text.dart';
+import 'package:veg_king/core/theme/app_theme.dart';
+import 'package:veg_king/core/widgets/suggestion_field.dart';
+import 'package:veg_king/core/widgets/auth_widgets.dart';
+import 'package:veg_king/core/widgets/custom_text.dart';
 
 const _emailSuggestions = [
   'alex.johnson@gmail.com',

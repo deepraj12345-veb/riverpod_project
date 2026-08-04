@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:veggie_mart/core/theme/app_theme.dart';
-import 'package:veggie_mart/domain/entities/coupon_entity.dart';
-import 'package:veggie_mart/presentation/providers/coupon_provider.dart';
-import 'package:veggie_mart/presentation/providers/cart_controller.dart'
+import 'package:veg_king/core/theme/app_theme.dart';
+import 'package:veg_king/domain/entities/coupon_entity.dart';
+import 'package:veg_king/presentation/providers/coupon_provider.dart';
+import 'package:veg_king/presentation/providers/cart_controller.dart'
     show cartTotalProvider;
 
 class CouponsPage extends ConsumerWidget {

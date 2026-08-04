@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:veggie_mart/core/theme/app_theme.dart';
-import 'package:veggie_mart/core/widgets/product_card_widget.dart';
-import 'package:veggie_mart/core/widgets/section_header_widget.dart';
-import 'package:veggie_mart/domain/entities/product_entity.dart';
-import 'package:veggie_mart/domain/entities/category_entity.dart';
-import 'package:veggie_mart/presentation/providers/home_controller.dart';
-import 'package:veggie_mart/core/widgets/home_banner_widget.dart';
-import 'package:veggie_mart/core/widgets/subcategory_chips_widget.dart';
-import 'package:veggie_mart/core/widgets/custom_text.dart';
-import 'package:veggie_mart/core/widgets/home_page_skeleton.dart';
-import 'package:veggie_mart/presentation/providers/dashboard_provider.dart';
-import 'package:veggie_mart/presentation/providers/address_controller.dart';
-import 'package:veggie_mart/core/widgets/address_bottom_sheet.dart';
+import 'package:veg_king/core/theme/app_theme.dart';
+import 'package:veg_king/core/widgets/product_card_widget.dart';
+import 'package:veg_king/core/widgets/section_header_widget.dart';
+import 'package:veg_king/domain/entities/product_entity.dart';
+import 'package:veg_king/domain/entities/category_entity.dart';
+import 'package:veg_king/presentation/providers/home_controller.dart';
+import 'package:veg_king/core/widgets/home_banner_widget.dart';
+import 'package:veg_king/core/widgets/subcategory_chips_widget.dart';
+import 'package:veg_king/core/widgets/custom_text.dart';
+import 'package:veg_king/core/widgets/home_page_skeleton.dart';
+import 'package:veg_king/presentation/providers/dashboard_provider.dart';
+import 'package:veg_king/presentation/providers/address_controller.dart';
+import 'package:veg_king/core/widgets/address_bottom_sheet.dart';
+import 'package:veg_king/l10n/app_localizations.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -39,6 +40,7 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final selectedCategory = ref.watch(selectedCategoryProvider);
     final dashboardAsync = ref.watch(dashboardProvider);
 
@@ -129,17 +131,17 @@ class _HomePageState extends ConsumerState<HomePage> {
                           borderRadius: BorderRadius.circular(14),
                           border: Border.all(color: AppTheme.borderColor),
                         ),
-                        child: const Row(
+                        child: Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.search_rounded,
                               color: AppTheme.primaryGreen,
                               size: 20,
                             ),
-                            SizedBox(width: 12),
+                            const SizedBox(width: 12),
                             CustomText(
-                              'Search products, brands, tags…',
-                              style: TextStyle(
+                              l10n.searchProducts,
+                              style: const TextStyle(
                                 color: AppTheme.textGrey,
                                 fontSize: 14,
                               ),
@@ -184,7 +186,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(16, 18, 16, 10),
                       child: SectionHeaderWidget(
-                        title: "Chef's Picks & Bestsellers",
+                        title: l10n.chefsPicksBestsellers,
                         onSeeAll: () {},
                       ),
                     ),
@@ -203,8 +205,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(16, 20, 16, 10),
                       child: SectionHeaderWidget(
-                        title: 'Trending Near You',
-                        subtitle: 'Discover the top products trending today',
+                        title: l10n.trendingNearYou,
+                        subtitle: l10n.discoverTopProducts,
                         onSeeAll: () {},
                       ),
                     ),
@@ -219,10 +221,10 @@ class _HomePageState extends ConsumerState<HomePage> {
                   ),
 
                   // Shop by Type header
-                  const SliverToBoxAdapter(
+                  SliverToBoxAdapter(
                     child: Padding(
-                      padding: EdgeInsets.fromLTRB(16, 20, 16, 10),
-                      child: SectionHeaderWidget(title: 'Shop by Type'),
+                      padding: const EdgeInsets.fromLTRB(16, 20, 16, 10),
+                      child: SectionHeaderWidget(title: l10n.shopByType),
                     ),
                   ),
                   // Subcategory chips
@@ -235,11 +237,11 @@ class _HomePageState extends ConsumerState<HomePage> {
                   ),
 
                   // All Products header
-                  const SliverToBoxAdapter(
+                  SliverToBoxAdapter(
                     child: Padding(
-                      padding: EdgeInsets.fromLTRB(16, 20, 16, 10),
+                      padding: const EdgeInsets.fromLTRB(16, 20, 16, 10),
                       child: SectionHeaderWidget(
-                        title: 'All Products',
+                        title: l10n.allProducts,
                         onSeeAll: null,
                       ),
                     ),
@@ -282,7 +284,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: CustomText(
-                              '${displayProducts.length} items',
+                              l10n.itemsCount(displayProducts.length),
                               style: const TextStyle(
                                 fontSize: 12,
                                 color: AppTheme.primaryGreen,
@@ -334,6 +336,7 @@ class AppHeader extends ConsumerWidget {
   const AppHeader({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final addressState = ref.watch(addressControllerProvider);
     final addresses = addressState.addressesAsync.valueOrNull ?? [];
     final defaultAddress = addresses.isNotEmpty
@@ -345,7 +348,7 @@ class AppHeader extends ConsumerWidget {
 
     final addressText = defaultAddress != null
         ? '${defaultAddress.label}: ${defaultAddress.addressLine}, ${defaultAddress.city}'
-        : 'Select Delivery Address';
+        : l10n.selectDeliveryAddress;
 
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
@@ -358,10 +361,10 @@ class AppHeader extends ConsumerWidget {
           // Logo
           ClipOval(
             child: Image.asset(
-              'assets/logo.png',
+              'assets/app-logo-square.png',
               width: 42,
               height: 42,
-              fit: BoxFit.cover,
+              fit: BoxFit.contain,
             ),
           ),
           const SizedBox(width: 12),
@@ -369,9 +372,9 @@ class AppHeader extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const CustomText(
-                  'Fresh Veggie Mart',
-                  style: TextStyle(
+                CustomText(
+                  l10n.freshVeggieMart,
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
                     color: AppTheme.textDark,
@@ -496,18 +499,18 @@ class _EmptyState extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          const CustomText(
-            'No products found',
-            style: TextStyle(
+          CustomText(
+            AppLocalizations.of(context)!.noProductsFound,
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
               color: AppTheme.textDark,
             ),
           ),
           const SizedBox(height: 6),
-          const CustomText(
-            'Try a different search or category',
-            style: TextStyle(fontSize: 13, color: AppTheme.textGrey),
+          CustomText(
+            AppLocalizations.of(context)!.tryDifferentSearch,
+            style: const TextStyle(fontSize: 13, color: AppTheme.textGrey),
           ),
         ],
       ),

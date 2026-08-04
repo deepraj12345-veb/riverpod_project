@@ -1,6 +1,6 @@
-import 'package:veggie_mart/data/datasources/order_remote_data_source.dart';
-import 'package:veggie_mart/domain/entities/order_entity.dart';
-import 'package:veggie_mart/domain/repositories/order_repository.dart';
+import 'package:veg_king/data/datasources/order_remote_data_source.dart';
+import 'package:veg_king/domain/entities/order_entity.dart';
+import 'package:veg_king/domain/repositories/order_repository.dart';
 
 class OrderRepositoryImpl implements OrderRepository {
   final OrderRemoteDataSource remoteDataSource;

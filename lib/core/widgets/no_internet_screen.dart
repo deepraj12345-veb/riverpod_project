@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:veggie_mart/core/network/network_provider.dart';
-import 'package:veggie_mart/core/theme/app_theme.dart';
+import 'package:veg_king/core/network/network_provider.dart';
+import 'package:veg_king/core/theme/app_theme.dart';
 
 class NoInternetScreen extends ConsumerWidget {
   const NoInternetScreen({super.key});

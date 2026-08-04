@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:veggie_mart/core/theme/app_theme.dart';
-import 'package:veggie_mart/presentation/providers/profile_controller.dart';
+import 'package:veg_king/core/theme/app_theme.dart';
+import 'package:veg_king/presentation/providers/profile_controller.dart';
 
 class EditProfilePage extends ConsumerStatefulWidget {
   const EditProfilePage({super.key});

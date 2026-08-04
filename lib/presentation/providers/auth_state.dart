@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:veggie_mart/data/models/user_model.dart';
+import 'package:veg_king/data/models/user_model.dart';
 
 part 'auth_state.freezed.dart';
 

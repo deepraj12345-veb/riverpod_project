@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:veggie_mart/core/theme/app_theme.dart';
-import 'package:veggie_mart/core/widgets/custom_text.dart';
+import 'package:veg_king/core/theme/app_theme.dart';
+import 'package:veg_king/core/widgets/custom_text.dart';
 
 class SectionHeaderWidget extends StatelessWidget {
   final String title;

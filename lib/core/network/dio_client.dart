@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:veggie_mart/core/network/api_config.dart';
+import 'package:veg_king/core/network/api_config.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 final dioClientProvider = Provider<Dio>((ref) {
@@ -9,8 +9,12 @@ final dioClientProvider = Provider<Dio>((ref) {
 
   // Connected to VegiMart backend
   dio.options.baseUrl = ApiConfig.baseUrl;
-  dio.options.connectTimeout = const Duration(milliseconds: ApiConfig.connectTimeout);
-  dio.options.receiveTimeout = const Duration(milliseconds: ApiConfig.receiveTimeout);
+  dio.options.connectTimeout = const Duration(
+    milliseconds: ApiConfig.connectTimeout,
+  );
+  dio.options.receiveTimeout = const Duration(
+    milliseconds: ApiConfig.receiveTimeout,
+  );
 
   dio.interceptors.add(
     InterceptorsWrapper(
@@ -31,7 +35,10 @@ final dioClientProvider = Provider<Dio>((ref) {
     ),
   );
 
-  // Log interceptor for debugging (pretty formatting)
+  bool isError = false;
+  bool isRequest = false;
+
+  // Log interceptor for debugging (pretty formatting with multiple colors)
   dio.interceptors.add(
     PrettyDioLogger(
       requestHeader: true,
@@ -39,8 +46,32 @@ final dioClientProvider = Provider<Dio>((ref) {
       responseBody: true,
       responseHeader: false,
       error: true,
-      compact: true,
+      compact: false,
       maxWidth: 90,
+      logPrint: (object) {
+        final str = object.toString();
+        if (str.contains('DioException') || str.contains('ERROR') || str.contains('DioError')) {
+          isError = true;
+          isRequest = false;
+        } else if (str.contains('=> ') || str.contains('Request ║') || str.contains('REQUEST ')) {
+          isRequest = true;
+          isError = false;
+        } else if (str.contains('<= ') || str.contains('Response ║') || str.contains('RESPONSE ')) {
+          isRequest = false;
+          isError = false;
+        }
+        
+        if (isError) {
+          // Red for errors
+          print('\x1B[31m$str\x1B[0m');
+        } else if (isRequest) {
+          // Yellow for requests
+          print('\x1B[33m$str\x1B[0m');
+        } else {
+          // Green for responses
+          print('\x1B[32m$str\x1B[0m');
+        }
+      },
     ),
   );
 

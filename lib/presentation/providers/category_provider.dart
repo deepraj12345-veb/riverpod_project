@@ -1,12 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:veggie_mart/core/network/dio_client.dart';
-import 'package:veggie_mart/data/datasources/category_remote_data_source.dart';
-import 'package:veggie_mart/data/repositories/category_repository_impl.dart';
-import 'package:veggie_mart/domain/entities/category_entity.dart';
-import 'package:veggie_mart/domain/entities/subcategory_entity.dart';
-import 'package:veggie_mart/domain/repositories/category_repository.dart';
-import 'package:veggie_mart/core/network/api_config.dart';
-import 'package:veggie_mart/domain/entities/hierarchy_category_type_entity.dart';
+import 'package:veg_king/core/network/dio_client.dart';
+import 'package:veg_king/data/datasources/category_remote_data_source.dart';
+import 'package:veg_king/data/repositories/category_repository_impl.dart';
+import 'package:veg_king/domain/entities/category_entity.dart';
+import 'package:veg_king/domain/entities/subcategory_entity.dart';
+import 'package:veg_king/domain/repositories/category_repository.dart';
+import 'package:veg_king/core/network/api_config.dart';
+import 'package:veg_king/domain/entities/hierarchy_category_type_entity.dart';
 
 final categoryRemoteDataSourceProvider = Provider<CategoryRemoteDataSource>((
   ref,

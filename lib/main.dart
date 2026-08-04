@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:veggie_mart/core/router/app_router.dart';
-import 'package:veggie_mart/core/network/network_provider.dart';
-import 'package:veggie_mart/core/widgets/no_internet_screen.dart';
+import 'package:veg_king/core/router/app_router.dart';
+import 'package:veg_king/core/network/network_provider.dart';
+import 'package:veg_king/core/widgets/no_internet_screen.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:veg_king/l10n/app_localizations.dart';
+import 'package:veg_king/presentation/providers/locale_provider.dart';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,7 +16,7 @@ Future<void> main() async {
 
   // PROPERLY precache & decode logo into Flutter's ImageCache before runApp so there is ZERO white box delay!
   try {
-    const imageProvider = AssetImage('assets/logo.png');
+    const imageProvider = AssetImage('assets/app-logo-square.png');
     final stream = imageProvider.resolve(ImageConfiguration.empty);
     final completer = Completer<void>();
     final listener = ImageStreamListener(
@@ -48,9 +51,21 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(appRouterProvider);
     final networkStatus = ref.watch(networkProvider);
+    final locale = ref.watch(localeProvider);
 
     return MaterialApp.router(
-      title: 'Veggie mart',
+      locale: locale,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en'), // English
+        Locale('hi'), // Hindi
+      ],
+      title: 'Veg king',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,

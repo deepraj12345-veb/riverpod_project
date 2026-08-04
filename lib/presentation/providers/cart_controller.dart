@@ -1,16 +1,16 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:veggie_mart/data/datasources/cart_local_data_source.dart';
-import 'package:veggie_mart/data/repositories/cart_repository_impl.dart';
-import 'package:veggie_mart/domain/repositories/cart_repository.dart';
-import 'package:veggie_mart/domain/entities/cart_item_entity.dart';
-import 'package:veggie_mart/domain/usecases/get_cart_items_usecase.dart';
-import 'package:veggie_mart/domain/usecases/add_to_cart_usecase.dart';
-import 'package:veggie_mart/domain/usecases/remove_from_cart_usecase.dart';
-import 'package:veggie_mart/domain/usecases/update_quantity_usecase.dart';
-import 'package:veggie_mart/domain/usecases/clear_cart_usecase.dart';
-import 'package:veggie_mart/domain/entities/product_entity.dart';
-import 'package:veggie_mart/data/datasources/cart_remote_data_source.dart';
-import 'package:veggie_mart/core/network/dio_client.dart';
+import 'package:veg_king/data/datasources/cart_local_data_source.dart';
+import 'package:veg_king/data/repositories/cart_repository_impl.dart';
+import 'package:veg_king/domain/repositories/cart_repository.dart';
+import 'package:veg_king/domain/entities/cart_item_entity.dart';
+import 'package:veg_king/domain/usecases/get_cart_items_usecase.dart';
+import 'package:veg_king/domain/usecases/add_to_cart_usecase.dart';
+import 'package:veg_king/domain/usecases/remove_from_cart_usecase.dart';
+import 'package:veg_king/domain/usecases/update_quantity_usecase.dart';
+import 'package:veg_king/domain/usecases/clear_cart_usecase.dart';
+import 'package:veg_king/domain/entities/product_entity.dart';
+import 'package:veg_king/data/datasources/cart_remote_data_source.dart';
+import 'package:veg_king/core/network/dio_client.dart';
 
 final cartRepositoryProvider = Provider<CartRepository>((ref) {
   return CartRepositoryImpl(

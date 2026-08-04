@@ -1,4 +1,4 @@
-import 'package:veggie_mart/domain/repositories/product_repository.dart';
+import 'package:veg_king/domain/repositories/product_repository.dart';
 
 class ToggleFavoriteUseCase {
   final ProductRepository repository;

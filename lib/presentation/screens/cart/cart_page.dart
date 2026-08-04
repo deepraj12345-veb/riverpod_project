@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:veggie_mart/core/widgets/custom_network_image.dart';
-import 'package:veggie_mart/core/widgets/address_bottom_sheet.dart';
-import 'package:veggie_mart/core/theme/app_theme.dart';
-import 'package:veggie_mart/core/widgets/custom_text.dart';
-import 'package:veggie_mart/presentation/providers/cart_controller.dart';
-import 'package:veggie_mart/presentation/providers/orders_controller.dart';
-import 'package:veggie_mart/presentation/providers/address_controller.dart';
-import 'package:veggie_mart/domain/entities/address_entity.dart';
-import 'package:veggie_mart/domain/entities/coupon_entity.dart';
-import 'package:veggie_mart/core/constants/app_constants.dart';
-import 'package:veggie_mart/presentation/providers/auth_provider.dart';
-import 'package:veggie_mart/presentation/providers/auth_state.dart';
-import 'package:veggie_mart/core/providers/app_providers.dart'
+import 'package:veg_king/core/widgets/custom_network_image.dart';
+import 'package:veg_king/core/widgets/address_bottom_sheet.dart';
+import 'package:veg_king/core/theme/app_theme.dart';
+import 'package:veg_king/core/widgets/custom_text.dart';
+import 'package:veg_king/presentation/providers/cart_controller.dart';
+import 'package:veg_king/presentation/providers/orders_controller.dart';
+import 'package:veg_king/presentation/providers/address_controller.dart';
+import 'package:veg_king/domain/entities/address_entity.dart';
+import 'package:veg_king/domain/entities/coupon_entity.dart';
+import 'package:veg_king/core/constants/app_constants.dart';
+import 'package:veg_king/presentation/providers/auth_provider.dart';
+import 'package:veg_king/presentation/providers/auth_state.dart';
+import 'package:veg_king/core/providers/app_providers.dart'
     hide cartProvider, cartTotalProvider;
-import 'package:veggie_mart/presentation/providers/coupon_provider.dart';
-import 'package:veggie_mart/domain/entities/cart_item_entity.dart';
+import 'package:veg_king/presentation/providers/coupon_provider.dart';
+import 'package:veg_king/domain/entities/cart_item_entity.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:veg_king/l10n/app_localizations.dart';
 
 class CartPage extends ConsumerStatefulWidget {
   const CartPage({super.key});
@@ -86,18 +87,20 @@ class _CartPageState extends ConsumerState<CartPage> {
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
+    final l10n = AppLocalizations.of(context)!;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Payment Failed: ${response.message ?? "Unknown error"}'),
+        content: Text(l10n.paymentFailed(response.message ?? "Unknown error")),
         backgroundColor: AppTheme.accentRed,
       ),
     );
   }
 
   void _handleExternalWallet(ExternalWalletResponse response) {
+    final l10n = AppLocalizations.of(context)!;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('External Wallet Selected: ${response.walletName}'),
+        content: Text(l10n.externalWallet(response.walletName ?? "")),
         backgroundColor: AppTheme.primaryColor,
       ),
     );
@@ -145,19 +148,19 @@ class _CartPageState extends ConsumerState<CartPage> {
           InkWell(
             onTap: () => ref.read(cartProvider.notifier).clearCart(),
             borderRadius: BorderRadius.circular(6),
-            child: const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               child: Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.delete_outline_rounded,
                     size: 16,
                     color: AppTheme.accentRed,
                   ),
-                  SizedBox(width: 4),
+                  const SizedBox(width: 4),
                   Text(
-                    'Clear all',
-                    style: TextStyle(
+                    AppLocalizations.of(context)!.clearAll,
+                    style: const TextStyle(
                       color: AppTheme.accentRed,
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
@@ -187,9 +190,9 @@ class _CartPageState extends ConsumerState<CartPage> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Select Payment Method',
-                  style: TextStyle(
+                Text(
+                  AppLocalizations.of(context)!.selectPaymentMethod,
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w800,
                     color: AppTheme.textDark,
@@ -308,11 +311,12 @@ class _CartPageState extends ConsumerState<CartPage> {
       _currentDiscount = discount;
       _currentSubtotal = subtotal;
       _currentCartItems = cartItems;
+      
 
       final options = {
         'key': 'rzp_test_SoxQMJgDxGdtA1',
         'amount': (total * 100).toInt(),
-        'name': 'Veggie Mart',
+        'name': 'Veg king',
         'description': 'Order Payment',
         'prefill': {
           'contact': ref.read(authProvider).maybeWhen(
@@ -371,19 +375,19 @@ class _CartPageState extends ConsumerState<CartPage> {
               size: 80,
             ),
             const SizedBox(height: 16),
-            const Text(
-              'Order Placed!',
-              style: TextStyle(
+            Text(
+              AppLocalizations.of(context)!.orderPlaced,
+              style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w800,
                 color: AppTheme.textDark,
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Your order has been placed successfully.\nExpected delivery in 30 minutes.',
+            Text(
+              AppLocalizations.of(context)!.orderSuccessMessage,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 14,
                 color: AppTheme.textGrey,
                 height: 1.5,
@@ -405,9 +409,9 @@ class _CartPageState extends ConsumerState<CartPage> {
                     borderRadius: BorderRadius.circular(14),
                   ),
                 ),
-                child: const Text(
-                  'Continue Shopping',
-                  style: TextStyle(
+                child: Text(
+                  AppLocalizations.of(context)!.continueShopping,
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
@@ -423,6 +427,7 @@ class _CartPageState extends ConsumerState<CartPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final cartItems = ref.watch(cartProvider);
     final isPremium = ref.watch(isPremiumUserProvider);
     final subtotal = ref.watch(cartTotalProvider);
@@ -472,16 +477,16 @@ class _CartPageState extends ConsumerState<CartPage> {
             : null);
     final addressText = addr != null
         ? '${addr.label}: ${addr.addressLine}, ${addr.city}'
-        : 'Select delivery address';
+        : l10n.selectDeliveryAddress;
 
     if (cartItems.isEmpty) {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 0,
-          title: const CustomText(
-            'My Cart',
-            style: TextStyle(
+          title: CustomText(
+            l10n.myCart,
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w700,
               color: AppTheme.textDark,
@@ -499,9 +504,9 @@ class _CartPageState extends ConsumerState<CartPage> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const CustomText(
-              'My Cart',
-              style: TextStyle(
+            CustomText(
+              l10n.myCart,
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w800,
                 color: AppTheme.textDark,
@@ -644,11 +649,11 @@ class _CartPageState extends ConsumerState<CartPage> {
                           onIncrement: () {
                             if (item.quantity >= 10) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
+                                SnackBar(
                                   content: Text(
-                                    'Maximum 10 units allowed per item',
+                                    AppLocalizations.of(context)!.maxTenUnits,
                                   ),
-                                  duration: Duration(seconds: 2),
+                                  duration: const Duration(seconds: 2),
                                   backgroundColor: AppTheme.primaryColor,
                                 ),
                               );
@@ -681,9 +686,9 @@ class _CartPageState extends ConsumerState<CartPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const CustomText(
-                      'Order Type & Delivery Schedule',
-                      style: TextStyle(
+                    CustomText(
+                      AppLocalizations.of(context)!.orderTypeDeliverySchedule,
+                      style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
                         color: AppTheme.textDark,
@@ -700,7 +705,16 @@ class _CartPageState extends ConsumerState<CartPage> {
                             '15 Days',
                             '1 Month',
                             'Custom Dates',
-                          ].map((duration) {
+                          ].asMap().entries.map((entry) {
+                            final duration = entry.value;
+                            final labels = [
+                                AppLocalizations.of(context)!.oneTime,
+                                AppLocalizations.of(context)!.oneWeek,
+                                AppLocalizations.of(context)!.fifteenDays,
+                                AppLocalizations.of(context)!.oneMonth,
+                                AppLocalizations.of(context)!.customDates,
+                            ];
+                            final label = labels[entry.key];
                             final isSelected = _selectedDuration == duration;
                             return InkWell(
                               onTap: () {
@@ -725,7 +739,7 @@ class _CartPageState extends ConsumerState<CartPage> {
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: CustomText(
-                                  duration,
+                                  label,
                                   style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w600,
@@ -798,9 +812,9 @@ class _CartPageState extends ConsumerState<CartPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const CustomText(
-                      'Bill Details',
-                      style: TextStyle(
+                    CustomText(
+                      AppLocalizations.of(context)!.billDetails,
+                      style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w700,
                         color: AppTheme.textDark,
@@ -808,7 +822,7 @@ class _CartPageState extends ConsumerState<CartPage> {
                     ),
                     const SizedBox(height: 12),
                     _SummaryRow(
-                      label: 'Item Total',
+                      label: AppLocalizations.of(context)!.itemTotal,
                       value: '₹ ${subtotal.toStringAsFixed(0)}',
                     ),
                     if (appliedCoupon != null && discount > 0)
@@ -818,11 +832,11 @@ class _CartPageState extends ConsumerState<CartPage> {
                         valueColor: AppTheme.primaryGreen,
                       ),
                     _SummaryRow(
-                      label: 'GST (5%)',
+                      label: AppLocalizations.of(context)!.gst,
                       value: '₹ ${tax.toStringAsFixed(0)}',
                     ),
                     _SummaryRow(
-                      label: 'Handling Fee',
+                      label: AppLocalizations.of(context)!.handlingFee,
                       value: handlingFee == 0
                           ? 'FREE'
                           : '₹ ${handlingFee.toStringAsFixed(0)}',
@@ -831,7 +845,7 @@ class _CartPageState extends ConsumerState<CartPage> {
                           : AppTheme.textDark,
                     ),
                     _SummaryRow(
-                      label: 'Delivery Fee',
+                      label: AppLocalizations.of(context)!.deliveryFee,
                       value: deliveryFee == 0
                           ? 'FREE'
                           : '₹ ${deliveryFee.toStringAsFixed(0)}',
@@ -845,9 +859,9 @@ class _CartPageState extends ConsumerState<CartPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const CustomText(
-                          'To Pay',
-                          style: TextStyle(
+                        CustomText(
+                          AppLocalizations.of(context)!.toPay,
+                          style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w700,
                             color: AppTheme.textDark,
@@ -900,9 +914,9 @@ class _CartPageState extends ConsumerState<CartPage> {
                         color: AppTheme.primaryGreen,
                       ),
                       const SizedBox(width: 8),
-                      const CustomText(
-                        'Pay using',
-                        style: TextStyle(
+                      CustomText(
+                        AppLocalizations.of(context)!.payUsing,
+                        style: const TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w600,
                           color: AppTheme.textGrey,
@@ -910,7 +924,7 @@ class _CartPageState extends ConsumerState<CartPage> {
                       ),
                       const Spacer(),
                       CustomText(
-                        _selectedPayment ?? 'Select Payment',
+                        _selectedPayment ?? AppLocalizations.of(context)!.selectPayment,
                         style: const TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w600,
@@ -955,9 +969,9 @@ class _CartPageState extends ConsumerState<CartPage> {
                                 fontWeight: FontWeight.w800,
                               ),
                             ),
-                            const CustomText(
-                              'TOTAL',
-                              style: TextStyle(
+                            CustomText(
+                              AppLocalizations.of(context)!.totalText,
+                              style: const TextStyle(
                                 color: Colors.white70,
                                 fontSize: 8,
                                 fontWeight: FontWeight.w700,
@@ -967,20 +981,20 @@ class _CartPageState extends ConsumerState<CartPage> {
                           ],
                         ),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.only(right: 20),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 20),
                         child: Row(
                           children: [
                             CustomText(
-                              'Place Order',
-                              style: TextStyle(
+                              AppLocalizations.of(context)!.placeOrder,
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
-                            SizedBox(width: 8),
-                            Icon(
+                            const SizedBox(width: 8),
+                            const Icon(
                               Icons.arrow_forward_rounded,
                               color: Colors.white,
                               size: 20,
@@ -1023,9 +1037,9 @@ class _CartPageState extends ConsumerState<CartPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text(
-            'SAVINGS CORNER',
-            style: TextStyle(
+          Text(
+            AppLocalizations.of(context)!.savingsCorner,
+            style: const TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.w700,
               letterSpacing: 1.1,
@@ -1084,9 +1098,9 @@ class _CartPageState extends ConsumerState<CartPage> {
                             ),
                           ],
                         )
-                      : const Text(
-                          'Apply Coupon',
-                          style: TextStyle(
+                      : Text(
+                          AppLocalizations.of(context)!.applyCoupon,
+                          style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w700,
                             color: AppTheme.textDark,
@@ -1140,19 +1154,19 @@ class _EmptyCartView extends StatelessWidget {
             color: AppTheme.primaryGreen,
           ),
           const SizedBox(height: 24),
-          const Text(
-            'Your Cart is Empty',
-            style: TextStyle(
+          Text(
+            AppLocalizations.of(context)!.yourCartIsEmpty,
+            style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w800,
               color: AppTheme.textDark,
             ),
           ),
           const SizedBox(height: 12),
-          const Text(
-            'Looks like you haven\'t added\nanything to your cart yet.',
+          Text(
+            AppLocalizations.of(context)!.nothingInCart,
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 14,
               color: AppTheme.textGrey,
               height: 1.5,
@@ -1170,9 +1184,9 @@ class _EmptyCartView extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16),
                 ),
               ),
-              child: const Text(
-                'Start Shopping',
-                style: TextStyle(
+              child: Text(
+                AppLocalizations.of(context)!.startShopping,
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 16,
                   fontWeight: FontWeight.w700,

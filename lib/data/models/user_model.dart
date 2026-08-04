@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:veggie_mart/domain/entities/user_entity.dart';
-import 'package:veggie_mart/core/utils/json_utils.dart';
+import 'package:veg_king/domain/entities/user_entity.dart';
+import 'package:veg_king/core/utils/json_utils.dart';
 
 part 'user_model.freezed.dart';
 part 'user_model.g.dart';

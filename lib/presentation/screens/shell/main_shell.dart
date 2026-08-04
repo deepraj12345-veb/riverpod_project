@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:badges/badges.dart' as badges;
-import 'package:veggie_mart/presentation/providers/cart_controller.dart';
-import 'package:veggie_mart/core/theme/app_theme.dart';
-import 'package:veggie_mart/core/widgets/custom_text.dart';
-import 'package:veggie_mart/core/widgets/floating_cart_bar.dart';
-import 'package:veggie_mart/presentation/screens/home/home_page.dart';
-import 'package:veggie_mart/presentation/screens/categories/categories_page.dart';
-import 'package:veggie_mart/presentation/screens/cart/cart_page.dart';
-import 'package:veggie_mart/presentation/screens/profile/profile_page.dart';
+import 'package:veg_king/presentation/providers/cart_controller.dart';
+import 'package:veg_king/core/theme/app_theme.dart';
+import 'package:veg_king/core/widgets/custom_text.dart';
+import 'package:veg_king/core/widgets/floating_cart_bar.dart';
+import 'package:veg_king/presentation/screens/home/home_page.dart';
+import 'package:veg_king/presentation/screens/categories/categories_page.dart';
+import 'package:veg_king/presentation/screens/cart/cart_page.dart';
+import 'package:veg_king/presentation/screens/profile/profile_page.dart';
+import 'package:veg_king/l10n/app_localizations.dart';
 
 import 'package:flutter/rendering.dart';
 
@@ -108,6 +109,7 @@ class _MainShellState extends ConsumerState<MainShell>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     // Sync current index with router location immediately
     final index = _indexFromLocation(context);
     if (index != _currentTabIndex) {
@@ -218,7 +220,7 @@ class _MainShellState extends ConsumerState<MainShell>
 
                   return BottomNavigationBarItem(
                     icon: iconWidget,
-                    label: tab.label,
+                    label: i == 0 ? l10n.home : i == 1 ? l10n.categories : i == 2 ? l10n.myCart : l10n.myProfile,
                   );
                 }),
               ),

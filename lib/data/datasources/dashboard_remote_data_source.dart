@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:veggie_mart/core/network/api_config.dart';
-import 'package:veggie_mart/core/network/api_exceptions.dart';
-import 'package:veggie_mart/data/models/dashboard_model.dart';
+import 'package:veg_king/core/network/api_config.dart';
+import 'package:veg_king/core/network/api_exceptions.dart';
+import 'package:veg_king/data/models/dashboard_model.dart';
 
 abstract class DashboardRemoteDataSource {
   Future<DashboardModel> getDashboardData();

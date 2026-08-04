@@ -1,9 +1,9 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:veggie_mart/domain/entities/dashboard_entity.dart';
-import 'package:veggie_mart/data/models/user_model.dart';
-import 'package:veggie_mart/data/models/banner_model.dart';
-import 'package:veggie_mart/data/models/category_model.dart';
-import 'package:veggie_mart/data/models/product_model.dart';
+import 'package:veg_king/domain/entities/dashboard_entity.dart';
+import 'package:veg_king/data/models/user_model.dart';
+import 'package:veg_king/data/models/banner_model.dart';
+import 'package:veg_king/data/models/category_model.dart';
+import 'package:veg_king/data/models/product_model.dart';
 
 part 'dashboard_model.g.dart';
 

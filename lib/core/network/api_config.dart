@@ -19,6 +19,7 @@ class ApiConfig {
   // Dashboard
   static const String dashboard = '/dashboard';
   // Categories
+
   static const String categoryTypes = '/category-types';
   static const String hierarchyCategoryTypes = '/hierarchy/category-types';
   static const String categories = '/categories';
@@ -43,5 +44,5 @@ class ApiConfig {
   static String addressById(String id) => '/addresses/$id';
   static String addressDefault(String id) => '/addresses/$id/default';
 
-  // Coupons
+  
 }

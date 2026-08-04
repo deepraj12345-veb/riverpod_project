@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:veggie_mart/core/network/dio_client.dart';
-import 'package:veggie_mart/domain/entities/order_entity.dart';
-import 'package:veggie_mart/domain/entities/cart_item_entity.dart';
-import 'package:veggie_mart/domain/repositories/order_repository.dart';
-import 'package:veggie_mart/data/repositories/order_repository_impl.dart';
-import 'package:veggie_mart/data/datasources/order_remote_data_source.dart';
+import 'package:veg_king/core/network/dio_client.dart';
+import 'package:veg_king/domain/entities/order_entity.dart';
+import 'package:veg_king/domain/entities/cart_item_entity.dart';
+import 'package:veg_king/domain/repositories/order_repository.dart';
+import 'package:veg_king/data/repositories/order_repository_impl.dart';
+import 'package:veg_king/data/datasources/order_remote_data_source.dart';
 
 final orderRepositoryProvider = Provider<OrderRepository>((ref) {
   return OrderRepositoryImpl(

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:veggie_mart/core/theme/app_theme.dart';
-import 'package:veggie_mart/core/widgets/auth_widgets.dart';
-import 'package:veggie_mart/core/widgets/custom_text.dart';
-import 'package:veggie_mart/core/widgets/custom_network_image.dart';
+import 'package:veg_king/core/theme/app_theme.dart';
+import 'package:veg_king/core/widgets/auth_widgets.dart';
+import 'package:veg_king/core/widgets/custom_text.dart';
+import 'package:veg_king/core/widgets/custom_network_image.dart';
 
 class SignupPage extends ConsumerStatefulWidget {
   const SignupPage({super.key});
@@ -147,28 +147,16 @@ class _SignupPageState extends ConsumerState<SignupPage>
                             ),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(24),
-                              child: const CustomNetworkImage(
-                                imageUrl:
-                                    'https://images.unsplash.com/photo-1542838132-92c53300491e?w=200',
-                                fit: BoxFit.cover,
-                                placeholder: Center(
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                errorWidget: Icon(
-                                  Icons.restaurant_menu,
-                                  color: Colors.white,
-                                  size: 40,
-                                ),
+                              child: Image.asset(
+                                'assets/app-logo-square.png',
+                                fit: BoxFit.contain,
                               ),
                             ),
                           ),
                           const SizedBox(height: 12),
                           // ── App Name ──────────────────────────────────────────
                           const CustomText(
-                            'VeggieMart',
+                            'Veg king',
                             style: TextStyle(
                               fontSize: 28,
                               fontWeight: FontWeight.w700,

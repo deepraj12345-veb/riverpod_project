@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:veggie_mart/core/network/dio_client.dart';
-import 'package:veggie_mart/data/datasources/dashboard_remote_data_source.dart';
-import 'package:veggie_mart/data/repositories/dashboard_repository_impl.dart';
-import 'package:veggie_mart/domain/entities/dashboard_entity.dart';
-import 'package:veggie_mart/domain/repositories/dashboard_repository.dart';
+import 'package:veg_king/core/network/dio_client.dart';
+import 'package:veg_king/data/datasources/dashboard_remote_data_source.dart';
+import 'package:veg_king/data/repositories/dashboard_repository_impl.dart';
+import 'package:veg_king/domain/entities/dashboard_entity.dart';
+import 'package:veg_king/domain/repositories/dashboard_repository.dart';
 
 final dashboardRemoteDataSourceProvider = Provider<DashboardRemoteDataSource>((
   ref,

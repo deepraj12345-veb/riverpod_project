@@ -1,4 +1,4 @@
-import 'package:veggie_mart/data/models/user_model.dart';
+import 'package:veg_king/data/models/user_model.dart';
 
 abstract class AuthRepository {
   Future<void> sendOtp(String mobileNo);

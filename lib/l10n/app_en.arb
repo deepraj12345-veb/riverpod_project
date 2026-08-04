@@ -1,0 +1,119 @@
+{
+    "@@locale": "en",
+    "myProfile": "My Profile",
+    "orders": "Orders",
+    "wishlist": "Wishlist",
+    "cart": "Cart",
+    "wallet": "Wallet",
+    "addresses": "Addresses",
+    "offers": "Offers",
+    "accountSettings": "ACCOUNT SETTINGS",
+    "subscription": "Subscription",
+    "couponsAndOffers": "Coupons & Offers",
+    "myAddresses": "My Addresses",
+    "paymentMethods": "Payment Methods",
+    "orderHistory": "Order History",
+    "notifications": "Notifications",
+    "helpAndSupport": "Help & Support",
+    "signOut": "Sign Out",
+    "failedToLoadProfile": "Failed to load profile",
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "signOutConfirmation": "Are you sure you want to sign out of Veg king?",
+    "premiumActive": "Premium Active",
+    "upgradeToPremium": "Upgrade to Premium",
+    "premiumMember": "Premium Member",
+    "availablePromoCodes": "Available promo codes & discounts",
+    "addDeliveryAddress": "Add your delivery address",
+    "savedAddresses": "{count} saved addresses",
+    "@savedAddresses": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "upiCardsWallets": "UPI, Cards, Wallets",
+    "ordersCompleted": "{count} orders completed",
+    "@ordersCompleted": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pushNotificationsEnabled": "Push notifications enabled",
+    "faqsContactUs": "FAQs, contact us",
+    "language": "Language",
+    "changeLanguage": "Change Language",
+    "searchProducts": "Search products, brands, tags…",
+    "chefsPicksBestsellers": "Chef's Picks & Bestsellers",
+    "trendingNearYou": "Trending Near You",
+    "discoverTopProducts": "Discover the top products trending today",
+    "shopByType": "Shop by Type",
+    "allProducts": "All Products",
+    "itemsCount": "{count} items",
+    "@itemsCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "selectDeliveryAddress": "Select Delivery Address",
+    "freshVeggieMart": "Veg king",
+    "noProductsFound": "No products found",
+    "tryDifferentSearch": "Try a different search or category",
+    "home": "Home",
+    "categories": "Categories",
+    "myCart": "My Cart",
+    "clearAll": "Clear all",
+    "selectPaymentMethod": "Select Payment Method",
+    "maxTenUnits": "Maximum 10 units allowed per item",
+    "orderTypeDeliverySchedule": "Order Type & Delivery Schedule",
+    "oneTime": "One Time",
+    "oneWeek": "1 Week",
+    "fifteenDays": "15 Days",
+    "oneMonth": "1 Month",
+    "customDates": "Custom Dates",
+    "billDetails": "Bill Details",
+    "itemTotal": "Item Total",
+    "gst": "GST (5%)",
+    "handlingFee": "Handling Fee",
+    "deliveryFee": "Delivery Fee",
+    "toPay": "To Pay",
+    "payUsing": "Pay using",
+    "selectPayment": "Select Payment",
+    "totalText": "TOTAL",
+    "placeOrder": "Place Order",
+    "savingsCorner": "SAVINGS CORNER",
+    "applyCoupon": "Apply Coupon",
+    "yourCartIsEmpty": "Your Cart is Empty",
+    "nothingInCart": "Looks like you haven't added\nanything to your cart yet.",
+    "startShopping": "Start Shopping",
+    "paymentFailed": "Payment Failed: {message}",
+    "@paymentFailed": {
+        "placeholders": {
+            "message": { "type": "String" }
+        }
+    },
+    "externalWallet": "External Wallet Selected: {wallet}",
+    "@externalWallet": {
+        "placeholders": {
+            "wallet": { "type": "String" }
+        }
+    },
+    "orderPlaced": "Order Placed!",
+    "orderSuccessMessage": "Your order has been placed successfully.\nExpected delivery in 30 minutes.",
+    "continueShopping": "Continue Shopping",
+    "resultsForQuery": "Results for \"{query}\"",
+    "@resultsForQuery": {
+        "placeholders": {
+            "query": { "type": "String" }
+        }
+    },
+    "somethingWentWrong": "Something went wrong!\nTry again.",
+    "whatAreYouLookingFor": "What are you looking for?",
+    "searchForFreshVeggies": "Search for fresh veggies, fruits & more",
+    "tryCheckingTypos": "Try checking for typos or searching a general term"
+}

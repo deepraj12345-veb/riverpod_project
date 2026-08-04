@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:veggie_mart/core/theme/app_theme.dart';
-import 'package:veggie_mart/core/providers/app_providers.dart';
-import 'package:veggie_mart/core/widgets/custom_text.dart';
-import 'package:veggie_mart/core/constants/app_constants.dart';
+import 'package:veg_king/core/theme/app_theme.dart';
+import 'package:veg_king/core/providers/app_providers.dart';
+import 'package:veg_king/core/widgets/custom_text.dart';
+import 'package:veg_king/core/constants/app_constants.dart';
 
 class SubscriptionPage extends ConsumerWidget {
   const SubscriptionPage({super.key});
@@ -52,7 +52,7 @@ class SubscriptionPage extends ConsumerWidget {
             ),
             const SizedBox(height: 8),
             const CustomText(
-              'Unlock free deliveries, exclusive discounts, and prioritize your orders with Veggie Mart Premium.',
+              'Unlock free deliveries, exclusive discounts, and prioritize your orders with Veg king Premium.',
               style: TextStyle(
                 fontSize: 12,
                 color: AppTheme.textGrey,

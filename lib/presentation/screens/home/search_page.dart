@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:veggie_mart/core/theme/app_theme.dart';
-import 'package:veggie_mart/core/widgets/custom_text.dart';
-import 'package:veggie_mart/core/widgets/product_card_widget.dart';
-import 'package:veggie_mart/presentation/providers/home_controller.dart';
+import 'package:veg_king/core/theme/app_theme.dart';
+import 'package:veg_king/core/widgets/custom_text.dart';
+import 'package:veg_king/core/widgets/product_card_widget.dart';
+import 'package:veg_king/presentation/providers/home_controller.dart';
+import 'package:veg_king/l10n/app_localizations.dart';
 
 class SearchPage extends ConsumerStatefulWidget {
   const SearchPage({super.key});
@@ -84,7 +85,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
           cursorColor: AppTheme.primaryGreen,
           style: const TextStyle(fontSize: 15, color: AppTheme.textDark),
           decoration: InputDecoration(
-            hintText: 'Search products, brands...',
+            hintText: AppLocalizations.of(context)!.searchProducts,
             hintStyle: const TextStyle(fontSize: 14, color: AppTheme.textGrey),
             border: InputBorder.none,
             enabledBorder: InputBorder.none,
@@ -126,7 +127,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                 child: Row(
                   children: [
                     CustomText(
-                      'Results for "$_debouncedQuery"',
+                      AppLocalizations.of(context)!.resultsForQuery(_debouncedQuery),
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
@@ -144,7 +145,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: CustomText(
-                        '${products.length} items',
+                        AppLocalizations.of(context)!.itemsCount(products.length),
                         style: const TextStyle(
                           fontSize: 12,
                           color: AppTheme.primaryGreen,
@@ -167,10 +168,10 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                         color: AppTheme.primaryGreen,
                       ),
                     ),
-                    error: (e, _) => const Center(
+                    error: (e, _) => Center(
                       child: CustomText(
-                        'Something went wrong!\nTry again.',
-                        style: TextStyle(color: AppTheme.textGrey),
+                        AppLocalizations.of(context)!.somethingWentWrong,
+                        style: const TextStyle(color: AppTheme.textGrey),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -213,18 +214,18 @@ class _EmptySearchState extends StatelessWidget {
             color: AppTheme.textGrey.withValues(alpha: 0.3),
           ),
           const SizedBox(height: 16),
-          const CustomText(
-            'What are you looking for?',
-            style: TextStyle(
+          CustomText(
+            AppLocalizations.of(context)!.whatAreYouLookingFor,
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
               color: AppTheme.textDark,
             ),
           ),
           const SizedBox(height: 8),
-          const CustomText(
-            'Search for fresh veggies, fruits & more',
-            style: TextStyle(fontSize: 13, color: AppTheme.textGrey),
+          CustomText(
+            AppLocalizations.of(context)!.searchForFreshVeggies,
+            style: const TextStyle(fontSize: 13, color: AppTheme.textGrey),
           ),
         ],
       ),
@@ -254,18 +255,18 @@ class _NoResultsState extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          const CustomText(
-            'No products found',
-            style: TextStyle(
+          CustomText(
+            AppLocalizations.of(context)!.noProductsFound,
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w700,
               color: AppTheme.textDark,
             ),
           ),
           const SizedBox(height: 8),
-          const CustomText(
-            'Try checking for typos or searching a general term',
-            style: TextStyle(fontSize: 13, color: AppTheme.textGrey),
+          CustomText(
+            AppLocalizations.of(context)!.tryCheckingTypos,
+            style: const TextStyle(fontSize: 13, color: AppTheme.textGrey),
           ),
         ],
       ),

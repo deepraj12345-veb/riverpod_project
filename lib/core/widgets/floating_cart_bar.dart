@@ -2,10 +2,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:veggie_mart/core/widgets/custom_network_image.dart';
-import 'package:veggie_mart/core/widgets/custom_text.dart';
-import 'package:veggie_mart/presentation/providers/cart_controller.dart';
-import 'package:veggie_mart/domain/entities/cart_item_entity.dart';
+import 'package:veg_king/core/widgets/custom_network_image.dart';
+import 'package:veg_king/core/widgets/custom_text.dart';
+import 'package:veg_king/presentation/providers/cart_controller.dart';
+import 'package:veg_king/domain/entities/cart_item_entity.dart';
 
 class FloatingCartBar extends ConsumerStatefulWidget {
   static final GlobalKey cartKey = GlobalKey();

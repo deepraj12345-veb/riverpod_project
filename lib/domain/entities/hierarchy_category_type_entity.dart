@@ -1,4 +1,4 @@
-import 'package:veggie_mart/domain/entities/category_entity.dart';
+import 'package:veg_king/domain/entities/category_entity.dart';
 
 class HierarchyCategoryTypeEntity {
   final String id;

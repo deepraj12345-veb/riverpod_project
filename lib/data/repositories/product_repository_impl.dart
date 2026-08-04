@@ -1,6 +1,6 @@
-import 'package:veggie_mart/data/datasources/product_remote_data_source.dart';
-import 'package:veggie_mart/domain/entities/product_entity.dart';
-import 'package:veggie_mart/domain/repositories/product_repository.dart';
+import 'package:veg_king/data/datasources/product_remote_data_source.dart';
+import 'package:veg_king/domain/entities/product_entity.dart';
+import 'package:veg_king/domain/repositories/product_repository.dart';
 
 class ProductRepositoryImpl implements ProductRepository {
   final ProductRemoteDataSource remoteDataSource;

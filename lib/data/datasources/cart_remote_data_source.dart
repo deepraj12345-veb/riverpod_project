@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:veggie_mart/core/network/api_config.dart';
-import 'package:veggie_mart/domain/entities/cart_item_entity.dart';
-import 'package:veggie_mart/domain/entities/product_entity.dart';
+import 'package:veg_king/core/network/api_config.dart';
+import 'package:veg_king/domain/entities/cart_item_entity.dart';
+import 'package:veg_king/domain/entities/product_entity.dart';
 
 abstract class CartRemoteDataSource {
   Future<List<CartItemEntity>> getCart();

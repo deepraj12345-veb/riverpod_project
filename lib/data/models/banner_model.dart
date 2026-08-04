@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:veggie_mart/domain/entities/banner_entity.dart';
-import 'package:veggie_mart/core/utils/json_utils.dart';
+import 'package:veg_king/domain/entities/banner_entity.dart';
+import 'package:veg_king/core/utils/json_utils.dart';
 
 part 'banner_model.g.dart';
 

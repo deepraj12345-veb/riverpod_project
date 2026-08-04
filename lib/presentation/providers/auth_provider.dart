@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:veggie_mart/domain/repositories/auth_repository.dart';
-import 'package:veggie_mart/data/repositories/auth_repository_impl.dart';
-import 'package:veggie_mart/data/datasources/auth_remote_data_source.dart';
-import 'package:veggie_mart/data/datasources/auth_local_data_source.dart';
-import 'package:veggie_mart/core/network/dio_client.dart';
-import 'package:veggie_mart/presentation/providers/auth_state.dart';
+import 'package:veg_king/domain/repositories/auth_repository.dart';
+import 'package:veg_king/data/repositories/auth_repository_impl.dart';
+import 'package:veg_king/data/datasources/auth_remote_data_source.dart';
+import 'package:veg_king/data/datasources/auth_local_data_source.dart';
+import 'package:veg_king/core/network/dio_client.dart';
+import 'package:veg_king/presentation/providers/auth_state.dart';
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
   final dio = ref.watch(dioClientProvider);

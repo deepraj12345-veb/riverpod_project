@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:veggie_mart/core/widgets/custom_text.dart';
+import 'package:veg_king/core/widgets/custom_text.dart';
 
 class SplashPage extends ConsumerStatefulWidget {
   const SplashPage({super.key});
@@ -56,7 +56,7 @@ class _SplashPageState extends ConsumerState<SplashPage>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    precacheImage(const AssetImage('assets/logo.png'), context);
+    precacheImage(const AssetImage('assets/app-logo-square.png'), context);
   }
 
   @override
@@ -88,11 +88,11 @@ class _SplashPageState extends ConsumerState<SplashPage>
                       child: ScaleTransition(
                         scale: _logoScaleAnim,
                         child: Container(
-                          width: 110,
-                          height: 110,
+                          width: 80,
+                          height: 80,
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(28),
+                            borderRadius: BorderRadius.circular(20),
                             boxShadow: [
                               BoxShadow(
                                 color: const Color(
@@ -105,10 +105,10 @@ class _SplashPageState extends ConsumerState<SplashPage>
                           ),
                           padding: const EdgeInsets.all(3),
                           child: ClipRRect(
-                            borderRadius: BorderRadius.circular(22),
+                            borderRadius: BorderRadius.circular(16),
                             child: Image.asset(
-                              'assets/logo.png',
-                              fit: BoxFit.cover,
+                              'assets/app-logo-square.png',
+                              fit: BoxFit.contain,
                               gaplessPlayback: true,
                             ),
                           ),
@@ -123,7 +123,7 @@ class _SplashPageState extends ConsumerState<SplashPage>
                         child: const Column(
                           children: [
                             CustomText(
-                              'Fresh Veggie Mart',
+                              'Veg king',
                               style: TextStyle(
                                 fontSize: 28,
                                 fontWeight: FontWeight.w800,

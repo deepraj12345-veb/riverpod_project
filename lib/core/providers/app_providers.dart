@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:veggie_mart/core/constants/data/models/models.dart';
+import 'package:veg_king/core/constants/data/models/models.dart';
 
 // Auth Provider moved to lib/features/auth/presentation/providers/auth_provider.dart
 

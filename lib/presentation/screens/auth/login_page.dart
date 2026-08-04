@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:veggie_mart/core/theme/app_theme.dart';
-import 'package:veggie_mart/presentation/providers/auth_provider.dart';
-import 'package:veggie_mart/presentation/providers/auth_state.dart';
-import 'package:veggie_mart/core/widgets/auth_widgets.dart';
-import 'package:veggie_mart/core/widgets/custom_text.dart';
-import 'package:veggie_mart/core/widgets/custom_network_image.dart';
+import 'package:veg_king/core/theme/app_theme.dart';
+import 'package:veg_king/presentation/providers/auth_provider.dart';
+import 'package:veg_king/presentation/providers/auth_state.dart';
+import 'package:veg_king/core/widgets/auth_widgets.dart';
+import 'package:veg_king/core/widgets/custom_text.dart';
+import 'package:veg_king/core/widgets/custom_network_image.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -143,21 +143,9 @@ class _LoginPageState extends ConsumerState<LoginPage>
                             ),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(24),
-                              child: const CustomNetworkImage(
-                                imageUrl:
-                                    'https://images.unsplash.com/photo-1542838132-92c53300491e?w=200',
-                                fit: BoxFit.cover,
-                                placeholder: Center(
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                errorWidget: Icon(
-                                  Icons.restaurant_menu,
-                                  color: Colors.white,
-                                  size: 40,
-                                ),
+                              child: Image.asset(
+                                'assets/app-logo-square.png',
+                                fit: BoxFit.contain,
                               ),
                             ),
                           ),
@@ -165,7 +153,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
 
                           // ── App Name ──────────────────────────────────────────
                           const CustomText(
-                            'VeggieMart',
+                            'Veg king',
                             style: TextStyle(
                               fontSize: 28,
                               fontWeight: FontWeight.w700,

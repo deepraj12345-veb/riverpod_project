@@ -1,7 +1,7 @@
-import 'package:veggie_mart/domain/entities/banner_entity.dart';
-import 'package:veggie_mart/domain/entities/category_entity.dart';
-import 'package:veggie_mart/domain/entities/product_entity.dart';
-import 'package:veggie_mart/domain/entities/user_entity.dart';
+import 'package:veg_king/domain/entities/banner_entity.dart';
+import 'package:veg_king/domain/entities/category_entity.dart';
+import 'package:veg_king/domain/entities/product_entity.dart';
+import 'package:veg_king/domain/entities/user_entity.dart';
 
 class DashboardEntity {
   final UserEntity? user;

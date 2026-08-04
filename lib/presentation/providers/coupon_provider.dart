@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:veggie_mart/core/network/dio_client.dart';
-import 'package:veggie_mart/data/datasources/coupon_remote_data_source.dart';
-import 'package:veggie_mart/data/repositories/coupon_repository_impl.dart';
-import 'package:veggie_mart/domain/entities/coupon_entity.dart';
-import 'package:veggie_mart/domain/repositories/coupon_repository.dart';
+import 'package:veg_king/core/network/dio_client.dart';
+import 'package:veg_king/data/datasources/coupon_remote_data_source.dart';
+import 'package:veg_king/data/repositories/coupon_repository_impl.dart';
+import 'package:veg_king/domain/entities/coupon_entity.dart';
+import 'package:veg_king/domain/repositories/coupon_repository.dart';
 
 final couponRemoteDataSourceProvider = Provider<CouponRemoteDataSource>((ref) {
   final dio = ref.watch(dioClientProvider);

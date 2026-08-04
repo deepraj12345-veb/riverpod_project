@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:veggie_mart/core/theme/app_theme.dart';
-import 'package:veggie_mart/domain/entities/address_entity.dart';
-import 'package:veggie_mart/presentation/providers/address_controller.dart';
+import 'package:veg_king/core/theme/app_theme.dart';
+import 'package:veg_king/domain/entities/address_entity.dart';
+import 'package:veg_king/presentation/providers/address_controller.dart';
 
 class AddressesPage extends ConsumerWidget {
   const AddressesPage({super.key});

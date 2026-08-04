@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:veggie_mart/domain/entities/category_entity.dart';
-import 'package:veggie_mart/data/models/product_model.dart';
-import 'package:veggie_mart/core/utils/json_utils.dart';
+import 'package:veg_king/domain/entities/category_entity.dart';
+import 'package:veg_king/data/models/product_model.dart';
+import 'package:veg_king/core/utils/json_utils.dart';
 
 part 'category_model.g.dart';
 

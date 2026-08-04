@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:veggie_mart/core/theme/app_theme.dart';
-import 'package:veggie_mart/core/widgets/custom_network_image.dart';
+import 'package:veg_king/core/theme/app_theme.dart';
+import 'package:veg_king/core/widgets/custom_network_image.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:veggie_mart/presentation/providers/category_provider.dart';
-import 'package:veggie_mart/presentation/providers/home_controller.dart';
-import 'package:veggie_mart/core/widgets/custom_text.dart';
+import 'package:veg_king/presentation/providers/category_provider.dart';
+import 'package:veg_king/presentation/providers/home_controller.dart';
+import 'package:veg_king/core/widgets/custom_text.dart';
+import 'package:veg_king/l10n/app_localizations.dart';
 
 class CategoriesPage extends ConsumerWidget {
   const CategoriesPage({super.key});
@@ -63,9 +64,9 @@ class CategoriesPage extends ConsumerWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: const CustomText(
-          'Categories',
-          style: TextStyle(
+        title: CustomText(
+          AppLocalizations.of(context)!.categories,
+          style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w700,
             color: AppTheme.textDark,
@@ -190,8 +191,7 @@ class CategoriesPage extends ConsumerWidget {
                     itemCount: type.categories.length,
                     itemBuilder: (ctx, i) {
                       final cat = type.categories[i];
-                      final emoji = _subEmoji[cat.name] ?? '📦';
-
+                      final emoji = _subEmoji[cat.name] ?? '📦'; 
                       return GestureDetector(
                         onTap: () =>
                             context.push('/subcategory', extra: cat.name),
@@ -241,7 +241,7 @@ class CategoriesPage extends ConsumerWidget {
                                 fontWeight: FontWeight.w600,
                                 color: AppTheme.textDark,
                                 height: 1.15,
-                              ),
+                              ),                           
                             ),
                           ],
                         ),

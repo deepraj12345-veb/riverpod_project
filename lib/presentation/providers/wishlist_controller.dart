@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:veggie_mart/core/network/dio_client.dart';
-import 'package:veggie_mart/domain/entities/product_entity.dart';
-import 'package:veggie_mart/domain/repositories/wishlist_repository.dart';
-import 'package:veggie_mart/data/repositories/wishlist_repository_impl.dart';
-import 'package:veggie_mart/data/datasources/wishlist_remote_data_source.dart';
+import 'package:veg_king/core/network/dio_client.dart';
+import 'package:veg_king/domain/entities/product_entity.dart';
+import 'package:veg_king/domain/repositories/wishlist_repository.dart';
+import 'package:veg_king/data/repositories/wishlist_repository_impl.dart';
+import 'package:veg_king/data/datasources/wishlist_remote_data_source.dart';
 
 final wishlistRepositoryProvider = Provider<WishlistRepository>((ref) {
   return WishlistRepositoryImpl(

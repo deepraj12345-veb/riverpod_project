@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:veggie_mart/core/network/api_config.dart';
-import 'package:veggie_mart/core/network/api_exceptions.dart';
-import 'package:veggie_mart/domain/entities/user_entity.dart';
+import 'package:veg_king/core/network/api_config.dart';
+import 'package:veg_king/core/network/api_exceptions.dart';
+import 'package:veg_king/domain/entities/user_entity.dart';
 
 abstract class ProfileRemoteDataSource {
   Future<UserEntity> getProfile();

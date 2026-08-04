@@ -1,8 +1,8 @@
-import 'package:veggie_mart/data/datasources/cart_local_data_source.dart';
-import 'package:veggie_mart/data/datasources/cart_remote_data_source.dart';
-import 'package:veggie_mart/domain/entities/cart_item_entity.dart';
-import 'package:veggie_mart/domain/repositories/cart_repository.dart';
-import 'package:veggie_mart/domain/entities/product_entity.dart';
+import 'package:veg_king/data/datasources/cart_local_data_source.dart';
+import 'package:veg_king/data/datasources/cart_remote_data_source.dart';
+import 'package:veg_king/domain/entities/cart_item_entity.dart';
+import 'package:veg_king/domain/repositories/cart_repository.dart';
+import 'package:veg_king/domain/entities/product_entity.dart';
 
 class CartRepositoryImpl implements CartRepository {
   final CartLocalDataSource localDataSource;

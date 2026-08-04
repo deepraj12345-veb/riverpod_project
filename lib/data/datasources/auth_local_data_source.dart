@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:veggie_mart/data/models/user_model.dart';
+import 'package:veg_king/data/models/user_model.dart';
 
 abstract class AuthLocalDataSource {
   Future<void> saveToken(String token);

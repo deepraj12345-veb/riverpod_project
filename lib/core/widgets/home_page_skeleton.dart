@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:veggie_mart/core/theme/app_theme.dart';
-import 'package:veggie_mart/presentation/screens/home/home_page.dart';
+import 'package:veg_king/core/theme/app_theme.dart';
+import 'package:veg_king/presentation/screens/home/home_page.dart';
 
 class HomePageSkeleton extends StatelessWidget {
   const HomePageSkeleton({super.key});

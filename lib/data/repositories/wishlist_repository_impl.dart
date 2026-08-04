@@ -1,6 +1,6 @@
-import 'package:veggie_mart/data/datasources/wishlist_remote_data_source.dart';
-import 'package:veggie_mart/domain/entities/product_entity.dart';
-import 'package:veggie_mart/domain/repositories/wishlist_repository.dart';
+import 'package:veg_king/data/datasources/wishlist_remote_data_source.dart';
+import 'package:veg_king/domain/entities/product_entity.dart';
+import 'package:veg_king/domain/repositories/wishlist_repository.dart';
 
 class WishlistRepositoryImpl implements WishlistRepository {
   final WishlistRemoteDataSource remoteDataSource;

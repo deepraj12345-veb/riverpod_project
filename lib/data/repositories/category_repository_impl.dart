@@ -1,7 +1,7 @@
-import 'package:veggie_mart/data/datasources/category_remote_data_source.dart';
-import 'package:veggie_mart/domain/entities/category_entity.dart';
-import 'package:veggie_mart/domain/entities/subcategory_entity.dart';
-import 'package:veggie_mart/domain/repositories/category_repository.dart';
+import 'package:veg_king/data/datasources/category_remote_data_source.dart';
+import 'package:veg_king/domain/entities/category_entity.dart';
+import 'package:veg_king/domain/entities/subcategory_entity.dart';
+import 'package:veg_king/domain/repositories/category_repository.dart';
 
 class CategoryRepositoryImpl implements CategoryRepository {
   final CategoryRemoteDataSource remoteDataSource;

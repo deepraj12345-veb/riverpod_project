@@ -1,4 +1,4 @@
-import 'package:veggie_mart/domain/entities/coupon_entity.dart';
+import 'package:veg_king/domain/entities/coupon_entity.dart';
 
 class CouponModel extends CouponEntity {
   const CouponModel({

@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:veggie_mart/core/network/dio_client.dart';
-import 'package:veggie_mart/data/datasources/profile_remote_data_source.dart';
-import 'package:veggie_mart/domain/entities/user_entity.dart';
+import 'package:veg_king/core/network/dio_client.dart';
+import 'package:veg_king/data/datasources/profile_remote_data_source.dart';
+import 'package:veg_king/domain/entities/user_entity.dart';
 
 // ── DataSource provider ─────────────────────────────────────────────────────
 final profileRemoteDataSourceProvider = Provider<ProfileRemoteDataSource>((ref) {

@@ -2,18 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:veggie_mart/core/widgets/custom_network_image.dart';
-import 'package:veggie_mart/core/theme/app_theme.dart';
-import 'package:veggie_mart/presentation/providers/auth_provider.dart';
-import 'package:veggie_mart/presentation/providers/cart_controller.dart';
-import 'package:veggie_mart/presentation/providers/profile_controller.dart';
-import 'package:veggie_mart/presentation/providers/orders_controller.dart';
-import 'package:veggie_mart/presentation/providers/dashboard_provider.dart';
-import 'package:veggie_mart/presentation/providers/address_controller.dart';
-import 'package:veggie_mart/core/widgets/custom_text.dart';
-import 'package:veggie_mart/core/providers/app_providers.dart'
+import 'package:veg_king/core/widgets/custom_network_image.dart';
+import 'package:veg_king/core/theme/app_theme.dart';
+import 'package:veg_king/presentation/providers/auth_provider.dart';
+import 'package:veg_king/presentation/providers/cart_controller.dart';
+import 'package:veg_king/presentation/providers/profile_controller.dart';
+import 'package:veg_king/presentation/providers/orders_controller.dart';
+import 'package:veg_king/presentation/providers/dashboard_provider.dart';
+import 'package:veg_king/presentation/providers/address_controller.dart';
+import 'package:veg_king/core/widgets/custom_text.dart';
+import 'package:veg_king/core/providers/app_providers.dart'
     hide cartItemCountProvider, productsProvider;
-import 'package:veggie_mart/presentation/providers/wishlist_controller.dart';
+import 'package:veg_king/presentation/providers/wishlist_controller.dart';
+import 'package:veg_king/l10n/app_localizations.dart';
+import 'package:veg_king/presentation/providers/locale_provider.dart';
 
 // ignore_for_file: unused_import
 
@@ -74,6 +76,7 @@ class ProfilePage extends ConsumerWidget {
       error: (e, _) => e.toString(),
       orElse: () => null,
     );
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: isProfileLoading
@@ -85,16 +88,16 @@ class ProfilePage extends ConsumerWidget {
                 children: [
                   const Icon(Icons.error_outline, color: Colors.red, size: 48),
                   const SizedBox(height: 12),
-                  const Text(
-                    'Failed to load profile',
-                    style: TextStyle(color: AppTheme.textGrey),
+                  Text(
+                    l10n.failedToLoadProfile,
+                    style: const TextStyle(color: AppTheme.textGrey),
                   ),
                   const SizedBox(height: 8),
                   ElevatedButton(
                     onPressed: () => ref
                         .read(profileControllerProvider.notifier)
                         .fetchProfile(),
-                    child: const Text('Retry'),
+                    child: Text(l10n.retry),
                   ),
                 ],
               ),
@@ -108,9 +111,9 @@ class ProfilePage extends ConsumerWidget {
                   elevation: 0,
                   scrolledUnderElevation: 0.5,
                   shadowColor: Colors.black12,
-                  title: const Text(
-                    'My Profile',
-                    style: TextStyle(
+                  title: Text(
+                    l10n.myProfile,
+                    style: const TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.w700,
                       color: AppTheme.textDark,
@@ -147,7 +150,7 @@ class ProfilePage extends ConsumerWidget {
                                 Expanded(
                                   child: _StatCard(
                                     icon: Icons.receipt_long_rounded,
-                                    label: 'Orders',
+                                    label: l10n.orders,
                                     value: '$ordersCount',
                                     iconColor: _Palette.ordersIcon,
                                     bgColor: _Palette.ordersBg,
@@ -158,7 +161,7 @@ class ProfilePage extends ConsumerWidget {
                                 Expanded(
                                   child: _StatCard(
                                     icon: Icons.favorite_rounded,
-                                    label: 'Wishlist',
+                                    label: l10n.wishlist,
                                     value: '$wishlistCount',
                                     iconColor: _Palette.wishlistIcon,
                                     bgColor: _Palette.wishlistBg,
@@ -169,7 +172,7 @@ class ProfilePage extends ConsumerWidget {
                                 Expanded(
                                   child: _StatCard(
                                     icon: Icons.shopping_cart_rounded,
-                                    label: 'Cart',
+                                    label: l10n.cart,
                                     value: '$cartCount',
                                     iconColor: _Palette.cartIcon,
                                     bgColor: _Palette.cartBg,
@@ -184,7 +187,7 @@ class ProfilePage extends ConsumerWidget {
                                 Expanded(
                                   child: _StatCard(
                                     icon: Icons.account_balance_wallet_rounded,
-                                    label: 'Wallet',
+                                    label: l10n.wallet,
                                     value:
                                         'Rs.${walletBalance.toStringAsFixed(0)}',
                                     iconColor: _Palette.walletIcon,
@@ -196,7 +199,7 @@ class ProfilePage extends ConsumerWidget {
                                 Expanded(
                                   child: _StatCard(
                                     icon: Icons.location_on_rounded,
-                                    label: 'Addresses',
+                                    label: l10n.addresses,
                                     value: '$addressCount',
                                     iconColor: _Palette.addressIcon,
                                     bgColor: _Palette.addressBg,
@@ -207,7 +210,7 @@ class ProfilePage extends ConsumerWidget {
                                 Expanded(
                                   child: _StatCard(
                                     icon: Icons.local_offer_rounded,
-                                    label: 'Offers',
+                                    label: l10n.offers,
                                     value: 'Gift',
                                     iconColor: _Palette.offersIcon,
                                     bgColor: _Palette.offersBg,
@@ -223,13 +226,13 @@ class ProfilePage extends ConsumerWidget {
                       const SizedBox(height: 20),
 
                       // ── Section label ─────────────────────────────────────
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            'ACCOUNT SETTINGS',
-                            style: TextStyle(
+                            l10n.accountSettings,
+                            style: const TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w700,
                               color: AppTheme.textGrey,
@@ -253,30 +256,30 @@ class ProfilePage extends ConsumerWidget {
                             children: [
                               _MenuRow(
                                 icon: Icons.star_rounded,
-                                title: 'Subscription',
+                                title: l10n.subscription,
                                 subtitle: isPremium
-                                    ? 'Premium Active'
-                                    : 'Upgrade to Premium',
+                                    ? l10n.premiumActive
+                                    : l10n.upgradeToPremium,
                                 iconColor: _Palette.subIcon,
                                 bgColor: _Palette.subBg,
                                 showDivider: true,
                                 onTap: () => context.push('/subscription'),
                               ),
                               _MenuRow(
-                                icon: Icons.local_offer_outlined,
-                                title: 'Coupons & Offers',
-                                subtitle: 'Available promo codes & discounts',
-                                iconColor: _Palette.offersIcon,
-                                bgColor: _Palette.offersBg,
+                                icon: Icons.language_rounded,
+                                title: l10n.language,
+                                subtitle: l10n.changeLanguage,
+                                iconColor: _Palette.notifIcon,
+                                bgColor: _Palette.notifBg,
                                 showDivider: true,
-                                onTap: () => context.push('/coupons'),
+                                onTap: () => _showLanguagePicker(context, ref),
                               ),
                               _MenuRow(
                                 icon: Icons.location_on_outlined,
-                                title: 'My Addresses',
+                                title: l10n.myAddresses,
                                 subtitle: addressCount == 0
-                                    ? 'Add your delivery address'
-                                    : '$addressCount saved address${addressCount == 1 ? '' : 'es'}',
+                                    ? l10n.addDeliveryAddress
+                                    : l10n.savedAddresses(addressCount),
                                 iconColor: _Palette.locationIcon,
                                 bgColor: _Palette.locationBg,
                                 showDivider: true,
@@ -284,8 +287,8 @@ class ProfilePage extends ConsumerWidget {
                               ),
                               _MenuRow(
                                 icon: Icons.payment_outlined,
-                                title: 'Payment Methods',
-                                subtitle: 'UPI, Cards, Wallets',
+                                title: l10n.paymentMethods,
+                                subtitle: l10n.upiCardsWallets,
                                 iconColor: _Palette.paymentIcon,
                                 bgColor: _Palette.paymentBg,
                                 showDivider: true,
@@ -293,26 +296,26 @@ class ProfilePage extends ConsumerWidget {
                               ),
                               _MenuRow(
                                 icon: Icons.receipt_long_outlined,
-                                title: 'Order History',
-                                subtitle: '$ordersCount orders completed',
+                                title: l10n.orderHistory,
+                                subtitle: l10n.ordersCompleted(ordersCount),
                                 iconColor: _Palette.historyIcon,
                                 bgColor: _Palette.historyBg,
                                 showDivider: true,
                                 onTap: () => context.go('/orders'),
                               ),
                               _MenuRow(
-                                icon: Icons.notifications_outlined,
-                                title: 'Notifications',
-                                subtitle: 'Push notifications enabled',
-                                iconColor: _Palette.notifIcon,
-                                bgColor: _Palette.notifBg,
+                                icon: Icons.local_offer_outlined,
+                                title: l10n.couponsAndOffers,
+                                subtitle: l10n.availablePromoCodes,
+                                iconColor: _Palette.offersIcon,
+                                bgColor: _Palette.offersBg,
                                 showDivider: true,
-                                onTap: () {},
+                                onTap: () => context.push('/coupons'),
                               ),
                               _MenuRow(
                                 icon: Icons.help_outline_rounded,
-                                title: 'Help & Support',
-                                subtitle: 'FAQs, contact us',
+                                title: l10n.helpAndSupport,
+                                subtitle: l10n.faqsContactUs,
                                 iconColor: _Palette.helpIcon,
                                 bgColor: _Palette.helpBg,
                                 showDivider: false,
@@ -342,18 +345,18 @@ class ProfilePage extends ConsumerWidget {
                                 ).withValues(alpha: 0.35),
                               ),
                             ),
-                            child: const Row(
+                            child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.logout_rounded,
                                   color: Color(0xFFEF4444),
                                   size: 19,
                                 ),
-                                SizedBox(width: 8),
+                                const SizedBox(width: 8),
                                 Text(
-                                  'Sign Out',
-                                  style: TextStyle(
+                                  l10n.signOut,
+                                  style: const TextStyle(
                                     color: Color(0xFFEF4444),
                                     fontWeight: FontWeight.w600,
                                     fontSize: 14,
@@ -367,7 +370,7 @@ class ProfilePage extends ConsumerWidget {
 
                       const SizedBox(height: 24),
                       const Text(
-                        'Fresh Veggie Mart v1.0.0  -  Via Two Wheels',
+                        'Veg king v1.0.0  -  Via Two Wheels',
                         style: TextStyle(
                           color: AppTheme.textLight,
                           fontSize: 11,
@@ -383,29 +386,30 @@ class ProfilePage extends ConsumerWidget {
   }
 
   void _confirmSignOut(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text(
-          'Sign Out?',
-          style: TextStyle(
+        title: Text(
+          '${l10n.signOut}?',
+          style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w700,
             color: AppTheme.textDark,
           ),
         ),
-        content: const Text(
-          'Are you sure you want to sign out of Fresh Veggie Mart?',
-          style: TextStyle(fontSize: 14, color: AppTheme.textGrey),
+        content: Text(
+          l10n.signOutConfirmation,
+          style: const TextStyle(fontSize: 14, color: AppTheme.textGrey),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text(
-              'Cancel',
-              style: TextStyle(
+            child: Text(
+              l10n.cancel,
+              style: const TextStyle(
                 color: AppTheme.textGrey,
                 fontWeight: FontWeight.w500,
               ),
@@ -416,9 +420,9 @@ class ProfilePage extends ConsumerWidget {
               Navigator.pop(ctx);
               ref.read(authProvider.notifier).logout();
             },
-            child: const Text(
-              'Sign Out',
-              style: TextStyle(
+            child: Text(
+              l10n.signOut,
+              style: const TextStyle(
                 color: Color(0xFFEF4444),
                 fontWeight: FontWeight.w600,
               ),
@@ -426,6 +430,51 @@ class ProfilePage extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+
+  void _showLanguagePicker(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  l10n.language,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                ListTile(
+                  title: const Text('English'),
+                  onTap: () {
+                    ref.read(localeProvider.notifier).setLocale(const Locale('en'));
+                    Navigator.pop(ctx);
+                  },
+                ),
+                ListTile(
+                  title: const Text('हिन्दी (Hindi)'),
+                  onTap: () {
+                    ref.read(localeProvider.notifier).setLocale(const Locale('hi'));
+                    Navigator.pop(ctx);
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -440,6 +489,7 @@ class _ProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       width: double.infinity,
       color: Colors.white,
@@ -541,7 +591,7 @@ class _ProfileCard extends StatelessWidget {
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          isPremium ? 'Premium Member' : 'Upgrade to Premium',
+                          isPremium ? l10n.premiumMember : l10n.upgradeToPremium,
                           style: TextStyle(
                             color: isPremium
                                 ? const Color(0xFFD97706)

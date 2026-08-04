@@ -1,13 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:veggie_mart/core/network/api_config.dart';
-import 'package:veggie_mart/core/network/dio_client.dart';
-import 'package:veggie_mart/data/datasources/product_remote_data_source.dart';
-import 'package:veggie_mart/data/models/product_model.dart';
-import 'package:veggie_mart/data/repositories/product_repository_impl.dart';
-import 'package:veggie_mart/domain/repositories/product_repository.dart';
-import 'package:veggie_mart/domain/entities/product_entity.dart';
-import 'package:veggie_mart/domain/usecases/get_products_usecase.dart';
-import 'package:veggie_mart/domain/usecases/toggle_favorite_usecase.dart';
+import 'package:veg_king/core/network/api_config.dart';
+import 'package:veg_king/core/network/dio_client.dart';
+import 'package:veg_king/data/datasources/product_remote_data_source.dart';
+import 'package:veg_king/data/models/product_model.dart';
+import 'package:veg_king/data/repositories/product_repository_impl.dart';
+import 'package:veg_king/domain/repositories/product_repository.dart';
+import 'package:veg_king/domain/entities/product_entity.dart';
+import 'package:veg_king/domain/usecases/get_products_usecase.dart';
+import 'package:veg_king/domain/usecases/toggle_favorite_usecase.dart';
 
 final productRepositoryProvider = Provider<ProductRepository>((ref) {
   return ProductRepositoryImpl(remoteDataSource: ProductRemoteDataSourceImpl());
