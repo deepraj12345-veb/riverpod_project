@@ -39,6 +39,14 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
       );
       return await getCart();
     } catch (e) {
+      if (e is DioException) {
+        if (e.response?.statusCode == 404 &&
+            e.response?.data != null &&
+            e.response?.data is Map &&
+            e.response?.data['error'] == "Product is not in cart.") {
+          return await getCart();
+        }
+      }
       throw Exception('Failed to toggle cart item: $e');
     }
   }

@@ -73,10 +73,8 @@ class _HomePageState extends ConsumerState<HomePage> {
               .toList();
         }
 
-        // Build subcategory chips from real API data
-        List<String> currentSubs = relevantCategories
-            .map((c) => c.name)
-            .toList();
+        // Pass categories directly to the widget
+        List<CategoryEntity> currentSubs = relevantCategories;
 
         // Filter products
         List<ProductEntity> filteredProducts = [];
@@ -110,218 +108,246 @@ class _HomePageState extends ConsumerState<HomePage> {
 
         return Scaffold(
           body: SafeArea(
-            child: CustomScrollView(
-              slivers: [
-                // ── Top header ──────────────────────────────────────
-                const SliverToBoxAdapter(child: AppHeader()),
+            child: RefreshIndicator(
+              color: AppTheme.primaryGreen,
+              backgroundColor: Colors.white,
+              onRefresh: () async {
+                await Future.wait([
+                  ref.read(dashboardProvider.notifier).fetchDashboard(),
+                  ref.read(productsProvider.notifier).loadProducts(),
+                ]);
+              },
+              child: CustomScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                slivers: [
+                  // ── Top header ──────────────────────────────────────
+                  const SliverToBoxAdapter(child: AppHeader()),
 
-                // ── Dummy Search bar ──────────────────────────────────────
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-                    child: GestureDetector(
-                      onTap: () => context.push('/search'),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 14,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(14),
-                          border: Border.all(color: AppTheme.borderColor),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.search_rounded,
-                              color: AppTheme.primaryGreen,
-                              size: 20,
-                            ),
-                            const SizedBox(width: 12),
-                            CustomText(
-                              l10n.searchProducts,
-                              style: const TextStyle(
-                                color: AppTheme.textGrey,
-                                fontSize: 14,
+                  // ── Dummy Search bar ──────────────────────────────────────
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+                      child: GestureDetector(
+                        onTap: () => context.push('/search'),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 14,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(color: AppTheme.borderColor),
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.search_rounded,
+                                color: AppTheme.primaryGreen,
+                                size: 20,
                               ),
-                            ),
-                          ],
+                              const SizedBox(width: 12),
+                              CustomText(
+                                l10n.searchProducts,
+                                style: const TextStyle(
+                                  color: AppTheme.textGrey,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
 
-                // // ── Category row ────────────────────────────────────
-                // SliverToBoxAdapter(
-                //   child: Padding(
-                //     padding: const EdgeInsets.symmetric(vertical: 14),
-                //     child: CategoryRowWidget(
-                //       categories: apiCategories,
-                //       selected: selectedCategory,
-                //       onSelect: (cat) =>
-                //           ref.read(selectedCategoryProvider.notifier).state =
-                //               cat,
-                //     ),
-                //   ),
-                // ),
-                const SliverToBoxAdapter(child: SizedBox(height: 14)),
+                  // // ── Category row ────────────────────────────────────
+                  // SliverToBoxAdapter(
+                  //   child: Padding(
+                  //     padding: const EdgeInsets.symmetric(vertical: 14),
+                  //     child: CategoryRowWidget(
+                  //       categories: apiCategories,
+                  //       selected: selectedCategory,
+                  //       onSelect: (cat) =>
+                  //           ref.read(selectedCategoryProvider.notifier).state =
+                  //               cat,
+                  //     ),
+                  //   ),
+                  // ),
+                  const SliverToBoxAdapter(child: SizedBox(height: 14)),
 
-                // ── Default view (no filter / search) ───────────────
-                if (showDefault) ...[
-                  // Banner
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
-                      child: HomeBannerWidget(
-                        banners: dashboard.banners,
-                        bannerHeight: bannerH,
+                  // ── Default view (no filter / search) ───────────────
+                  if (showDefault) ...[
+                    // Banner
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
+                        child: HomeBannerWidget(
+                          banners: dashboard.banners,
+                          bannerHeight: bannerH,
+                        ),
                       ),
                     ),
-                  ),
 
-                  // Chef's Picks header
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 18, 16, 10),
-                      child: SectionHeaderWidget(
-                        title: l10n.chefsPicksBestsellers,
-                        onSeeAll: () {},
+                    // Chef's Picks header
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 18, 16, 10),
+                        child: SectionHeaderWidget(
+                          title: l10n.chefsPicksBestsellers,
+                          onSeeAll: () {
+                            context.push(
+                              '/product-list',
+                              extra: {
+                                'title': l10n.chefsPicksBestsellers,
+                                'products': chefsPicks,
+                              },
+                            );
+                          },
+                        ),
                       ),
                     ),
-                  ),
-                  // Chef's Picks list
-                  SliverToBoxAdapter(
-                    child: _HorizontalProductList(
-                      products: chefsPicks,
-                      cardWidth: hCardWidth,
-                      height: hListHeight,
-                    ),
-                  ),
-
-                  // Trending Near You header
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 20, 16, 10),
-                      child: SectionHeaderWidget(
-                        title: l10n.trendingNearYou,
-                        subtitle: l10n.discoverTopProducts,
-                        onSeeAll: () {},
+                    // Chef's Picks list
+                    SliverToBoxAdapter(
+                      child: _HorizontalProductList(
+                        products: chefsPicks,
+                        cardWidth: hCardWidth,
+                        height: hListHeight,
                       ),
                     ),
-                  ),
-                  // Trending list
-                  SliverToBoxAdapter(
-                    child: _HorizontalProductList(
-                      products: trendingProducts,
-                      cardWidth: hCardWidth,
-                      height: hListHeight,
-                    ),
-                  ),
 
-                  // Shop by Type header
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 20, 16, 10),
-                      child: SectionHeaderWidget(title: l10n.shopByType),
-                    ),
-                  ),
-                  // Subcategory chips
-                  SliverToBoxAdapter(
-                    child: SubcategoryChipsWidget(
-                      subcategories: currentSubs,
-                      selected: _selectedSub,
-                      onSelect: (sub) => setState(() => _selectedSub = sub),
-                    ),
-                  ),
-
-                  // All Products header
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 20, 16, 10),
-                      child: SectionHeaderWidget(
-                        title: l10n.allProducts,
-                        onSeeAll: null,
+                    // Trending Near You header
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 20, 16, 10),
+                        child: SectionHeaderWidget(
+                          title: l10n.trendingNearYou,
+                          subtitle: l10n.discoverTopProducts,
+                          onSeeAll: () {
+                            context.push(
+                              '/product-list',
+                              extra: {
+                                'title': l10n.trendingNearYou,
+                                'products': trendingProducts,
+                              },
+                            );
+                          },
+                        ),
                       ),
                     ),
-                  ),
-                ] else ...[
-                  // Subcategory chips for filtered view
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                    // Trending list
+                    SliverToBoxAdapter(
+                      child: _HorizontalProductList(
+                        products: trendingProducts,
+                        cardWidth: hCardWidth,
+                        height: hListHeight,
+                      ),
+                    ),
+
+                    // Shop by Type header
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 20, 16, 10),
+                        child: SectionHeaderWidget(title: l10n.shopByType),
+                      ),
+                    ),
+                    // Subcategory chips
+                    SliverToBoxAdapter(
                       child: SubcategoryChipsWidget(
                         subcategories: currentSubs,
                         selected: _selectedSub,
                         onSelect: (sub) => setState(() => _selectedSub = sub),
                       ),
                     ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
-                      child: Row(
-                        children: [
-                          CustomText(
-                            selectedCategory,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: AppTheme.textDark,
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 3,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppTheme.primaryGreen.withValues(
-                                alpha: 0.1,
-                              ),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: CustomText(
-                              l10n.itemsCount(displayProducts.length),
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: AppTheme.primaryGreen,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
 
-                // ── Product grid (responsive) ─────────────────────────
-                displayProducts.isEmpty
-                    ? SliverToBoxAdapter(child: _EmptyState())
-                    : SliverPadding(
-                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                        sliver: SliverGrid(
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 3,
-                                crossAxisSpacing: 8,
-                                mainAxisSpacing: 8,
-                                childAspectRatio:
-                                    hCardWidth / (hCardWidth / 0.82 + 108.0),
-                              ),
-                          delegate: SliverChildBuilderDelegate(
-                            (ctx, i) =>
-                                ProductCardWidget(product: displayProducts[i]),
-                            childCount: displayProducts.length,
-                          ),
+                    // All Products header
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 20, 16, 10),
+                        child: SectionHeaderWidget(
+                          title: l10n.allProducts,
+                          onSeeAll: null,
                         ),
                       ),
+                    ),
+                  ] else ...[
+                    // Subcategory chips for filtered view
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                        child: SubcategoryChipsWidget(
+                          subcategories: currentSubs,
+                          selected: _selectedSub,
+                          onSelect: (sub) => setState(() => _selectedSub = sub),
+                        ),
+                      ),
+                    ),
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+                        child: Row(
+                          children: [
+                            CustomText(
+                              selectedCategory,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: AppTheme.textDark,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 3,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AppTheme.primaryGreen.withValues(
+                                  alpha: 0.1,
+                                ),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: CustomText(
+                                l10n.itemsCount(displayProducts.length),
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: AppTheme.primaryGreen,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
 
-                const SliverPadding(padding: EdgeInsets.only(bottom: 24)),
-              ],
+                  // ── Product grid (responsive) ─────────────────────────
+                  displayProducts.isEmpty
+                      ? SliverToBoxAdapter(child: _EmptyState())
+                      : SliverPadding(
+                          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                          sliver: SliverGrid(
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3,
+                                  crossAxisSpacing: 8,
+                                  mainAxisSpacing: 8,
+                                  childAspectRatio:
+                                      hCardWidth / (hCardWidth / 0.82 + 108.0),
+                                ),
+                            delegate: SliverChildBuilderDelegate(
+                              (ctx, i) => ProductCardWidget(
+                                product: displayProducts[i],
+                              ),
+                              childCount: displayProducts.length,
+                            ),
+                          ),
+                        ),
+
+                  const SliverPadding(padding: EdgeInsets.only(bottom: 24)),
+                ],
+              ),
             ),
           ),
         );

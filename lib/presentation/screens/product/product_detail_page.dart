@@ -286,9 +286,9 @@ class ProductDetailPage extends ConsumerWidget {
 
                             const SizedBox(height: 5),
 
-                            // Price row
+                            // Price row and Add to Cart Button
                             Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 CustomText(
                                   'Rs ${displayProduct.price.toStringAsFixed(0)}',
@@ -299,39 +299,78 @@ class ProductDetailPage extends ConsumerWidget {
                                   ),
                                 ),
                                 const SizedBox(width: 10),
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 4),
-                                  child: CustomText(
-                                    'MRP Rs ${displayProduct.originalPrice.toStringAsFixed(0)}',
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      color: AppTheme.textGrey,
-                                      decoration: TextDecoration.lineThrough,
-                                    ),
+                                CustomText(
+                                  'MRP Rs ${displayProduct.originalPrice.toStringAsFixed(0)}',
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: AppTheme.textGrey,
+                                    decoration: TextDecoration.lineThrough,
                                   ),
                                 ),
                                 const Spacer(),
-                                if (discount > 0 && displayProduct.inStock)
+                                if (!displayProduct.inStock)
                                   Container(
                                     padding: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 5,
+                                      horizontal: 16,
+                                      vertical: 10,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: const Color(0xFFDCFCE7),
-                                      borderRadius: BorderRadius.circular(8),
+                                      color: const Color(0xFFF3F4F6),
+                                      border: Border.all(color: const Color(0xFFD1D5DB)),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
-                                    child: CustomText(
-                                      '$discount% OFF',
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w700,
-                                        color: AppTheme.primaryGreen,
-                                      ),
+                                    child: const Row(
+                                      children: [
+                                        Icon(
+                                          Icons.notifications_outlined,
+                                          size: 16,
+                                          color: AppTheme.textGrey,
+                                        ),
+                                        SizedBox(width: 6),
+                                        CustomText(
+                                          'Notify Me',
+                                          style: TextStyle(
+                                            color: AppTheme.textGrey,
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 13,
+                                          ),
+                                        ),
+                                      ],
                                     ),
+                                  )
+                                else
+                                  AddToCartButton(
+                                    product: displayProduct,
+                                    width: 90,
+                                    height: 38.0,
+                                    borderRadius: 12.0,
+                                    fontSize: 16.0,
+                                    isIconOnly: false,
+                                    iconSize: 20.0,
                                   ),
                               ],
                             ),
+                            if (discount > 0 && displayProduct.inStock) ...[
+                              const SizedBox(height: 6),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFDCFCE7),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: CustomText(
+                                  '$discount% OFF',
+                                  style: const TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppTheme.primaryGreen,
+                                  ),
+                                ),
+                              ),
+                            ],
 
                             const SizedBox(height: 10),
 
@@ -501,96 +540,7 @@ class ProductDetailPage extends ConsumerWidget {
             ),
           ),
 
-          // ── Bottom bar with counter ──────────────────────────
-          SafeArea(
-            top: false,
-            child: Container(
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: const Border(
-                  top: BorderSide(color: AppTheme.borderColor),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
-                    blurRadius: 12,
-                    offset: const Offset(0, -4),
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  // Price info
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CustomText(
-                          'Rs ${displayProduct.price.toStringAsFixed(0)}',
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w800,
-                            color: AppTheme.textDark,
-                          ),
-                        ),
-                        CustomText(
-                          'MRP Rs ${displayProduct.originalPrice.toStringAsFixed(0)}',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: AppTheme.textGrey,
-                            decoration: TextDecoration.lineThrough,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // Counter
-                  if (!displayProduct.inStock)
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 12,
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF3F4F6),
-                        border: Border.all(color: const Color(0xFFD1D5DB)),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Row(
-                        children: [
-                          Icon(
-                            Icons.notifications_outlined,
-                            size: 16,
-                            color: AppTheme.textGrey,
-                          ),
-                          SizedBox(width: 6),
-                          CustomText(
-                            'Notify Me',
-                            style: TextStyle(
-                              color: AppTheme.textGrey,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  else
-                    AddToCartButton(
-                      product: displayProduct,
-                      width: 80,
-                      height: 38.0,
-                      borderRadius: 12.0,
-                      fontSize: 16.0,
-                      isIconOnly: false,
-                      iconSize: 20.0,
-                    ),
-                ],
-              ),
-            ),
-          ),
+          // Bottom bar removed to fix duplication
         ],
       ),
     );

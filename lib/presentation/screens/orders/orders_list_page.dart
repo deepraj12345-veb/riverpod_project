@@ -334,7 +334,10 @@ class _EmptyOrdersView extends StatelessWidget {
                 GestureDetector(
                   onTap: () => context.go('/home'),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 32,
+                      vertical: 14,
+                    ),
                     decoration: BoxDecoration(
                       color: AppTheme.primaryGreen,
                       borderRadius: BorderRadius.circular(14),

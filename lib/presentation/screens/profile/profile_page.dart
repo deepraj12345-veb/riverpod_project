@@ -61,10 +61,8 @@ class ProfilePage extends ConsumerWidget {
     final dashboardAsync = ref.watch(dashboardProvider);
     final addressCount = ref.watch(addressCountProvider);
 
-    final ordersCount = dashboardAsync.maybeWhen(
-      data: (d) => d.totalOrders,
-      orElse: () => ref.watch(ordersProvider).length,
-    );
+    final ordersList = ref.watch(ordersProvider);
+    final ordersCount = ordersList.length;
     // Wallet balance from profile API
     final walletBalance = profileState.userAsync.maybeWhen(
       data: (u) => u.walletBalance,

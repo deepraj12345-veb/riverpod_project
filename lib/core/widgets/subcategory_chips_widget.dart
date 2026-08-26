@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:veg_king/core/theme/app_theme.dart';
 import 'package:veg_king/core/widgets/custom_text.dart';
+import 'package:veg_king/domain/entities/category_entity.dart';
+import 'package:veg_king/core/widgets/custom_network_image.dart';
 
 class SubcategoryChipsWidget extends StatelessWidget {
-  final List<String> subcategories;
+  final List<CategoryEntity> subcategories;
   final String selected;
   final ValueChanged<String> onSelect;
 
@@ -64,55 +66,97 @@ class SubcategoryChipsWidget extends StatelessWidget {
     'Chocolates': '🍫',
   };
 
+  static String _getEmoji(String sub) {
+    if (_emojiMap.containsKey(sub)) return _emojiMap[sub]!;
+    
+    final lower = sub.toLowerCase();
+    if (lower.contains('exotic')) return '🥑';
+    if (lower.contains('leaf')) return '🥬';
+    if (lower.contains('vegetable') || lower.contains('veg')) return '🥦';
+    if (lower.contains('fruit')) return '🍎';
+    if (lower.contains('dairy') || lower.contains('milk')) return '🥛';
+    if (lower.contains('snack')) return '🍿';
+    if (lower.contains('grocery') || lower.contains('groceries')) return '🛒';
+    if (lower.contains('meat') || lower.contains('chicken')) return '🍗';
+    if (lower.contains('fish') || lower.contains('seafood')) return '🐟';
+    if (lower.contains('spice') || lower.contains('masala')) return '🌶️';
+    if (lower.contains('drink') || lower.contains('beverage')) return '🥤';
+    if (lower.contains('sweet') || lower.contains('dessert')) return '🍩';
+    if (lower.contains('bakery') || lower.contains('bread')) return '🍞';
+    if (lower.contains('care') || lower.contains('personal')) return '🧴';
+    if (lower.contains('clean')) return '🧹';
+    if (lower.contains('baby')) return '👶';
+    if (lower.contains('pet')) return '🐾';
+    if (lower.contains('oil')) return '🫙';
+    if (lower.contains('dal') || lower.contains('pulse')) return '🥣';
+    if (lower.contains('rice')) return '🍚';
+    if (lower.contains('herb')) return '🌿';
+    
+    return '🏷️';
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 38,
+      height: 115,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16),
         itemCount: subcategories.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        separatorBuilder: (_, __) => const SizedBox(width: 12),
         itemBuilder: (ctx, i) {
-          final sub = subcategories[i];
+          final subCat = subcategories[i];
+          final sub = subCat.name;
           final isSelected = sub == selected;
-          final emoji = _emojiMap[sub] ?? '🏷️';
+          final emoji = _getEmoji(sub);
+          final hasImage = subCat.imageUrl != null && subCat.imageUrl!.isNotEmpty;
 
           return GestureDetector(
             onTap: () => onSelect(isSelected ? '' : sub),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-              decoration: BoxDecoration(
-                color: isSelected ? AppTheme.primaryGreen : Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: isSelected
-                      ? AppTheme.primaryGreen
-                      : AppTheme.borderColor,
-                  width: 1,
-                ),
-                boxShadow: isSelected
-                    ? [
-                        BoxShadow(
-                          color: AppTheme.primaryGreen.withValues(alpha: 0.2),
-                          blurRadius: 6,
-                          offset: const Offset(0, 2),
-                        ),
-                      ]
-                    : null,
-              ),
-              child: Row(
+            child: SizedBox(
+              width: 76,
+              child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  CustomText(emoji, style: const TextStyle(fontSize: 13)),
-                  const SizedBox(width: 5),
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    width: 72,
+                    height: 72,
+                    decoration: BoxDecoration(
+                      color: isSelected ? AppTheme.primaryGreen.withValues(alpha: 0.1) : const Color(0xFFF3F4F6),
+                      borderRadius: BorderRadius.circular(12),
+                      border: isSelected
+                          ? Border.all(color: AppTheme.primaryGreen, width: 2)
+                          : Border.all(color: AppTheme.borderColor, width: 1),
+                    ),
+                    child: Center(
+                      child: hasImage
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: SizedBox(
+                                width: 70,
+                                height: 70,
+                                child: CustomNetworkImage(
+                                  imageUrl: subCat.imageUrl!,
+                                  fit: BoxFit.cover,
+                                  placeholder: CustomText(emoji, style: const TextStyle(fontSize: 28)),
+                                  errorWidget: CustomText(emoji, style: const TextStyle(fontSize: 28)),
+                                ),
+                              ),
+                            )
+                          : CustomText(emoji, style: const TextStyle(fontSize: 28)),
+                    ),
+                  ),
+                  const SizedBox(height: 6),
                   CustomText(
                     sub,
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
                     style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: isSelected ? Colors.white : AppTheme.textDark,
+                      fontSize: 11,
+                      fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                      color: isSelected ? AppTheme.primaryGreen : AppTheme.textDark,
+                      height: 1.1,
                     ),
                   ),
                 ],

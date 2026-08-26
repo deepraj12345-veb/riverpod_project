@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:veg_king/core/network/api_config.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
+void Function()? onUnauthorized;
 final dioClientProvider = Provider<Dio>((ref) {
   final dio = Dio();
 
@@ -30,6 +31,10 @@ final dioClientProvider = Provider<Dio>((ref) {
       },
       onError: (DioException e, handler) {
         // Handle global errors here (e.g. 401 Unauthorized for logging out user)
+        if (e.response?.statusCode == 401) {
+          // Trigger logout if we receive a 401 response
+          onUnauthorized?.call();
+        }
         return handler.next(e);
       },
     ),

@@ -27,6 +27,7 @@ import 'package:veg_king/presentation/screens/orders/orders_list_page.dart';
 import 'package:veg_king/presentation/screens/orders/order_detail_page.dart';
 import 'package:veg_king/presentation/screens/checkout/checkout_page.dart';
 import 'package:veg_king/presentation/screens/home/search_page.dart';
+import 'package:veg_king/presentation/screens/home/product_list_page.dart';
 import 'package:flutter/foundation.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
@@ -113,6 +114,15 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (ctx, state) {
           final categoryName = state.extra as String? ?? 'All';
           return SubcategoryPage(categoryName: categoryName);
+        },
+      ),
+      GoRoute(
+        path: '/product-list',
+        builder: (ctx, state) {
+          final data = state.extra as Map<String, dynamic>? ?? {};
+          final title = data['title'] as String? ?? 'Products';
+          final products = data['products'] as List<ProductEntity>? ?? [];
+          return ProductListPage(title: title, products: products);
         },
       ),
       GoRoute(

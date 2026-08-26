@@ -10,6 +10,8 @@ import 'package:veg_king/presentation/providers/locale_provider.dart';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:veg_king/presentation/providers/auth_provider.dart';
+import 'package:veg_king/core/network/dio_client.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,12 +36,9 @@ Future<void> main() async {
     // Ignore if .env file is not found
   }
 
-  // TEMP: Saving the token manually for testing purposes as requested
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.setString(
-    'auth_token',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhM2Y5NTgxZDgxZDJmODg2YmRhYjcwMCIsIm1vYmlsZV9ubyI6IjkxMjU4NTk2NTAiLCJleHAiOjE3OTAwNTIwMDh9.FJthgQjbZd32y5SmWPFuY9sjOX5jJOF_0LDKX93ZDyk',
-  );
+  // Removed temporary token
+  // final prefs = await SharedPreferences.getInstance();
+  // await prefs.setString('auth_token', '...');
 
   runApp(const ProviderScope(child: MyApp()));
 }
@@ -49,6 +48,10 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    onUnauthorized = () {
+      ref.read(authProvider.notifier).logout();
+    };
+
     final router = ref.watch(appRouterProvider);
     final networkStatus = ref.watch(networkProvider);
     final locale = ref.watch(localeProvider);
