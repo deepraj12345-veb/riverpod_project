@@ -31,7 +31,7 @@ class CustomNetworkImage extends StatelessWidget {
 
     final finalUrl = imageUrl.startsWith('http')
         ? imageUrl
-        : 'https://vegimart-backend.vercel.app$imageUrl';
+        : 'http://localhost:3000$imageUrl';
 
     return Image.network(
       finalUrl,

@@ -7,7 +7,6 @@ import 'package:veg_king/presentation/providers/auth_provider.dart';
 import 'package:veg_king/presentation/providers/auth_state.dart';
 import 'package:veg_king/core/widgets/auth_widgets.dart';
 import 'package:veg_king/core/widgets/custom_text.dart';
-import 'package:veg_king/core/widgets/custom_network_image.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});

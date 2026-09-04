@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:veg_king/core/network/api_config.dart';
 import 'package:veg_king/core/network/api_exceptions.dart';
 import 'package:veg_king/data/models/coupon_model.dart';
 

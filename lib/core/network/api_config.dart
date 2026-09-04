@@ -1,12 +1,29 @@
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ApiConfig {
   static String get baseUrl {
     const dartDefine = String.fromEnvironment('API_BASE_URL');
-    if (dartDefine.isNotEmpty) return dartDefine;
+    if (dartDefine.isNotEmpty) {
+      if (!kIsWeb && Platform.isAndroid && dartDefine.contains('localhost')) {
+        return dartDefine.replaceAll('localhost', '10.0.2.2');
+      }
+      return dartDefine;
+    }
 
-    return dotenv.env['API_BASE_URL'] ??
-        'https://vegimart-backend.vercel.app/api/v1';
+    final envUrl = dotenv.env['API_BASE_URL'];
+    if (envUrl != null && envUrl.isNotEmpty) {
+      if (!kIsWeb && Platform.isAndroid && envUrl.contains('localhost')) {
+        return envUrl.replaceAll('localhost', '10.0.2.2');
+      }
+      return envUrl;
+    }
+
+    if (!kIsWeb && Platform.isAndroid) {
+      return 'http://10.0.2.2:3000/api/v1';
+    }
+    return 'http://localhost:3000/api/v1';
   }
 
   static const int connectTimeout = 30000;

@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:veg_king/core/theme/app_theme.dart';
 import 'package:veg_king/core/widgets/auth_widgets.dart';
 import 'package:veg_king/core/widgets/custom_text.dart';
-import 'package:veg_king/core/widgets/custom_network_image.dart';
 
 class SignupPage extends ConsumerStatefulWidget {
   const SignupPage({super.key});

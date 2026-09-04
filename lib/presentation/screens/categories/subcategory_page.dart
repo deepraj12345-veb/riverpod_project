@@ -193,7 +193,7 @@ class _SubcategoryPageState extends ConsumerState<SubcategoryPage> {
                                                     subEntity.imageUrl!
                                                         .startsWith('http')
                                                     ? subEntity.imageUrl!
-                                                    : 'https://vegimart-backend.vercel.app${subEntity.imageUrl}',
+                                                    : 'http://localhost:3000${subEntity.imageUrl}',
                                                 fit: BoxFit.cover,
                                                 height: 56,
                                                 width: 56,

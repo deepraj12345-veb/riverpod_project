@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:veg_king/core/theme/app_theme.dart';
 import 'package:veg_king/presentation/providers/orders_controller.dart';
 import 'package:veg_king/domain/entities/order_entity.dart';
-import 'package:veg_king/core/widgets/custom_network_image.dart';
 import 'package:veg_king/core/widgets/custom_text.dart';
 
 class OrdersListPage extends ConsumerWidget {
