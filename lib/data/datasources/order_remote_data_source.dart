@@ -24,11 +24,30 @@ class OrderRemoteDataSourceImpl implements OrderRemoteDataSource {
       );
       
       final data = response.data['data'] ?? response.data['orders'] ?? response.data;
-      if (data is List) {
+      if (data is List && data.isNotEmpty) {
         return data.map((e) => _parseOrder(e)).toList();
       }
+
+      // Fallback: If /orders returns empty, fetch from /dashboard endpoint which has recent_orders
+      try {
+        final dashRes = await dio.get(ApiConfig.dashboard);
+        final dashData = dashRes.data['data'] ?? dashRes.data;
+        final recentOrders = dashData?['recent_orders'] ?? dashData?['active_orders']?['orders'];
+        if (recentOrders is List && recentOrders.isNotEmpty) {
+          return recentOrders.map((e) => _parseOrder(e)).toList();
+        }
+      } catch (_) {}
+
       return [];
     } catch (e) {
+      try {
+        final dashRes = await dio.get(ApiConfig.dashboard);
+        final dashData = dashRes.data['data'] ?? dashRes.data;
+        final recentOrders = dashData?['recent_orders'] ?? dashData?['active_orders']?['orders'];
+        if (recentOrders is List && recentOrders.isNotEmpty) {
+          return recentOrders.map((e) => _parseOrder(e)).toList();
+        }
+      } catch (_) {}
       throw Exception('Failed to load orders: $e');
     }
   }
@@ -97,18 +116,21 @@ class OrderRemoteDataSourceImpl implements OrderRemoteDataSource {
       );
     }).toList();
 
-    String parsedStatus = 'Processing';
-    if (json['status'] is int) {
-      switch (json['status']) {
-        case 0: parsedStatus = 'Pending'; break;
-        case 1: parsedStatus = 'Processing'; break;
-        case 2: parsedStatus = 'Delivered'; break;
-        case 4: parsedStatus = 'Cancelled'; break;
-        case 5: parsedStatus = 'Failed'; break;
-        default: parsedStatus = 'Processing';
+    String parsedStatus = json['orderStatus']?.toString() ?? '';
+    if (parsedStatus.isEmpty) {
+      if (json['status'] is int) {
+        switch (json['status']) {
+          case 0: parsedStatus = 'Pending'; break;
+          case 1: parsedStatus = 'Processing'; break;
+          case 2: parsedStatus = 'Packing'; break;
+          case 3: parsedStatus = 'Out for Delivery'; break;
+          case 4: parsedStatus = 'Delivered'; break;
+          case 5: parsedStatus = 'Cancelled'; break;
+          default: parsedStatus = 'Processing';
+        }
+      } else {
+        parsedStatus = json['status']?.toString() ?? 'Processing';
       }
-    } else {
-      parsedStatus = json['status']?.toString() ?? 'Processing';
     }
 
     return OrderEntity(

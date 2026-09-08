@@ -189,11 +189,7 @@ class _SubcategoryPageState extends ConsumerState<SubcategoryPage> {
                                               subEntity.imageUrl!.isNotEmpty
                                           ? ClipOval(
                                               child: CustomNetworkImage(
-                                                imageUrl:
-                                                    subEntity.imageUrl!
-                                                        .startsWith('http')
-                                                    ? subEntity.imageUrl!
-                                                    : 'http://localhost:3000${subEntity.imageUrl}',
+                                                imageUrl: subEntity.imageUrl!,
                                                 fit: BoxFit.cover,
                                                 height: 56,
                                                 width: 56,

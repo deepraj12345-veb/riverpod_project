@@ -3,27 +3,40 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ApiConfig {
+  static String _normalizeUrl(String rawUrl) {
+    String url = rawUrl.trim();
+    if (!kIsWeb && Platform.isAndroid && url.contains('localhost')) {
+      url = url.replaceAll('localhost', '10.0.2.2');
+    }
+    if (url.endsWith('/')) {
+      url = url.substring(0, url.length - 1);
+    }
+    if (!url.endsWith('/api/v1')) {
+      url = '$url/api/v1';
+    }
+    return url;
+  }
+
+  static String get rootUrl {
+    final base = baseUrl;
+    if (base.endsWith('/api/v1')) {
+      return base.substring(0, base.length - '/api/v1'.length);
+    }
+    return base;
+  }
+
   static String get baseUrl {
     const dartDefine = String.fromEnvironment('API_BASE_URL');
     if (dartDefine.isNotEmpty) {
-      if (!kIsWeb && Platform.isAndroid && dartDefine.contains('localhost')) {
-        return dartDefine.replaceAll('localhost', '10.0.2.2');
-      }
-      return dartDefine;
+      return _normalizeUrl(dartDefine);
     }
 
     final envUrl = dotenv.env['API_BASE_URL'];
     if (envUrl != null && envUrl.isNotEmpty) {
-      if (!kIsWeb && Platform.isAndroid && envUrl.contains('localhost')) {
-        return envUrl.replaceAll('localhost', '10.0.2.2');
-      }
-      return envUrl;
+      return _normalizeUrl(envUrl);
     }
 
-    if (!kIsWeb && Platform.isAndroid) {
-      return 'http://10.0.2.2:3000/api/v1';
-    }
-    return 'http://localhost:3000/api/v1';
+    return 'https://vegimart-backend.vercel.app/api/v1';
   }
 
   static const int connectTimeout = 30000;
@@ -60,6 +73,4 @@ class ApiConfig {
   static const String addresses = '/addresses';
   static String addressById(String id) => '/addresses/$id';
   static String addressDefault(String id) => '/addresses/$id/default';
-
-  
 }

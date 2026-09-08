@@ -1,4 +1,4 @@
-package com.example.riverpod_project
+package com.vegking.user
 
 import io.flutter.embedding.android.FlutterActivity
 

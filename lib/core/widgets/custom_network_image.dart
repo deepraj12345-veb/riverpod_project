@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:veg_king/core/theme/app_theme.dart';
+import '../network/api_config.dart';
+
 class CustomNetworkImage extends StatelessWidget {
   final String imageUrl;
   final double? width;
@@ -31,7 +33,7 @@ class CustomNetworkImage extends StatelessWidget {
 
     final finalUrl = imageUrl.startsWith('http')
         ? imageUrl
-        : 'http://localhost:3000$imageUrl';
+        : '${ApiConfig.rootUrl}$imageUrl';
 
     return Image.network(
       finalUrl,
@@ -72,4 +74,3 @@ class CustomNetworkImage extends StatelessWidget {
     );
   }
 }
-
